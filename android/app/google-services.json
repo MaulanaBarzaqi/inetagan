@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "427325503843",
+    "project_id": "inetagan-6ec3f",
+    "storage_bucket": "inetagan-6ec3f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:427325503843:android:ef93bdd46793f531717b56",
+        "android_client_info": {
+          "package_name": "com.example.inetagan"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCDWx0j5BKiRFm_ZSNeQxANgRssbHW2QWg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
