@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:inetagan/controllers/home_spesial_controller.dart';
+import 'package:inetagan/controllers/paket_hemat_controller.dart';
 import 'package:inetagan/models/account_model.dart';
 import 'package:inetagan/models/paket_internet_model.dart';
 import 'package:inetagan/widgets/failed_ui.dart';
@@ -18,12 +19,14 @@ class HomeFragment extends StatefulWidget {
 
 class _HomeFragmentState extends State<HomeFragment> {
   final homeSpesialController = Get.put(HomeSpesialController());
+  final homeHematController = Get.put(HomeHematController());
 
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback(
       (timeStamp) {
         homeSpesialController.fetchSpesial();
+        homeHematController.fetchPaketHemat();
       },
     );
     super.initState();
@@ -32,6 +35,7 @@ class _HomeFragmentState extends State<HomeFragment> {
   @override
   void dispose() {
     Get.delete<HomeSpesialController>(force: true);
+    Get.delete<HomeHematController>(force: true);
     super.dispose();
   }
 
@@ -142,12 +146,16 @@ class _HomeFragmentState extends State<HomeFragment> {
                 buildItemMenu(
                   'assets/ic_upgrade.png',
                   'Upgrade',
-                  () {},
+                  () {
+                    Navigator.pushNamed(context, '/upgrade-page');
+                  },
                 ),
                 buildItemMenu(
                   'assets/ic_downgrade.png',
                   'Downgrade',
-                  () {},
+                  () {
+                    Navigator.pushNamed(context, '/downgrade-page');
+                  },
                 ),
                 buildItemMenu(
                   'assets/ic_wifi_off.png',
@@ -203,8 +211,8 @@ class _HomeFragmentState extends State<HomeFragment> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
+        const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 24),
           child: Text(
             'Paket Hemat',
             style: TextStyle(
@@ -215,7 +223,110 @@ class _HomeFragmentState extends State<HomeFragment> {
           ),
         ),
         const Gap(10),
+        Obx(
+          () {
+            String status = homeHematController.status;
+            if (status == '') return const SizedBox();
+            if (status == 'loading') {
+              return const Center(child: CircularProgressIndicator());
+            }
+            if (status != 'success') {
+              return Center(child: FailedUI(message: status));
+            }
+            List<Internet> list = homeHematController.list;
+            return SizedBox(
+              height: 295,
+              child: ListView.builder(
+                itemCount: list.length,
+                scrollDirection: Axis.horizontal,
+                itemBuilder: (context, index) {
+                  Internet internet = list[index];
+                  final margin = EdgeInsets.only(
+                    left: index == 0 ? 24 : 12,
+                    right: index == list.length - 1 ? 24 : 12,
+                  );
+                  return buildItemHemat(internet, margin);
+                },
+              ),
+            );
+          },
+        )
       ],
+    );
+  }
+
+  Widget buildItemHemat(
+    Internet internet,
+    EdgeInsetsGeometry margin,
+  ) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.pushNamed(context, '/detail-page',
+            arguments: internet.paketId);
+      },
+      child: Container(
+        width: 252,
+        margin: margin,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ExtendedImage.network(
+              internet.image,
+              width: 220,
+              height: 170,
+            ),
+            const Gap(10),
+            Text(
+              internet.nama,
+              style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xff504D4D)),
+            ),
+            const Gap(2),
+            Text(
+              internet.idealDevices,
+              style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                  color: Color(0xff838384)),
+            ),
+            const Gap(2),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(
+                  NumberFormat.currency(
+                    decimalDigits: 0,
+                    locale: 'id_ID',
+                    symbol: 'Rp',
+                  ).format(internet.bulanan),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xff50C2C9),
+                  ),
+                ),
+                const Text(
+                  '/Bulan',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xff838384),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 

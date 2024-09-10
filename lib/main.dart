@@ -8,10 +8,12 @@ import 'package:inetagan/models/paket_internet_model.dart';
 import 'package:inetagan/pages/berlangganan_page.dart';
 import 'package:inetagan/pages/detail_berlangganan_page.dart';
 import 'package:inetagan/pages/detail_page.dart';
+import 'package:inetagan/pages/downgrade_page.dart';
 import 'package:inetagan/pages/internet_page.dart';
 import 'package:inetagan/pages/signin_page.dart';
 import 'package:inetagan/pages/signup_page.dart';
 import 'package:inetagan/pages/success_berlangganan_page.dart';
+import 'package:inetagan/pages/upgrade_page.dart';
 
 import 'pages/home_page.dart';
 import 'pages/splash_screen.dart';
@@ -87,6 +89,8 @@ class MyApp extends StatelessWidget {
               ModalRoute.of(context)!.settings.arguments as Internet;
           return SuccessBerlanggananPage(internet: internet);
         },
+        '/downgrade-page': (context) => const DowngradePage(),
+        '/upgrade-page': (context) => const UpgradePage(),
       },
     );
   }
