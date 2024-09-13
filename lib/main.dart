@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:inetagan/firebase_options.dart';
 import 'package:inetagan/models/paket_internet_model.dart';
+import 'package:inetagan/pages/bantuan_page.dart';
 import 'package:inetagan/pages/berlangganan_page.dart';
 import 'package:inetagan/pages/detail_berlangganan_page.dart';
 import 'package:inetagan/pages/detail_page.dart';
@@ -91,6 +92,15 @@ class MyApp extends StatelessWidget {
         },
         '/downgrade-page': (context) => const DowngradePage(),
         '/upgrade-page': (context) => const UpgradePage(),
+        '/bantuan-page': (context) {
+          Map data = ModalRoute.of(context)!.settings.arguments as Map;
+          String uid = data['uid'];
+          String userName = data['userName'];
+          return BantuanPage(
+            uid: uid,
+            userName: userName,
+          );
+        }
       },
     );
   }

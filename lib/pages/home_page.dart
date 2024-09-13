@@ -1,9 +1,13 @@
+import 'package:d_session/d_session.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
+import 'package:inetagan/cummons/info.dart';
+import 'package:inetagan/models/account_model.dart';
 import 'package:inetagan/pages/fragments/home_fragment.dart';
 import 'package:inetagan/pages/fragments/profile_fragment.dart';
 import 'package:inetagan/pages/fragments/riwayat_fragment.dart';
+import 'package:inetagan/sources/chat_source.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -19,6 +23,18 @@ class _HomePageState extends State<HomePage> {
     const RiwayatFragment(),
     const ProfileFragment(),
   ];
+
+  late final Account account;
+
+  @override
+  void initState() {
+    DSession.getUser().then(
+      (value) {
+        account = Account.fromJson(value!);
+      },
+    );
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +84,17 @@ class _HomePageState extends State<HomePage> {
                 label: 'Bantuan',
                 icon: 'assets/ic_service.png',
                 iconOn: 'assets/ic_service_on.png',
-                ontap: () {},
+                ontap: () {
+                  Info.netral('loading...');
+                  ChatSource.openChatRoom(account.uid, account.nama).then(
+                    (value) {
+                      Navigator.pushNamed(context, '/bantuan-page', arguments: {
+                        'uid': account.uid,
+                        'username': account.nama,
+                      });
+                    },
+                  );
+                },
               ),
               buildItemNav(
                 label: 'Profile',
