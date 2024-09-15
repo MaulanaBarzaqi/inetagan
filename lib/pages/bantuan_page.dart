@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:inetagan/models/chat_model.dart';
 import 'package:inetagan/sources/chat_source.dart';
+import 'package:intl/intl.dart';
 
 class BantuanPage extends StatefulWidget {
   const BantuanPage({
@@ -21,12 +22,17 @@ class _BantuanPageState extends State<BantuanPage> {
   final edtInputChat = TextEditingController();
   late final Stream<QuerySnapshot<Map<String, dynamic>>> streamChats;
 
+  String formatTimestamp(Timestamp timestamp) {
+    return DateFormat('HH:mm d MMM').format(timestamp.toDate());
+  }
+
   @override
   void initState() {
     streamChats = FirebaseFirestore.instance
         .collection('CS')
         .doc(widget.uid)
         .collection('chats')
+        .orderBy('timestamp')
         .snapshots();
     super.initState();
   }
@@ -163,13 +169,26 @@ class _BantuanPageState extends State<BantuanPage> {
             color: const Color(0xff50C2C9),
             borderRadius: BorderRadius.circular(16),
           ),
-          child: Text(
-            chat.message,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              color: Colors.white,
-            ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                chat.message,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white,
+                ),
+              ),
+              const Gap(5),
+              Text(
+                formatTimestamp(chat.timestamp!),
+                style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w400,
+                    color: Colors.white),
+              ),
+            ],
           ),
         ),
         const Gap(20),
@@ -212,13 +231,26 @@ class _BantuanPageState extends State<BantuanPage> {
             color: Colors.white,
             borderRadius: BorderRadius.circular(16),
           ),
-          child: Text(
-            chat.message,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              color: Color(0xff50C2C9),
-            ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                chat.message,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xff50C2C9),
+                ),
+              ),
+              const Gap(5),
+              Text(
+                formatTimestamp(chat.timestamp!),
+                style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w400,
+                    color: Color(0xff838384)),
+              ),
+            ],
           ),
         ),
         const Gap(20),
@@ -251,9 +283,10 @@ class _BantuanPageState extends State<BantuanPage> {
               border: InputBorder.none,
               hintText: 'tulis pesan....',
               hintStyle: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w400,
-                  color: Color(0xff838384)),
+                fontSize: 16,
+                fontWeight: FontWeight.w400,
+                color: Color(0xff838384),
+              ),
             ),
           )),
           IconButton(
