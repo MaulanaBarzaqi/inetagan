@@ -24,7 +24,7 @@ class Chat {
     };
   }
 
-  factory Chat.fromMap(Map<String, dynamic> json) {
+  factory Chat.fromJson(Map<String, dynamic> json) {
     return Chat(
       roomId: json['roomId'] as String,
       message: json['message'] as String,
