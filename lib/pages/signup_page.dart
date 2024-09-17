@@ -45,20 +45,33 @@ class _SignupPageState extends State<SignupPage> {
       body: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 0),
         children: [
-          const Gap(150),
-          buildHeader(),
-          const Gap(35),
+          const Gap(100),
+          Image.asset(
+            'assets/img_logo_inetagan.png',
+            height: 71,
+            width: 171,
+          ),
+          const Gap(30),
+          const Text(
+            "Daftar akun",
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.w700,
+              color: Color(0xff50C2C9),
+            ),
+          ),
+          const Gap(30),
           const Text(
             'Nama Lengkap',
             style: TextStyle(
-              fontSize: 14,
+              fontSize: 16,
               fontWeight: FontWeight.w600,
               color: Color(0xff50C2C9),
             ),
           ),
           const Gap(12),
           InputWidget(
-            icon: 'assets/ic_account.png',
+            icon: 'assets/ic_user.png',
             hint: 'tulis nama anda',
             editingController: edtName,
           ),
@@ -66,14 +79,14 @@ class _SignupPageState extends State<SignupPage> {
           const Text(
             'Email',
             style: TextStyle(
-              fontSize: 14,
+              fontSize: 16,
               fontWeight: FontWeight.w600,
               color: Color(0xff50C2C9),
             ),
           ),
           const Gap(12),
           InputWidget(
-            icon: 'assets/ic_email.png',
+            icon: 'assets/ic_message.png',
             hint: 'tulis email anda',
             editingController: edtEmail,
           ),
@@ -81,14 +94,14 @@ class _SignupPageState extends State<SignupPage> {
           const Text(
             'Password',
             style: TextStyle(
-              fontSize: 14,
+              fontSize: 16,
               fontWeight: FontWeight.w600,
               color: Color(0xff50C2C9),
             ),
           ),
           const Gap(12),
           InputWidget(
-            icon: 'assets/ic_password.png',
+            icon: 'assets/ic_key.png',
             hint: 'tulis password',
             editingController: edtPassword,
             obsecure: true,
@@ -129,28 +142,4 @@ class _SignupPageState extends State<SignupPage> {
       ),
     );
   }
-}
-
-Widget buildHeader() {
-  return const Column(
-    children: [
-      Text(
-        'Daftar Akun',
-        style: TextStyle(
-          fontSize: 24,
-          fontWeight: FontWeight.w700,
-          color: Color(0xff50C2C9),
-        ),
-      ),
-      Gap(6),
-      Text(
-        'Tambahkan Detail Anda untuk Mendaftar',
-        style: TextStyle(
-          fontSize: 13,
-          fontWeight: FontWeight.w400,
-          color: Color(0xff6D6C6C),
-        ),
-      ),
-    ],
-  );
 }
