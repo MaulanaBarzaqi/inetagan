@@ -1,15 +1,23 @@
+import 'package:go_router/go_router.dart';
 import 'package:inetagan/features/home/presentation/pages/home_page.dart';
 import 'package:inetagan/features/login/presentation/pages/login_page.dart';
 
-enum MyRoute {
-  login('/login'),
-  home('/home');
-
-  final String name;
-  const MyRoute(this.name);
+class RouteNames {
+  static const login = 'login';
+  static const home = 'home';
 }
 
-final routes = {
-  MyRoute.login.name: (context) => const LoginPage(),
-  MyRoute.home.name: (context) => const HomePage(),
-};
+final GoRouter router = GoRouter(
+  routes: [
+    GoRoute(
+      name: RouteNames.login,
+      path: '/',
+      builder: (context, state) => LoginPage(),
+    ),
+    GoRoute(
+      name: RouteNames.home,
+      path: '/home',
+      builder: (context, state) => HomePage(),
+    ),
+  ],
+);

@@ -8,7 +8,7 @@ class UserModel extends UserEntity {
     required super.name,
     required super.email,
     required super.role,
-    // required super.deviceToken,
+    super.deviceToken,
     required super.createdAt,
     required super.updatedAt,
   });
@@ -21,7 +21,7 @@ class UserModel extends UserEntity {
     name: json["name"],
     email: json["email"],
     role: json["role"],
-    // deviceToken: json["device_token"],
+    deviceToken: json["device_token"] ?? '',
     createdAt: DateTime.parse(json["created_at"]),
     updatedAt: DateTime.parse(json["updated_at"]),
   );
@@ -31,7 +31,7 @@ class UserModel extends UserEntity {
     "name": name,
     "email": email,
     "role": role,
-    // "device_token": deviceToken,
+    "device_token": deviceToken ?? '',
     "created_at": createdAt.toIso8601String(),
     "updated_at": updatedAt.toIso8601String(),
   };

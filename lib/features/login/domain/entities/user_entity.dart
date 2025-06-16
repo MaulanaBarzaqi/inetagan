@@ -5,7 +5,7 @@ class UserEntity extends Equatable {
   final String name;
   final String email;
   final String role;
-  // final String deviceToken;
+  final String? deviceToken;
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -14,7 +14,7 @@ class UserEntity extends Equatable {
     required this.name,
     required this.email,
     required this.role,
-    // required this.deviceToken,
+    this.deviceToken,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -25,7 +25,7 @@ class UserEntity extends Equatable {
     name,
     email,
     role,
-    // deviceToken,
+    deviceToken,
     createdAt,
     updatedAt,
   ];

@@ -18,10 +18,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [BlocProvider(create: (_) => locator<LoginBloc>())],
-      child: MaterialApp(
+      child: MaterialApp.router(
         debugShowCheckedModeBanner: false,
-        initialRoute: MyRoute.login.name,
-        routes: routes,
+        routerConfig: router,
         theme: ThemeData(
           textTheme: GoogleFonts.poppinsTextTheme(),
           scaffoldBackgroundColor: Color(0xffEFEFF0),

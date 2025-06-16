@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 import 'package:inetagan/common/routes.dart';
 import 'package:inetagan/constants/colors_constant.dart';
 import 'package:inetagan/features/login/presentation/bloc/login_bloc.dart';
@@ -43,7 +44,7 @@ class _LoginPageState extends State<LoginPage> {
           ),
           const Gap(30),
           Text(
-            '',
+            'Email',
             style: TextStyle(
               fontWeight: FontWeight.w600,
               fontSize: 14,
@@ -73,7 +74,9 @@ class _LoginPageState extends State<LoginPage> {
             obscureText: obscureText,
             hasSuffix: true,
             onSuffixPressed: () {
-              obscureText = !obscureText;
+              setState(() {
+                obscureText = !obscureText;
+              });
             },
           ),
           const Gap(40),
@@ -105,8 +108,9 @@ class _LoginPageState extends State<LoginPage> {
             listener: (context, state) {
               if (state is LoginSuccess) {
                 // navigate to homepage
-                Navigator.pushReplacementNamed(context, MyRoute.home.name);
-              } else if (state is LoginFailed) {
+                context.goNamed(RouteNames.home);
+              }
+              if (state is LoginFailed) {
                 showDialog(context: context, builder: (_) => ErrorDialog());
               }
             },
