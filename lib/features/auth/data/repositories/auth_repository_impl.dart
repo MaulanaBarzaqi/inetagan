@@ -1,16 +1,16 @@
 import 'package:dartz/dartz.dart';
 import 'package:inetagan/core/errors/failures.dart';
 import 'package:inetagan/features/auth/data/datasources/auth_remote_datasource.dart';
-import 'package:inetagan/features/auth/data/models/register_model.dart';
-import 'package:inetagan/features/auth/domain/entities/login_entity.dart';
+import 'package:inetagan/features/auth/domain/entities/auth_entity.dart';
 import 'package:inetagan/features/auth/domain/repositories/auth_repository.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDatasource authRemoteDatasource;
 
   AuthRepositoryImpl({required this.authRemoteDatasource});
+
   @override
-  Future<Either<Failure, LoginEntity>> login(
+  Future<Either<Failure, AuthEntity>> login(
     String email,
     String password,
   ) async {
@@ -23,7 +23,7 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<Either<Failure, RegisterModel>> register(
+  Future<Either<Failure, AuthEntity>> register(
     String name,
     String email,
     String password,

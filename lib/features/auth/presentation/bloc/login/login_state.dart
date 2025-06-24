@@ -12,13 +12,12 @@ class LoginInitial extends LoginState {}
 class LoginLoading extends LoginState {}
 
 class LoginSuccess extends LoginState {
-  final UserEntity data;
-  final String token;
+  final AuthEntity data;
 
-  const LoginSuccess({required this.data, required this.token});
+  const LoginSuccess(this.data);
 
   @override
-  List<Object> get props => [data, token];
+  List<Object> get props => [data];
 }
 
 class LoginFailed extends LoginState {

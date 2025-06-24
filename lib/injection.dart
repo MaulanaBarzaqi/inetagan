@@ -1,5 +1,5 @@
-import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
+import 'package:http/http.dart' as http;
 import 'package:inetagan/features/auth/data/datasources/auth_remote_datasource.dart';
 import 'package:inetagan/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:inetagan/features/auth/domain/repositories/auth_repository.dart';
@@ -30,5 +30,5 @@ Future<void> initLocator() async {
   );
 
   // external
-  locator.registerLazySingleton<Dio>(() => Dio());
+  locator.registerLazySingleton(() => http.Client());
 }

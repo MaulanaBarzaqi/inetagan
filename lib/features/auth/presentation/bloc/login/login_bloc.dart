@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:inetagan/features/auth/domain/entities/user_entity.dart';
+import 'package:inetagan/features/auth/domain/entities/auth_entity.dart';
 import 'package:inetagan/features/auth/domain/usecases/login_usecase.dart';
 
 part 'login_event.dart';
@@ -14,7 +14,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       final result = await _usecase.call(event.email, event.password);
       result.fold(
         (failure) => emit(LoginFailed(failure.message)),
-        (login) => emit(LoginSuccess(data: login.data, token: login.token)),
+        (login) => emit(LoginSuccess(login)),
       );
     });
   }

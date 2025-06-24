@@ -12,9 +12,9 @@ class RegisterInitial extends RegisterState {}
 class RegisterLoading extends RegisterState {}
 
 class RegisterSuccess extends RegisterState {
-  final UserEntity data;
+  final AuthEntity data;
 
-  const RegisterSuccess({required this.data});
+  const RegisterSuccess(this.data);
 
   @override
   List<Object> get props => [data];

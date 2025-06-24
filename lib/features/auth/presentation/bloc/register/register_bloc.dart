@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:inetagan/features/auth/domain/entities/user_entity.dart';
+import 'package:inetagan/features/auth/domain/entities/auth_entity.dart';
 import 'package:inetagan/features/auth/domain/usecases/register_usecase.dart';
 
 part 'register_event.dart';
@@ -18,7 +18,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
       );
       result.fold(
         (failure) => emit(RegisterFailed(failure.message)),
-        (register) => emit(RegisterSuccess(data: register.data)),
+        (register) => emit(RegisterSuccess(register)),
       );
     });
   }
