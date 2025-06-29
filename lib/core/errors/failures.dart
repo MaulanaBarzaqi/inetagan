@@ -22,8 +22,8 @@ class TimeoutFailure extends Failure {
   const TimeoutFailure(super.message);
 }
 
-class ChacedFailure extends Failure {
-  const ChacedFailure(super.message);
+class CachedFailure extends Failure {
+  const CachedFailure(super.message);
 }
 
 class NotfoundFailure extends Failure {

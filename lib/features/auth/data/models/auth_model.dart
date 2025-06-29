@@ -38,4 +38,32 @@ class AuthModel extends AuthEntity {
       updatedAt: DateTime.parse(data['updated_at']),
     );
   }
+
+  factory AuthModel.fromJson(Map<String, dynamic> json) {
+    return AuthModel(
+      id: json['id'],
+      name: json['name'],
+      email: json['email'],
+      role: json['role'],
+      deviceToken: json['device_token'],
+      emailVerifiedAt: json['email_verified_at'],
+      createdAt: DateTime.parse(json['created_at']),
+      updatedAt: DateTime.parse(json['updated_at']),
+      token: json['token'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'email': email,
+      'role': role,
+      'device_token': deviceToken,
+      'email_verified_at': emailVerifiedAt,
+      'created_at': createdAt.toIso8601String(),
+      'updated_at': updatedAt.toIso8601String(),
+      'token': token,
+    };
+  }
 }

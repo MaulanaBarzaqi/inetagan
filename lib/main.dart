@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:inetagan/common/routes.dart';
 import 'package:inetagan/features/auth/presentation/bloc/login/login_bloc.dart';
+import 'package:inetagan/features/auth/presentation/bloc/logout/logout_bloc.dart';
 import 'package:inetagan/features/auth/presentation/bloc/register/register_bloc.dart';
 import 'package:inetagan/injection.dart';
 
@@ -21,6 +22,7 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider(create: (_) => locator<LoginBloc>()),
         BlocProvider(create: (_) => locator<RegisterBloc>()),
+        BlocProvider(create: (_) => locator<LogoutBloc>()),
       ],
       child: MaterialApp.router(
         debugShowCheckedModeBanner: false,

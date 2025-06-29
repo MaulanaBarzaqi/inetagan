@@ -1,6 +1,8 @@
-import 'dart:convert';
+// import 'dart:convert';
 
 import 'package:inetagan/core/config/api_constant.dart';
+import 'package:inetagan/core/config/app_request.dart';
+import 'package:inetagan/core/config/app_response.dart';
 import 'package:inetagan/features/auth/data/models/auth_model.dart';
 import 'package:http/http.dart' as http;
 
@@ -20,8 +22,9 @@ class AuthRemoteDatasourceImpl implements AuthRemoteDatasource {
     final response = await client.post(
       url,
       body: {'email': email, 'password': password},
+      headers: AppRequest.header(),
     );
-    final jsonData = jsonDecode(response.body);
+    final jsonData = AppResponse.data(response);
     return AuthModel.fromLoginJson(jsonData);
   }
 
@@ -31,8 +34,9 @@ class AuthRemoteDatasourceImpl implements AuthRemoteDatasource {
     final response = await client.post(
       url,
       body: {'name': name, 'email': email, 'password': password},
+      headers: AppRequest.header(),
     );
-    final jsonData = jsonDecode(response.body);
+    final jsonData = AppResponse.data(response);
     return AuthModel.fromRegisterJson(jsonData);
   }
 }

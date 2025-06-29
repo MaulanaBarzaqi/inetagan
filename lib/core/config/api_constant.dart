@@ -9,4 +9,9 @@ class AppConstant {
   static const register = '/register';
 
   static const login = '/login';
+
+  static const internetPlans = '/internet-packages/recomendation/limit';
+  static const category = '/internet-packages/category';
+  // static String search(String query) =>
+  //     '/internet-packages/search?query=$query';
 }

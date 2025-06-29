@@ -1,28 +1,28 @@
 import 'dart:convert';
-// import 'package:inetagan/features/auth/data/models/auth_model.dart';
+import 'package:inetagan/features/auth/data/models/auth_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AppSession {
   // USER
-  // static Future<AuthModel?> getUser() async {
-  //   final pref = await SharedPreferences.getInstance();
-  //   String? userString = pref.getString('user');
-  //   if (userString == null) return null;
+  static Future<AuthModel?> getUser() async {
+    final pref = await SharedPreferences.getInstance();
+    String? userString = pref.getString('data');
+    if (userString == null) return null;
 
-  //   var userMap = jsonDecode(userString);
-  //   return AuthModel.fromJson(userMap);
-  // }
+    var userMap = jsonDecode(userString);
+    return AuthModel.fromJson(userMap);
+  }
 
   static Future<bool> setUser(Map userMap) async {
     final pref = await SharedPreferences.getInstance();
     String userString = jsonEncode(userMap);
-    bool success = await pref.setString('user', userString);
+    bool success = await pref.setString('data', userString);
     return success;
   }
 
   static Future<bool> removeUser() async {
     final pref = await SharedPreferences.getInstance();
-    bool success = await pref.remove('user');
+    bool success = await pref.remove('data');
     return success;
   }
 
