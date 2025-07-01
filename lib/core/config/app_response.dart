@@ -34,7 +34,7 @@ class AppResponse {
   }
 
   static invalidInput(BuildContext context, String messageBody) {
-    Map errors = jsonDecode(messageBody)['errors'];
+    Map<String, dynamic> errors = jsonDecode(messageBody)['errors'];
     showDialog(
       context: context,
       builder: (context) {
@@ -71,5 +71,43 @@ class AppResponse {
         );
       },
     );
+  }
+
+  static showErrorByException(BuildContext context, Exceptions e) {
+    if (e is InvalidInputException || e is ForbiddenException) {
+      AppResponse.invalidInput(context, e.message);
+    } else {
+      String title = "terjadi kesalahan";
+      String content = "Ups terjadi kesalahan, silahkan coba lagi";
+
+      if (e is BadRequestException) {
+        content = 'Permintaan tidak valid.';
+      } else if (e is UnauthorisedException) {
+        content = 'Akses ditolak. Silakan login ulang.';
+      } else if (e is NotFoundException) {
+        content = 'Data tidak ditemukan.';
+      } else if (e is ServerException) {
+        content = 'Server sedang bermasalah.';
+      } else if (e is FetchFailureException) {
+        content = 'Gagal terhubung ke server.';
+      }
+      showDialog(
+        context: context,
+        builder: (_) {
+          return AlertDialog(
+            title: Text(title),
+            content: Text(content),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text("Tutup"),
+              ),
+            ],
+          );
+        },
+      );
+    }
   }
 }

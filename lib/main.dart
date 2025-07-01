@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:inetagan/common/routes.dart';
-import 'package:inetagan/features/auth/presentation/bloc/login/login_bloc.dart';
-import 'package:inetagan/features/auth/presentation/bloc/logout/logout_bloc.dart';
-import 'package:inetagan/features/auth/presentation/bloc/register/register_bloc.dart';
+import 'package:inetagan/features/signin/presentation/bloc/signin_bloc.dart';
+import 'package:inetagan/features/signup/presentation/bloc/signup_bloc.dart';
 import 'package:inetagan/injection.dart';
 
 void main() async {
@@ -20,9 +19,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (_) => locator<LoginBloc>()),
-        BlocProvider(create: (_) => locator<RegisterBloc>()),
-        BlocProvider(create: (_) => locator<LogoutBloc>()),
+        BlocProvider(create: (_) => locator<SigninBloc>()),
+        BlocProvider(create: (_) => locator<SignupBloc>()),
       ],
       child: MaterialApp.router(
         debugShowCheckedModeBanner: false,

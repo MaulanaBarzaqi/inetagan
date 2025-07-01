@@ -1,5 +1,5 @@
 abstract class Exceptions implements Exception {
-  final String? message;
+  final String message;
 
   Exceptions(this.message);
 }

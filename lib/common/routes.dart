@@ -1,13 +1,13 @@
 import 'package:go_router/go_router.dart';
-import 'package:inetagan/features/auth/presentation/pages/register_page.dart';
 import 'package:inetagan/features/home/presentation/pages/home_page.dart';
-import 'package:inetagan/features/auth/presentation/pages/landing_page.dart';
-import 'package:inetagan/features/auth/presentation/pages/login_page.dart';
+import 'package:inetagan/features/signin/presentation/pages/landing_page.dart';
+import 'package:inetagan/features/signin/presentation/pages/sign_in_page.dart';
+import 'package:inetagan/features/signup/presentation/pages/sign_up_page.dart';
 
 class RouteNames {
   static const landing = 'landing';
-  static const login = 'login';
-  static const register = 'register';
+  static const signin = 'signin';
+  static const signup = 'signup';
   static const home = 'home';
 }
 
@@ -19,14 +19,14 @@ final GoRouter router = GoRouter(
       builder: (context, state) => LandingPage(),
     ),
     GoRoute(
-      name: RouteNames.login,
-      path: '/login',
-      builder: (context, state) => LoginPage(),
+      name: RouteNames.signin,
+      path: '/signin',
+      builder: (context, state) => SignInPage(),
     ),
     GoRoute(
-      name: RouteNames.register,
-      path: '/register',
-      builder: (context, state) => RegisterPage(),
+      name: RouteNames.signup,
+      path: '/signup',
+      builder: (context, state) => SignUpPage(),
     ),
     GoRoute(
       name: RouteNames.home,
