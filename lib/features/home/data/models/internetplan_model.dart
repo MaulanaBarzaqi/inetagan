@@ -43,4 +43,18 @@ class InternetplanModel extends InternetplanEntity {
     "created_at": createdAt.toIso8601String(),
     "updated_at": updatedAt.toIso8601String(),
   };
+
+  InternetplanEntity get toEntity => InternetplanEntity(
+    id: id,
+    name: name,
+    slug: slug,
+    category: category,
+    speed: speed,
+    idealDevice: idealDevice,
+    installation: installation,
+    monthlyBill: monthlyBill,
+    image: image,
+    createdAt: createdAt,
+    updatedAt: updatedAt,
+  );
 }

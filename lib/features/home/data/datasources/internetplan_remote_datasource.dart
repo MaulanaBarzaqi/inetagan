@@ -39,21 +39,77 @@ class InternetplanRemoteDatasourceImpl implements InternetPlanRemoteDatasource {
 
   @override
   Future<List<InternetplanModel>> student() async {
-    throw UnimplementedError();
+    Uri url = Uri.parse(
+      '${AppConstant.baseUrl}/internet-packages/category/student',
+    );
+    final token = await AppSession.getBearerToken();
+    final response = await client.get(url, headers: AppRequest.header(token));
+    try {
+      final data = AppResponse.data(response);
+      final list = (data['data'] as List)
+          .map((item) => InternetplanModel.fromJson(item))
+          .toList();
+      return list;
+    } catch (e) {
+      throw Exception('Failed to load internet plans: $e');
+    }
   }
 
   @override
   Future<List<InternetplanModel>> family() async {
-    throw UnimplementedError();
+    Uri url = Uri.parse(
+      '${AppConstant.baseUrl}/internet-packages/category/family',
+    );
+    final token = await AppSession.getBearerToken();
+    final response = await client.get(url, headers: AppRequest.header(token));
+    try {
+      final data = AppResponse.data(response);
+      final list = (data['data'] as List)
+          .map((item) => InternetplanModel.fromJson(item))
+          .toList();
+      return list;
+    } catch (e) {
+      throw Exception('Failed to load internet plans: $e');
+    }
   }
 
   @override
   Future<List<InternetplanModel>> corporate() async {
-    throw UnimplementedError();
+    Uri url = Uri.parse(
+      '${AppConstant.baseUrl}/internet-packages/category/corporate',
+    );
+    final token = await AppSession.getBearerToken();
+    final response = await client.get(url, headers: AppRequest.header(token));
+    try {
+      final data = AppResponse.data(response);
+      final list = (data['data'] as List)
+          .map((item) => InternetplanModel.fromJson(item))
+          .toList();
+      return list;
+    } catch (e) {
+      throw Exception('Failed to load internet plans: $e');
+    }
   }
 
   @override
   Future<List<InternetplanModel>> searchInternetPlan(String query) async {
-    throw UnimplementedError();
+    Uri url = Uri.parse(
+      '${AppConstant.baseUrl}/internet-packages/category/student',
+    );
+    final token = await AppSession.getBearerToken();
+    final response = await client.post(
+      url,
+      body: {'query': query},
+      headers: AppRequest.header(token),
+    );
+    try {
+      final data = AppResponse.data(response);
+      final list = (data['data'] as List)
+          .map((item) => InternetplanModel.fromJson(item))
+          .toList();
+      return list;
+    } catch (e) {
+      throw Exception('Failed to load internet plans: $e');
+    }
   }
 }

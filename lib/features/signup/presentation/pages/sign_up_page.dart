@@ -5,9 +5,9 @@ import 'package:go_router/go_router.dart';
 import 'package:inetagan/common/routes.dart';
 import 'package:inetagan/core/config/app_assets.dart';
 import 'package:inetagan/core/config/app_colors.dart';
-import 'package:inetagan/features/signin/presentation/widgets/button_widget.dart';
+import 'package:inetagan/core/widgets/button_widget.dart';
 import 'package:inetagan/features/signin/presentation/widgets/error_dialog.dart';
-import 'package:inetagan/features/signin/presentation/widgets/input_widget.dart';
+import 'package:inetagan/core/widgets/input_widget.dart';
 import 'package:inetagan/features/signup/presentation/bloc/signup_bloc.dart';
 
 class SignUpPage extends StatefulWidget {

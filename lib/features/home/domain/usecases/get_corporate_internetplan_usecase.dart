@@ -3,12 +3,12 @@ import 'package:inetagan/core/errors/failures.dart';
 import 'package:inetagan/features/home/domain/entities/internetplan_entity.dart';
 import 'package:inetagan/features/home/domain/repositories/internetplan_repository.dart';
 
-class GetAllInternetplanUsecase {
+class GetCorporateInternetplanUsecase {
   final InternetplanRepository _repository;
 
-  GetAllInternetplanUsecase(this._repository);
+  GetCorporateInternetplanUsecase(this._repository);
 
   Future<Either<Failure, List<InternetplanEntity>>> call() {
-    return _repository.all();
+    return _repository.corporate();
   }
 }

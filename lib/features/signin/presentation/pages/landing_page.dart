@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:inetagan/common/routes.dart';
 import 'package:inetagan/core/config/app_assets.dart';
 import 'package:inetagan/core/config/app_colors.dart';
-import 'package:inetagan/features/signin/presentation/widgets/button_widget.dart';
+import 'package:inetagan/core/widgets/button_widget.dart';
 
 class LandingPage extends StatelessWidget {
   const LandingPage({super.key});

@@ -30,7 +30,7 @@ class SignInRepositoryImpl implements SignInRepository {
 
       return Right(result);
     } on TimeoutException {
-      return Left(NotfoundFailure('Time out. no response'));
+      return Left(TimeoutFailure('Time out. no response'));
     } on NotFoundException catch (e) {
       return Left(NotfoundFailure(e.message.toString()));
     } on ServerException {
