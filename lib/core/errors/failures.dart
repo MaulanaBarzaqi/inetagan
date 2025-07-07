@@ -14,18 +14,38 @@ class ServerFailure extends Failure {
   const ServerFailure(super.message);
 }
 
-class ConnectionFailure extends Failure {
-  const ConnectionFailure(super.message);
+class BadRequestFailure extends Failure {
+  const BadRequestFailure(super.message);
+}
+
+class UnauthorisedFailure extends Failure {
+  const UnauthorisedFailure(super.message);
+}
+
+class ForbiddenFailure extends Failure {
+  const ForbiddenFailure(super.message);
+}
+
+class NotFoundFailure extends Failure {
+  const NotFoundFailure(super.message);
 }
 
 class TimeoutFailure extends Failure {
   const TimeoutFailure(super.message);
 }
 
+class ConnnectionFailure extends Failure {
+  const ConnnectionFailure(super.message);
+}
+
 class CachedFailure extends Failure {
   const CachedFailure(super.message);
 }
 
-class NotfoundFailure extends Failure {
-  const NotfoundFailure(super.message);
+class InvalidInputFailure extends Failure {
+  const InvalidInputFailure(super.message);
+}
+
+class FetchFailure extends Failure {
+  const FetchFailure(super.message);
 }

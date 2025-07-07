@@ -3,13 +3,15 @@ import 'package:inetagan/core/config/app_colors.dart';
 
 class InputWidget extends StatelessWidget {
   final TextEditingController controller;
+  final String? Function(String?)? validator;
+  final String? Function(String?)? onChanged;
   final String hintText;
   final bool obscureText;
   final bool hasSuffix;
   final String icon;
   final VoidCallback? onSuffixPressed;
-  final String? Function(String?)? validator;
   final AutovalidateMode? autovalidateMode;
+  final TextInputType keyboardType;
 
   const InputWidget({
     super.key,
@@ -21,52 +23,56 @@ class InputWidget extends StatelessWidget {
     this.onSuffixPressed,
     this.validator,
     this.autovalidateMode,
+    required this.keyboardType,
+    this.onChanged,
   });
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 54,
-      child: TextFormField(
-        validator: validator,
-        controller: controller,
-        obscureText: obscureText,
-        autovalidateMode: autovalidateMode,
-        style: const TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 16,
-          color: ColorsConstants.primary,
-        ),
-        decoration: InputDecoration(
-          fillColor: Colors.white,
-          filled: true,
-          suffixIcon: hasSuffix
-              ? IconButton(
+    return TextFormField(
+      validator: validator,
+      controller: controller,
+      obscureText: obscureText,
+      keyboardType: keyboardType,
+      autovalidateMode: autovalidateMode,
+      onChanged: onChanged,
+      style: const TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.normal,
+        color: AppColors.primary,
+      ),
+      decoration: InputDecoration(
+        filled: true,
+        fillColor: Colors.white,
+        suffixIcon: hasSuffix
+            ? Padding(
+                padding: const EdgeInsets.only(right: 12),
+                child: IconButton(
                   onPressed: onSuffixPressed,
                   icon: Icon(
                     obscureText ? Icons.visibility_off : Icons.visibility,
-                    color: ColorsConstants.primary,
+                    color: AppColors.primary,
                   ),
-                )
-              : null,
-          prefixIcon: UnconstrainedBox(
-            alignment: const Alignment(0.3, 0),
-            child: ImageIcon(
-              AssetImage(icon),
-              size: 24,
-              color: ColorsConstants.primary,
-            ),
+                ),
+              )
+            : null,
+        prefixIcon: UnconstrainedBox(
+          alignment: const Alignment(0.3, 0),
+          child: ImageIcon(
+            AssetImage(icon),
+            size: 24,
+            color: AppColors.primary,
           ),
-          hintText: hintText,
-          hintStyle: const TextStyle(
-            fontWeight: FontWeight.normal,
-            fontSize: 14,
-            color: ColorsConstants.tertiary,
-          ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(50),
-            borderSide: BorderSide.none,
-          ),
+        ),
+        hintText: hintText,
+        hintStyle: TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 14,
+          color: Colors.grey[500],
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(50),
+          borderSide: BorderSide.none,
         ),
       ),
     );

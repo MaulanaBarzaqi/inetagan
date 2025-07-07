@@ -7,6 +7,7 @@ import 'package:inetagan/features/home/presentation/bloc/corporate_internetplan/
 import 'package:inetagan/features/home/presentation/bloc/family_internetplan/family_internetplan_bloc.dart';
 import 'package:inetagan/features/home/presentation/bloc/search_internetplan/search_internetplan_bloc.dart';
 import 'package:inetagan/features/home/presentation/bloc/student_internetplan/student_internetplan_bloc.dart';
+import 'package:inetagan/features/home/presentation/cubit/dashboard_cubit.dart';
 import 'package:inetagan/features/signin/presentation/bloc/signin_bloc.dart';
 import 'package:inetagan/features/signup/presentation/bloc/signup_bloc.dart';
 import 'package:inetagan/injection.dart';
@@ -24,6 +25,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
+        BlocProvider(create: (_) => DashboardCubit()),
         BlocProvider(create: (_) => locator<SigninBloc>()),
         BlocProvider(create: (_) => locator<SignupBloc>()),
         BlocProvider(create: (_) => locator<AllInternetplanBloc>()),

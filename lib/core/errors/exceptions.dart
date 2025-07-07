@@ -1,33 +1,45 @@
-abstract class Exceptions implements Exception {
+abstract class FailureException implements Exception {
   final String message;
 
-  Exceptions(this.message);
+  FailureException(this.message);
 }
 
-class FetchFailureException extends Exceptions {
-  FetchFailureException(super.message);
+class ServerException extends FailureException {
+  ServerException(super.message);
 }
 
-class BadRequestException extends Exceptions {
+class BadRequestException extends FailureException {
   BadRequestException(super.message);
 }
 
-class UnauthorisedException extends Exceptions {
+class UnauthorisedException extends FailureException {
   UnauthorisedException(super.message);
 }
 
-class ForbiddenException extends Exceptions {
+class ForbiddenException extends FailureException {
   ForbiddenException(super.message);
 }
 
-class InvalidInputException extends Exceptions {
-  InvalidInputException(super.message);
-}
-
-class NotFoundException extends Exceptions {
+class NotFoundException extends FailureException {
   NotFoundException(super.message);
 }
 
-class ServerException extends Exceptions {
-  ServerException(super.message);
+class TimeoutException extends FailureException {
+  TimeoutException(super.message);
+}
+
+class ConnnectionException extends FailureException {
+  ConnnectionException(super.message);
+}
+
+class CachedException extends FailureException {
+  CachedException(super.message);
+}
+
+class InvalidInputException extends FailureException {
+  InvalidInputException(super.message);
+}
+
+class FetchFailureException extends FailureException {
+  FetchFailureException(super.message);
 }

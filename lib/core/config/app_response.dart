@@ -73,7 +73,7 @@ class AppResponse {
     );
   }
 
-  static showErrorByException(BuildContext context, Exceptions e) {
+  static showErrorByException(BuildContext context, FailureException e) {
     if (e is InvalidInputException || e is ForbiddenException) {
       AppResponse.invalidInput(context, e.message);
     } else {

@@ -27,7 +27,7 @@ class InternetplanLocalDatasourceImpl implements InternetplanLocalDatasource {
           .toList();
       return list;
     }
-    throw ServerException('something went wrong');
+    throw CachedException('Failed to read from cache');
   }
 
   @override

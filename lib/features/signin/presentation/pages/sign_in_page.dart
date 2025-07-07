@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:inetagan/common/routes.dart';
 import 'package:inetagan/core/config/app_assets.dart';
 import 'package:inetagan/core/config/app_colors.dart';
+import 'package:inetagan/core/widgets/loading_widget.dart';
 import 'package:inetagan/features/signin/presentation/bloc/signin_bloc.dart';
 import 'package:inetagan/core/widgets/button_widget.dart';
 import 'package:inetagan/features/signin/presentation/widgets/error_dialog.dart';
@@ -22,6 +23,46 @@ class _SignInPageState extends State<SignInPage> {
   final edtPassword = TextEditingController();
   final formKey = GlobalKey<FormState>();
   bool obscureText = true;
+
+  // execute() {
+  //   bool validInput = formKey.currentState!.validate();
+  //   if (!validInput) return;
+  //   context
+  //       .read<SigninBloc>()
+  //       .add(OnSignInEvent(email: edtEmail.text, password: edtPassword.text))
+  //       .then((value) {
+  //         String newStatus = '';
+  //         value.fold((failure) {
+  //           switch (failure.runtimeType) {
+  //             case ServerException:
+  //               newStatus = 'server error';
+  //               DInfo.toastError(newStatus);
+  //               break;
+  //             case NotFoundException:
+  //               newStatus = 'error not found';
+  //               DInfo.toastError(newStatus);
+  //               break;
+  //             case ForbiddenException:
+  //               newStatus = 'you don\'t have access';
+  //               DInfo.toastError(newStatus);
+  //               break;
+  //             case BadRequestException:
+  //               newStatus = 'Bad Request';
+  //               DInfo.toastError(newStatus);
+  //               break;
+  //             case InvalidInputException:
+  //               newStatus = 'Invalid Input';
+  //               AppResponse.invalidInput(context, failure.message ?? '{}');
+  //               break;
+  //             default:
+  //               newStatus = 'request error';
+  //               DInfo.toastError(newStatus);
+  //               newStatus = failure.message ?? '-';
+  //               break;
+  //           }
+  //         }, (result) => {DInfo.toastSuccess('login susccess')});
+  //       });
+  // }
 
   @override
   void dispose() {
@@ -44,7 +85,7 @@ class _SignInPageState extends State<SignInPage> {
             style: TextStyle(
               fontWeight: FontWeight.w700,
               fontSize: 20,
-              color: ColorsConstants.primary,
+              color: AppColors.primary,
             ),
           ),
           const Gap(30),
@@ -58,21 +99,26 @@ class _SignInPageState extends State<SignInPage> {
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 14,
-                    color: ColorsConstants.primary,
+                    color: AppColors.primary,
                   ),
                 ),
                 const Gap(12),
                 InputWidget(
                   controller: edtEmail,
                   hintText: 'tulis email anda',
+                  keyboardType: TextInputType.emailAddress,
                   icon: AppAssets.icEmail,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
                   validator: (value) {
-                    if (value == null || value.isEmpty)
-                      return 'email tidak boleh kosong';
-                    if (!value.contains('@')) return 'email tidak valid';
+                    if (value!.isEmpty) {
+                      return 'Please fill in this field';
+                    } else if (!RegExp(
+                      r'^[\w-\.]+@([\w-]+.)+[\w-]{2,4}$',
+                    ).hasMatch(value)) {
+                      return 'Please enter a valid email';
+                    }
                     return null;
                   },
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
                 ),
                 const Gap(20),
                 Text(
@@ -80,28 +126,33 @@ class _SignInPageState extends State<SignInPage> {
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 14,
-                    color: ColorsConstants.primary,
+                    color: AppColors.primary,
                   ),
                 ),
                 const Gap(12),
                 InputWidget(
                   controller: edtPassword,
                   hintText: 'tulis password anda',
+                  keyboardType: TextInputType.visiblePassword,
                   icon: AppAssets.icPassword,
                   obscureText: obscureText,
                   hasSuffix: true,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
                   onSuffixPressed: () {
                     setState(() {
                       obscureText = !obscureText;
                     });
                   },
                   validator: (value) {
-                    if (value == null || value.isEmpty)
-                      return 'Password tidak boleh kosong';
-                    if (value.length < 6) return 'Minimal 6 karakter';
+                    if (value!.isEmpty) {
+                      return 'Please fill in this field';
+                    } else if (!RegExp(
+                      r'^(?=.*?[A-Z])(?=.*?[a-z]).{8,}$',
+                    ).hasMatch(value)) {
+                      return 'Please enter a valid password';
+                    }
                     return null;
                   },
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
                 ),
               ],
             ),
@@ -114,7 +165,7 @@ class _SignInPageState extends State<SignInPage> {
                 style: TextStyle(
                   fontWeight: FontWeight.w400,
                   fontSize: 14,
-                  color: ColorsConstants.primary,
+                  color: AppColors.primary,
                 ),
               ),
               InkWell(
@@ -126,7 +177,7 @@ class _SignInPageState extends State<SignInPage> {
                   style: TextStyle(
                     fontWeight: FontWeight.w700,
                     fontSize: 15,
-                    color: ColorsConstants.primary,
+                    color: AppColors.primary,
                   ),
                 ),
               ),
@@ -136,16 +187,15 @@ class _SignInPageState extends State<SignInPage> {
           BlocConsumer<SigninBloc, SigninState>(
             listener: (context, state) {
               if (state is SignInSuccess) {
-                context.goNamed(RouteNames.home);
+                context.goNamed(RouteNames.dashboard);
               }
               if (state is SignInFailed) {
-                // AppResponse.invalidInput(context, state.errorMessage);
                 showDialog(context: context, builder: (_) => ErrorDialog());
               }
             },
             builder: (context, state) {
               if (state is SignInLoading) {
-                return Center(child: CircularProgressIndicator());
+                return LoadingWidget();
               }
               return ButtonWidget(
                 ontap: () {
@@ -168,7 +218,7 @@ class _SignInPageState extends State<SignInPage> {
             style: TextStyle(
               fontWeight: FontWeight.w400,
               fontSize: 14,
-              color: ColorsConstants.primary,
+              color: AppColors.primary,
             ),
           ),
 

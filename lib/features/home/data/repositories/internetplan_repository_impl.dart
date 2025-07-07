@@ -31,7 +31,7 @@ class InternetplanRepositoryImpl extends InternetplanRepository {
       } on TimeoutException {
         return Left(TimeoutFailure('Time out. no response'));
       } on NotFoundException catch (e) {
-        return Left(NotfoundFailure(e.message.toString()));
+        return Left(NotFoundFailure(e.message.toString()));
       } on ServerException {
         return Left(ServerFailure('server error'));
       } catch (e) {
@@ -42,7 +42,7 @@ class InternetplanRepositoryImpl extends InternetplanRepository {
         final result = await localDatasource.getAll();
         final list = result.map((e) => e.toEntity).toList();
         return Right(list);
-      } on ServerException {
+      } on CachedException {
         return Left(CachedFailure('data is not presents'));
       }
     }
@@ -58,7 +58,7 @@ class InternetplanRepositoryImpl extends InternetplanRepository {
     } on TimeoutException {
       return Left(TimeoutFailure('Time out. no response'));
     } on NotFoundException catch (e) {
-      return Left(NotfoundFailure(e.message.toString()));
+      return Left(NotFoundFailure(e.message.toString()));
     } on ServerException {
       return Left(ServerFailure('server error'));
     } catch (e) {
@@ -76,7 +76,7 @@ class InternetplanRepositoryImpl extends InternetplanRepository {
     } on TimeoutException {
       return Left(TimeoutFailure('Time out. no response'));
     } on NotFoundException catch (e) {
-      return Left(NotfoundFailure(e.message.toString()));
+      return Left(NotFoundFailure(e.message.toString()));
     } on ServerException {
       return Left(ServerFailure('server error'));
     } catch (e) {
@@ -94,7 +94,7 @@ class InternetplanRepositoryImpl extends InternetplanRepository {
     } on TimeoutException {
       return Left(TimeoutFailure('Time out. no response'));
     } on NotFoundException catch (e) {
-      return Left(NotfoundFailure(e.message.toString()));
+      return Left(NotFoundFailure(e.message.toString()));
     } on ServerException {
       return Left(ServerFailure('server error'));
     } catch (e) {
@@ -114,7 +114,7 @@ class InternetplanRepositoryImpl extends InternetplanRepository {
     } on TimeoutException {
       return Left(TimeoutFailure('Time out. no response'));
     } on NotFoundException catch (e) {
-      return Left(NotfoundFailure(e.message.toString()));
+      return Left(NotFoundFailure(e.message.toString()));
     } on ServerException {
       return Left(ServerFailure('server error'));
     } catch (e) {

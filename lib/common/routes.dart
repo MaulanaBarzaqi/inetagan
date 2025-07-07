@@ -1,4 +1,5 @@
 import 'package:go_router/go_router.dart';
+import 'package:inetagan/features/home/presentation/pages/dashboard.dart';
 import 'package:inetagan/features/home/presentation/pages/home_page.dart';
 import 'package:inetagan/features/signin/presentation/pages/landing_page.dart';
 import 'package:inetagan/features/signin/presentation/pages/sign_in_page.dart';
@@ -8,6 +9,7 @@ class RouteNames {
   static const landing = 'landing';
   static const signin = 'signin';
   static const signup = 'signup';
+  static const dashboard = 'dashboard';
   static const home = 'home';
 }
 
@@ -32,6 +34,11 @@ final GoRouter router = GoRouter(
       name: RouteNames.home,
       path: '/home',
       builder: (context, state) => HomePage(),
+    ),
+    GoRoute(
+      name: RouteNames.dashboard,
+      path: '/dashboard',
+      builder: (context, state) => Dashboard(),
     ),
   ],
 );

@@ -40,7 +40,7 @@ class InternetplanRemoteDatasourceImpl implements InternetPlanRemoteDatasource {
   @override
   Future<List<InternetplanModel>> student() async {
     Uri url = Uri.parse(
-      '${AppConstant.baseUrl}/internet-packages/category/student',
+      '${AppConstant.baseUrl}${AppConstant.category}/student',
     );
     final token = await AppSession.getBearerToken();
     final response = await client.get(url, headers: AppRequest.header(token));
@@ -93,15 +93,9 @@ class InternetplanRemoteDatasourceImpl implements InternetPlanRemoteDatasource {
 
   @override
   Future<List<InternetplanModel>> searchInternetPlan(String query) async {
-    Uri url = Uri.parse(
-      '${AppConstant.baseUrl}/internet-packages/category/student',
-    );
+    Uri url = Uri.parse('${AppConstant.baseUrl}${AppConstant.search(query)}');
     final token = await AppSession.getBearerToken();
-    final response = await client.post(
-      url,
-      body: {'query': query},
-      headers: AppRequest.header(token),
-    );
+    final response = await client.get(url, headers: AppRequest.header(token));
     try {
       final data = AppResponse.data(response);
       final list = (data['data'] as List)

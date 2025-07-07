@@ -10,7 +10,7 @@ class ButtonWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       borderRadius: BorderRadius.circular(50),
-      color: ColorsConstants.primary,
+      color: AppColors.primary,
       child: InkWell(
         borderRadius: BorderRadius.circular(50),
         onTap: ontap,
