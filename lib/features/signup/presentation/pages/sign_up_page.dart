@@ -128,7 +128,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   controller: edtPassword,
                   keyboardType: TextInputType.visiblePassword,
                   hintText: 'tulis password anda',
-                  icon: AppAssets.icKey,
+                  icon: AppAssets.icPassword,
                   obscureText: obscureText,
                   hasSuffix: true,
                   autovalidateMode: AutovalidateMode.onUserInteraction,

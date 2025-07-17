@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:inetagan/core/config/app_assets.dart';
 import 'package:inetagan/core/config/app_colors.dart';
 
 class InputWidget extends StatelessWidget {
@@ -49,10 +50,15 @@ class InputWidget extends StatelessWidget {
                 padding: const EdgeInsets.only(right: 12),
                 child: IconButton(
                   onPressed: onSuffixPressed,
-                  icon: Icon(
-                    obscureText ? Icons.visibility_off : Icons.visibility,
-                    color: AppColors.primary,
-                  ),
+                  icon: obscureText
+                      ? ImageIcon(
+                          AssetImage(AppAssets.icEyeClosed),
+                          color: AppColors.primary,
+                        )
+                      : ImageIcon(
+                          AssetImage(AppAssets.icEye),
+                          color: AppColors.primary,
+                        ),
                 ),
               )
             : null,

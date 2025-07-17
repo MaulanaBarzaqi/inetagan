@@ -18,13 +18,13 @@ class Dashboard extends StatelessWidget {
               height: 60,
               padding: EdgeInsets.symmetric(horizontal: 14),
               child: NavigationBar(
+                indicatorColor: AppColors.primary.withValues(alpha: 0.3),
                 selectedIndex: state,
                 onDestinationSelected: (value) {
                   context.read<DashboardCubit>().change(value);
                 },
                 backgroundColor: Colors.white,
                 surfaceTintColor: Colors.white,
-                labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
                 destinations: context.read<DashboardCubit>().menuDashboard.map((
                   e,
                 ) {

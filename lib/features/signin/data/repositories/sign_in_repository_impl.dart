@@ -9,12 +9,12 @@ import 'package:inetagan/features/signin/domain/entities/sign_in_entity.dart';
 import 'package:inetagan/features/signin/domain/repositories/sign_in_repository.dart';
 
 class SignInRepositoryImpl implements SignInRepository {
-  final SignInRemoteDatasource signInRemoteDatasource;
-  final SignInLocalDatasource signInLocalDatasource;
+  final SignInRemoteDatasource remoteDatasource;
+  final SignInLocalDatasource localDatasource;
 
   SignInRepositoryImpl({
-    required this.signInLocalDatasource,
-    required this.signInRemoteDatasource,
+    required this.remoteDatasource,
+    required this.localDatasource,
   });
 
   @override
@@ -23,10 +23,10 @@ class SignInRepositoryImpl implements SignInRepository {
     String password,
   ) async {
     try {
-      final result = await signInRemoteDatasource.signIn(email, password);
+      final result = await remoteDatasource.signIn(email, password);
 
-      await signInLocalDatasource.saveUser(result);
-      await signInLocalDatasource.saveBearerToken(result.token);
+      await localDatasource.saveUser(result);
+      await localDatasource.saveBearerToken(result.token);
 
       return Right(result);
     } on TimeoutException {

@@ -3,11 +3,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:inetagan/common/routes.dart';
 import 'package:inetagan/features/home/presentation/bloc/all_internetplan/all_internetplan_bloc.dart';
-import 'package:inetagan/features/home/presentation/bloc/corporate_internetplan/corporate_internetplan_bloc.dart';
-import 'package:inetagan/features/home/presentation/bloc/family_internetplan/family_internetplan_bloc.dart';
-import 'package:inetagan/features/home/presentation/bloc/search_internetplan/search_internetplan_bloc.dart';
-import 'package:inetagan/features/home/presentation/bloc/student_internetplan/student_internetplan_bloc.dart';
+import 'package:inetagan/features/home/presentation/bloc/banner/banner_bloc.dart';
 import 'package:inetagan/features/home/presentation/cubit/dashboard_cubit.dart';
+import 'package:inetagan/features/internet-package/presentation/bloc/all_internet_package/all_internet_package_bloc.dart';
+import 'package:inetagan/features/internet-package/presentation/bloc/corporate_package/corporate_package_bloc.dart';
+import 'package:inetagan/features/internet-package/presentation/bloc/family_package/family_package_bloc.dart';
+import 'package:inetagan/features/internet-package/presentation/bloc/search_internet_package/search_internet_package_bloc.dart';
+import 'package:inetagan/features/internet-package/presentation/bloc/student_package/student_package_bloc.dart';
 import 'package:inetagan/features/signin/presentation/bloc/signin_bloc.dart';
 import 'package:inetagan/features/signup/presentation/bloc/signup_bloc.dart';
 import 'package:inetagan/injection.dart';
@@ -29,10 +31,12 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (_) => locator<SigninBloc>()),
         BlocProvider(create: (_) => locator<SignupBloc>()),
         BlocProvider(create: (_) => locator<AllInternetplanBloc>()),
-        BlocProvider(create: (_) => locator<CorporateInternetplanBloc>()),
-        BlocProvider(create: (_) => locator<FamilyInternetplanBloc>()),
-        BlocProvider(create: (_) => locator<SearchInternetplanBloc>()),
-        BlocProvider(create: (_) => locator<StudentInternetplanBloc>()),
+        BlocProvider(create: (_) => locator<BannerBloc>()),
+        BlocProvider(create: (_) => locator<AllInternetPackageBloc>()),
+        BlocProvider(create: (_) => locator<CorporatePackageBloc>()),
+        BlocProvider(create: (_) => locator<FamilyPackageBloc>()),
+        BlocProvider(create: (_) => locator<StudentPackageBloc>()),
+        BlocProvider(create: (_) => locator<SearchInternetPackageBloc>()),
       ],
       child: MaterialApp.router(
         debugShowCheckedModeBanner: false,

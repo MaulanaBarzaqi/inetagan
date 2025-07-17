@@ -24,46 +24,6 @@ class _SignInPageState extends State<SignInPage> {
   final formKey = GlobalKey<FormState>();
   bool obscureText = true;
 
-  // execute() {
-  //   bool validInput = formKey.currentState!.validate();
-  //   if (!validInput) return;
-  //   context
-  //       .read<SigninBloc>()
-  //       .add(OnSignInEvent(email: edtEmail.text, password: edtPassword.text))
-  //       .then((value) {
-  //         String newStatus = '';
-  //         value.fold((failure) {
-  //           switch (failure.runtimeType) {
-  //             case ServerException:
-  //               newStatus = 'server error';
-  //               DInfo.toastError(newStatus);
-  //               break;
-  //             case NotFoundException:
-  //               newStatus = 'error not found';
-  //               DInfo.toastError(newStatus);
-  //               break;
-  //             case ForbiddenException:
-  //               newStatus = 'you don\'t have access';
-  //               DInfo.toastError(newStatus);
-  //               break;
-  //             case BadRequestException:
-  //               newStatus = 'Bad Request';
-  //               DInfo.toastError(newStatus);
-  //               break;
-  //             case InvalidInputException:
-  //               newStatus = 'Invalid Input';
-  //               AppResponse.invalidInput(context, failure.message ?? '{}');
-  //               break;
-  //             default:
-  //               newStatus = 'request error';
-  //               DInfo.toastError(newStatus);
-  //               newStatus = failure.message ?? '-';
-  //               break;
-  //           }
-  //         }, (result) => {DInfo.toastSuccess('login susccess')});
-  //       });
-  // }
-
   @override
   void dispose() {
     edtEmail.dispose();
