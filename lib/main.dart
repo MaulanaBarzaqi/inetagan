@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:inetagan/common/routes.dart';
-import 'package:inetagan/features/home/presentation/bloc/all_internetplan/all_internetplan_bloc.dart';
 import 'package:inetagan/features/home/presentation/bloc/banner/banner_bloc.dart';
 import 'package:inetagan/features/home/presentation/cubit/dashboard_cubit.dart';
 import 'package:inetagan/features/internet-package/presentation/bloc/all_internet_package/all_internet_package_bloc.dart';
@@ -10,6 +9,7 @@ import 'package:inetagan/features/internet-package/presentation/bloc/corporate_p
 import 'package:inetagan/features/internet-package/presentation/bloc/family_package/family_package_bloc.dart';
 import 'package:inetagan/features/internet-package/presentation/bloc/search_internet_package/search_internet_package_bloc.dart';
 import 'package:inetagan/features/internet-package/presentation/bloc/student_package/student_package_bloc.dart';
+import 'package:inetagan/features/internet-package/presentation/cubit/tabbar_cubit.dart';
 import 'package:inetagan/features/signin/presentation/bloc/signin_bloc.dart';
 import 'package:inetagan/features/signup/presentation/bloc/signup_bloc.dart';
 import 'package:inetagan/injection.dart';
@@ -28,9 +28,9 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => DashboardCubit()),
+        BlocProvider(create: (_) => TabbarCubit()),
         BlocProvider(create: (_) => locator<SigninBloc>()),
         BlocProvider(create: (_) => locator<SignupBloc>()),
-        BlocProvider(create: (_) => locator<AllInternetplanBloc>()),
         BlocProvider(create: (_) => locator<BannerBloc>()),
         BlocProvider(create: (_) => locator<AllInternetPackageBloc>()),
         BlocProvider(create: (_) => locator<CorporatePackageBloc>()),

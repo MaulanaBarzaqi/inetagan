@@ -3,13 +3,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:inetagan/common/routes.dart';
-import 'package:inetagan/core/config/app_assets.dart';
 import 'package:inetagan/core/config/app_colors.dart';
 import 'package:inetagan/core/widgets/loading_widget.dart';
 import 'package:inetagan/features/signin/presentation/bloc/signin_bloc.dart';
 import 'package:inetagan/core/widgets/button_widget.dart';
 import 'package:inetagan/features/signin/presentation/widgets/error_dialog.dart';
 import 'package:inetagan/core/widgets/input_widget.dart';
+import 'package:inetagan/gen/assets.gen.dart';
 
 class SignInPage extends StatefulWidget {
   const SignInPage({super.key});
@@ -38,7 +38,7 @@ class _SignInPageState extends State<SignInPage> {
         padding: EdgeInsets.symmetric(horizontal: 24, vertical: 0),
         children: [
           const Gap(100),
-          Image.asset(AppAssets.logo, height: 71, width: 171),
+          Assets.images.imgLogoInetagan.image(width: 171, height: 71),
           const Gap(30),
           Text(
             'Masuk akun',
@@ -67,7 +67,7 @@ class _SignInPageState extends State<SignInPage> {
                   controller: edtEmail,
                   hintText: 'tulis email anda',
                   keyboardType: TextInputType.emailAddress,
-                  icon: AppAssets.icEmail,
+                  icon: Assets.icons.mail,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   validator: (value) {
                     if (value!.isEmpty) {
@@ -94,7 +94,7 @@ class _SignInPageState extends State<SignInPage> {
                   controller: edtPassword,
                   hintText: 'tulis password anda',
                   keyboardType: TextInputType.visiblePassword,
-                  icon: AppAssets.icPassword,
+                  icon: Assets.icons.lockKeyhole,
                   obscureText: obscureText,
                   hasSuffix: true,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -151,6 +151,7 @@ class _SignInPageState extends State<SignInPage> {
               }
               if (state is SignInFailed) {
                 showDialog(context: context, builder: (_) => ErrorDialog());
+                // AppResponse.invalidInput(context, state.message);
               }
             },
             builder: (context, state) {

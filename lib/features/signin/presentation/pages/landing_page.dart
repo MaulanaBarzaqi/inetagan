@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:inetagan/common/routes.dart';
-import 'package:inetagan/core/config/app_assets.dart';
 import 'package:inetagan/core/config/app_colors.dart';
 import 'package:inetagan/core/widgets/button_widget.dart';
 import 'package:inetagan/features/signin/data/datasources/sign_in_local_datasource.dart';
+import 'package:inetagan/gen/assets.gen.dart';
 
 class LandingPage extends StatefulWidget {
   const LandingPage({super.key});
@@ -37,9 +37,9 @@ class _LandingPageState extends State<LandingPage> {
         padding: EdgeInsets.symmetric(horizontal: 25),
         children: [
           const Gap(100),
-          Image.asset(AppAssets.logo, height: 80),
+          Assets.images.imgLogoInetagan.image(height: 80),
           const Gap(15),
-          Image.asset(AppAssets.splash, height: 350),
+          Assets.images.imgSplashscreen.image(height: 350),
           const Gap(30),
           Text(
             'Saatnya beralih ke Fiber, Akses Internet\nSuper cepat dan canggih',

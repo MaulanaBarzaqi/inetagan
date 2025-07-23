@@ -1,0 +1,9 @@
+part of 'subscribe_bloc.dart';
+
+abstract class SubscribeState extends Equatable {
+  const SubscribeState();  
+
+  @override
+  List<Object> get props => [];
+}
+class SubscribeInitial extends SubscribeState {}

@@ -3,12 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:inetagan/common/routes.dart';
-import 'package:inetagan/core/config/app_assets.dart';
 import 'package:inetagan/core/config/app_colors.dart';
 import 'package:inetagan/core/widgets/button_widget.dart';
 import 'package:inetagan/features/signin/presentation/widgets/error_dialog.dart';
 import 'package:inetagan/core/widgets/input_widget.dart';
 import 'package:inetagan/features/signup/presentation/bloc/signup_bloc.dart';
+import 'package:inetagan/gen/assets.gen.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -44,7 +44,7 @@ class _SignUpPageState extends State<SignUpPage> {
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 0),
         children: [
           const Gap(100),
-          Image.asset(AppAssets.logo, height: 71, width: 171),
+          Assets.images.imgLogoInetagan.image(height: 71, width: 171),
           const Gap(30),
           Text(
             'Daftar Akun',
@@ -74,7 +74,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   controller: edtName,
                   hintText: 'tulis nama anda',
                   keyboardType: TextInputType.name,
-                  icon: AppAssets.icUser,
+                  icon: Assets.icons.userRound,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   validator: (value) {
                     if (value!.isEmpty) {
@@ -100,7 +100,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   controller: edtEmail,
                   keyboardType: TextInputType.emailAddress,
                   hintText: 'tulis email anda',
-                  icon: AppAssets.icEmail,
+                  icon: Assets.icons.mail,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   validator: (value) {
                     if (value!.isEmpty) {
@@ -128,7 +128,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   controller: edtPassword,
                   keyboardType: TextInputType.visiblePassword,
                   hintText: 'tulis password anda',
-                  icon: AppAssets.icPassword,
+                  icon: Assets.icons.lockKeyhole,
                   obscureText: obscureText,
                   hasSuffix: true,
                   autovalidateMode: AutovalidateMode.onUserInteraction,

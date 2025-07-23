@@ -4,15 +4,9 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:inetagan/core/platform/network_info.dart';
 import 'package:inetagan/features/home/data/datasources/banner_local_datasource.dart';
 import 'package:inetagan/features/home/data/datasources/banner_remote_datasource.dart';
-import 'package:inetagan/features/home/data/datasources/internetplan_local_datasource.dart';
-import 'package:inetagan/features/home/data/datasources/internetplan_remote_datasource.dart';
 import 'package:inetagan/features/home/data/repositories/banner_repository_impl.dart';
-import 'package:inetagan/features/home/data/repositories/internetplan_repository_impl.dart';
 import 'package:inetagan/features/home/domain/repositories/banner_repository.dart';
-import 'package:inetagan/features/home/domain/repositories/internetplan_repository.dart';
-import 'package:inetagan/features/home/domain/usecases/get_all_internetplan_usecase.dart';
 import 'package:inetagan/features/home/domain/usecases/get_banner_list_usecase.dart';
-import 'package:inetagan/features/home/presentation/bloc/all_internetplan/all_internetplan_bloc.dart';
 import 'package:inetagan/features/home/presentation/bloc/banner/banner_bloc.dart';
 import 'package:inetagan/features/internet-package/data/datasources/internet_package_local_datasource.dart';
 import 'package:inetagan/features/internet-package/data/datasources/internet_package_remote_datasource.dart';
@@ -47,7 +41,6 @@ Future<void> initLocator() async {
   // bloc
   locator.registerFactory(() => SigninBloc(locator()));
   locator.registerFactory(() => SignupBloc(locator()));
-  locator.registerFactory(() => AllInternetplanBloc(locator()));
   locator.registerFactory(() => BannerBloc(locator()));
   locator.registerFactory(() => AllInternetPackageBloc(locator()));
   locator.registerFactory(() => CorporatePackageBloc(locator()));
@@ -58,7 +51,6 @@ Future<void> initLocator() async {
   // usecase
   locator.registerLazySingleton(() => SignInUsecase(locator()));
   locator.registerLazySingleton(() => SignUpUsecase(locator()));
-  locator.registerLazySingleton(() => GetAllInternetplanUsecase(locator()));
   locator.registerLazySingleton(() => GetBannerListUsecase(locator()));
   locator.registerLazySingleton(() => GetAllInternetPackageUsecase(locator()));
   locator.registerLazySingleton(() => GetCorporatePackageUsecase(locator()));
@@ -75,13 +67,6 @@ Future<void> initLocator() async {
   );
   locator.registerLazySingleton<SignUpRepository>(
     () => SignUpRepositoryImpl(remoteDatasource: locator()),
-  );
-  locator.registerLazySingleton<InternetplanRepository>(
-    () => InternetplanRepositoryImpl(
-      networkInfo: locator(),
-      remoteDatasource: locator(),
-      localDatasource: locator(),
-    ),
   );
   locator.registerLazySingleton<BannerRepository>(
     () => BannerRepositoryImpl(
@@ -107,12 +92,6 @@ Future<void> initLocator() async {
   );
   locator.registerLazySingleton<SignUpRemoteDatasource>(
     () => SignUpRemoteDatasourceImpl(locator()),
-  );
-  locator.registerLazySingleton<InternetPlanRemoteDatasource>(
-    () => InternetplanRemoteDatasourceImpl(locator()),
-  );
-  locator.registerLazySingleton<InternetplanLocalDatasource>(
-    () => InternetplanLocalDatasourceImpl(locator()),
   );
   locator.registerLazySingleton<BannerRemoteDatasource>(
     () => BannerRemoteDatasourceImpl(locator()),

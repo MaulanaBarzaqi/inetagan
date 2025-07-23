@@ -2,15 +2,17 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
-import 'package:inetagan/core/config/app_assets.dart';
+import 'package:go_router/go_router.dart';
+import 'package:inetagan/common/routes.dart';
 import 'package:inetagan/core/config/app_colors.dart';
 import 'package:inetagan/core/config/app_format.dart';
 import 'package:inetagan/features/home/domain/entities/banner_entity.dart';
-import 'package:inetagan/features/home/domain/entities/internetplan_entity.dart';
-import 'package:inetagan/features/home/presentation/bloc/all_internetplan/all_internetplan_bloc.dart';
 import 'package:inetagan/features/home/presentation/bloc/banner/banner_bloc.dart';
 import 'package:inetagan/features/home/presentation/widgets/circle_loading_widget.dart';
 import 'package:inetagan/features/home/presentation/widgets/text_failure_widget.dart';
+import 'package:inetagan/features/internet-package/domain/entities/internet_package_entity.dart';
+import 'package:inetagan/features/internet-package/presentation/bloc/all_internet_package/all_internet_package_bloc.dart';
+import 'package:inetagan/gen/assets.gen.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class HomePage extends StatefulWidget {
@@ -24,7 +26,7 @@ class _HomePageState extends State<HomePage> {
   final bannerController = PageController();
 
   refresh() {
-    context.read<AllInternetplanBloc>().add(OnAllInternetplanEvent());
+    context.read<AllInternetPackageBloc>().add(OnAllInternetPackageEvent());
     context.read<BannerBloc>().add(OnBannerEvent());
   }
 
@@ -68,7 +70,8 @@ class _HomePageState extends State<HomePage> {
             padding: EdgeInsets.all(2),
             child: CircleAvatar(
               radius: 16,
-              backgroundImage: AssetImage(AppAssets.icAccount),
+              backgroundColor: Colors.transparent,
+              child: Assets.icons.circleUser.svg(height: 24, width: 24),
             ),
           ),
           SizedBox(width: 8),
@@ -180,11 +183,11 @@ class _HomePageState extends State<HomePage> {
   }
 
   featured() {
-    final features = [
-      ['Pembayaran', AppAssets.icWallet],
-      ['Upgrade Kecepatan', AppAssets.icWifiUp],
-      ['Downgrade Kecepatan', AppAssets.icWifiDown],
-      ['Berhenti Berlangganan', AppAssets.icWifiOff],
+    final features = <Map<String, dynamic>>[
+      {'label': 'Pembayaran', 'icon': Assets.icons.wallet},
+      {'label': 'Upgrade Kecepatan', 'icon': Assets.icons.wifiPen},
+      {'label': 'Downgrade Kecepatan', 'icon': Assets.icons.wifiCog},
+      {'label': 'Berhenti Berlangganan', 'icon': Assets.icons.wifiOff},
     ];
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -218,10 +221,10 @@ class _HomePageState extends State<HomePage> {
                   ),
                   child: Row(
                     children: [
-                      Image.asset(e[1], width: 24, height: 24),
-                      const Gap(10),
+                      (e['icon'] as SvgGenImage).svg(width: 24, height: 24),
+                      Gap(10),
                       Text(
-                        e[0],
+                        e['label'],
                         style: const TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.w600,
@@ -255,28 +258,28 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         Gap(10),
-        BlocBuilder<AllInternetplanBloc, AllInternetplanState>(
+        BlocBuilder<AllInternetPackageBloc, AllInternetPackageState>(
           builder: (context, state) {
-            if (state is AllInternetplanLoading) {
+            if (state is AllInternetPackageLoading) {
               return CircleLoadingWidget();
             }
-            if (state is AllInternetplanFailed) {
+            if (state is AllInternetPackageFailed) {
               return TextFailureWidget(message: state.message);
             }
-            if (state is AllInternetplanSuccess) {
-              List<InternetplanEntity> list = state.data;
+            if (state is AllInternetPackageSuccess) {
+              List<InternetPackageEntity> list = state.data;
               return SizedBox(
                 height: 295,
                 child: ListView.builder(
                   itemCount: 4,
                   scrollDirection: Axis.horizontal,
                   itemBuilder: (context, index) {
-                    InternetplanEntity internetPlan = list[index];
+                    InternetPackageEntity internetPackage = list[index];
                     final margin = EdgeInsets.only(
                       left: index == 0 ? 24 : 12,
                       right: index == list.length - 1 ? 24 : 12,
                     );
-                    return buildItemSpecial(internetPlan, margin);
+                    return buildItemSpecial(internetPackage, margin);
                   },
                 ),
               );
@@ -289,90 +292,93 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget buildItemSpecial(
-    InternetplanEntity internetPlan,
+    InternetPackageEntity internetPackage,
     EdgeInsetsGeometry margin,
   ) {
-    return Container(
-      width: 252,
-      margin: margin,
-      padding: EdgeInsetsDirectional.symmetric(horizontal: 16, vertical: 14),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ExtendedImage.network(
-            internetPlan.image,
-            width: 220,
-            height: 170,
-            fit: BoxFit.cover,
-            handleLoadingProgress: true,
-            loadStateChanged: (state) {
-              if (state.extendedImageLoadState == LoadState.failed) {
-                return AspectRatio(
-                  aspectRatio: 16 / 9,
-                  child: Material(
-                    borderRadius: BorderRadius.circular(16),
-                    color: Colors.grey[300],
-                    child: Icon(Icons.broken_image, color: Colors.black),
-                  ),
-                );
-              }
-              if (state.extendedImageLoadState == LoadState.loading) {
-                return AspectRatio(
-                  aspectRatio: 16 / 9,
-                  child: Material(
-                    borderRadius: BorderRadius.circular(16),
-                    color: Colors.grey[300],
-                    child: CircleLoadingWidget(),
-                  ),
-                );
-              }
-              return null;
-            },
-          ),
-          Gap(20),
-          Text(
-            internetPlan.name,
-            style: TextStyle(
-              fontWeight: FontWeight.w600,
-              fontSize: 18,
-              color: AppColors.tertiary,
+    return GestureDetector(
+      onTap: () => context.goNamed(RouteNames.detail, extra: internetPackage),
+      child: Container(
+        width: 252,
+        margin: margin,
+        padding: EdgeInsetsDirectional.symmetric(horizontal: 16, vertical: 14),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ExtendedImage.network(
+              internetPackage.image,
+              width: 220,
+              height: 170,
+              fit: BoxFit.cover,
+              handleLoadingProgress: true,
+              loadStateChanged: (state) {
+                if (state.extendedImageLoadState == LoadState.failed) {
+                  return AspectRatio(
+                    aspectRatio: 16 / 9,
+                    child: Material(
+                      borderRadius: BorderRadius.circular(16),
+                      color: Colors.grey[300],
+                      child: Icon(Icons.broken_image, color: Colors.black),
+                    ),
+                  );
+                }
+                if (state.extendedImageLoadState == LoadState.loading) {
+                  return AspectRatio(
+                    aspectRatio: 16 / 9,
+                    child: Material(
+                      borderRadius: BorderRadius.circular(16),
+                      color: Colors.grey[300],
+                      child: CircleLoadingWidget(),
+                    ),
+                  );
+                }
+                return null;
+              },
             ),
-          ),
-          Gap(2),
-          Text(
-            internetPlan.idealDevice,
-            style: const TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w400,
-              color: AppColors.secondary,
+            Gap(20),
+            Text(
+              internetPackage.name,
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 18,
+                color: AppColors.tertiary,
+              ),
             ),
-          ),
-          Gap(2),
-          Row(
-            children: [
-              Text(
-                AppFormat.longPrice(internetPlan.monthlyBill),
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 18,
-                  color: AppColors.primary,
-                ),
+            Gap(2),
+            Text(
+              internetPackage.idealDevice,
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w400,
+                color: AppColors.secondary,
               ),
-              Text(
-                '/Bulan',
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 18,
-                  color: AppColors.tertiary,
+            ),
+            Gap(2),
+            Row(
+              children: [
+                Text(
+                  AppFormat.longPrice(internetPackage.monthlyBill),
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 18,
+                    color: AppColors.primary,
+                  ),
                 ),
-              ),
-            ],
-          ),
-        ],
+                Text(
+                  '/Bulan',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 18,
+                    color: AppColors.tertiary,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -404,23 +410,23 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
           const Gap(16),
-          BlocBuilder<AllInternetplanBloc, AllInternetplanState>(
+          BlocBuilder<AllInternetPackageBloc, AllInternetPackageState>(
             builder: (context, state) {
-              if (state is AllInternetplanLoading) {
+              if (state is AllInternetPackageLoading) {
                 return const CircleLoadingWidget();
               }
-              if (state is AllInternetplanFailed) {
+              if (state is AllInternetPackageFailed) {
                 return TextFailureWidget(message: state.message);
               }
-              if (state is AllInternetplanSuccess) {
-                List<InternetplanEntity> list = state.data;
+              if (state is AllInternetPackageSuccess) {
+                List<InternetPackageEntity> list = state.data;
                 return ListView.builder(
                   itemCount: 3,
                   shrinkWrap: true,
                   physics: const BouncingScrollPhysics(),
                   itemBuilder: (context, index) {
-                    InternetplanEntity internetPlan = list[index];
-                    return itemAllInternetPackages(internetPlan);
+                    InternetPackageEntity internetPackage = list[index];
+                    return itemAllInternetPackages(internetPackage);
                   },
                 );
               }
@@ -432,17 +438,17 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget itemAllInternetPackages(InternetplanEntity internetPlan) {
+  Widget itemAllInternetPackages(InternetPackageEntity internetPackage) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 20),
       child: GestureDetector(
-        onTap: () {},
+        onTap: () => context.goNamed(RouteNames.detail, extra: internetPackage),
         child: Row(
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(12),
               child: ExtendedImage.network(
-                internetPlan.image,
+                internetPackage.image,
                 fit: BoxFit.cover,
                 width: 100,
                 height: 100,
@@ -481,7 +487,7 @@ class _HomePageState extends State<HomePage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    internetPlan.name,
+                    internetPackage.name,
                     style: const TextStyle(
                       color: AppColors.secondary,
                       height: 1,
@@ -491,7 +497,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   const Gap(10),
                   Text(
-                    internetPlan.idealDevice,
+                    internetPackage.idealDevice,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
@@ -502,7 +508,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   const Gap(10),
                   Text(
-                    internetPlan.speed,
+                    internetPackage.speed,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(

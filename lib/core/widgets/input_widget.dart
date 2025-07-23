@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:inetagan/core/config/app_assets.dart';
 import 'package:inetagan/core/config/app_colors.dart';
+import 'package:inetagan/gen/assets.gen.dart';
 
 class InputWidget extends StatelessWidget {
   final TextEditingController controller;
@@ -9,7 +9,7 @@ class InputWidget extends StatelessWidget {
   final String hintText;
   final bool obscureText;
   final bool hasSuffix;
-  final String icon;
+  final SvgGenImage icon;
   final VoidCallback? onSuffixPressed;
   final AutovalidateMode? autovalidateMode;
   final TextInputType keyboardType;
@@ -51,24 +51,14 @@ class InputWidget extends StatelessWidget {
                 child: IconButton(
                   onPressed: onSuffixPressed,
                   icon: obscureText
-                      ? ImageIcon(
-                          AssetImage(AppAssets.icEyeClosed),
-                          color: AppColors.primary,
-                        )
-                      : ImageIcon(
-                          AssetImage(AppAssets.icEye),
-                          color: AppColors.primary,
-                        ),
+                      ? Assets.icons.eyeClosed.svg(width: 24, height: 24)
+                      : Assets.icons.eye.svg(width: 24, height: 24),
                 ),
               )
             : null,
         prefixIcon: UnconstrainedBox(
           alignment: const Alignment(0.3, 0),
-          child: ImageIcon(
-            AssetImage(icon),
-            size: 24,
-            color: AppColors.primary,
-          ),
+          child: icon.svg(width: 24, height: 24),
         ),
         hintText: hintText,
         hintStyle: TextStyle(
