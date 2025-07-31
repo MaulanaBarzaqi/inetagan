@@ -3,7 +3,7 @@ import 'package:inetagan/features/home/presentation/pages/dashboard.dart';
 import 'package:inetagan/features/home/presentation/pages/home_page.dart';
 import 'package:inetagan/features/internet-package/domain/entities/internet_package_entity.dart';
 import 'package:inetagan/features/internet-package/presentation/pages/detail_page.dart';
-import 'package:inetagan/features/internet-package/presentation/pages/tabbar_packages.dart';
+import 'package:inetagan/features/internet-package/presentation/pages/all_packages_page.dart';
 import 'package:inetagan/features/signin/presentation/pages/landing_page.dart';
 import 'package:inetagan/features/signin/presentation/pages/sign_in_page.dart';
 import 'package:inetagan/features/signup/presentation/pages/sign_up_page.dart';
@@ -48,7 +48,7 @@ final GoRouter router = GoRouter(
     GoRoute(
       name: RouteNames.internetPackages,
       path: '/internetPackages',
-      builder: (context, state) => TabbarPackages(),
+      builder: (context, state) => AllPackagesPage(),
     ),
     GoRoute(
       name: RouteNames.detail,

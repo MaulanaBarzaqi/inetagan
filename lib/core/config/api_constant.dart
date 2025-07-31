@@ -9,6 +9,7 @@ class AppConstant {
   static const internetPlans = '/internet-packages/recomendation/limit';
   static const banner = '/banners/list';
   static const category = '/internet-packages/category';
-  static String search(String query) =>
-      '/internet-packages/search?query=$query';
+  static String search(String query) => '/internet-packages/search/$query';
+  static String imagePackage(String imageName) => '$_host/storage/$imageName';
+  static String imageBanner(String imageName) => '$_host/storage/$imageName';
 }

@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:inetagan/common/routes.dart';
+import 'package:inetagan/core/config/api_constant.dart';
 import 'package:inetagan/core/config/app_colors.dart';
 import 'package:inetagan/core/config/app_format.dart';
 import 'package:inetagan/features/home/domain/entities/banner_entity.dart';
@@ -118,7 +119,7 @@ class _HomePageState extends State<HomePage> {
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(16),
                           child: ExtendedImage.network(
-                            banner.image,
+                            AppConstant.imageBanner(banner.image),
                             fit: BoxFit.cover,
                             handleLoadingProgress: true,
                             loadStateChanged: (state) {
@@ -309,7 +310,7 @@ class _HomePageState extends State<HomePage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ExtendedImage.network(
-              internetPackage.image,
+              AppConstant.imagePackage(internetPackage.image),
               width: 220,
               height: 170,
               fit: BoxFit.cover,
@@ -399,12 +400,15 @@ class _HomePageState extends State<HomePage> {
                   fontSize: 16,
                 ),
               ),
-              Text(
-                "Lihat Semua",
-                style: TextStyle(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 15,
-                  color: AppColors.primary,
+              GestureDetector(
+                onTap: () {},
+                child: Text(
+                  "Lihat Semua",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 15,
+                    color: AppColors.primary,
+                  ),
                 ),
               ),
             ],
@@ -448,7 +452,7 @@ class _HomePageState extends State<HomePage> {
             ClipRRect(
               borderRadius: BorderRadius.circular(12),
               child: ExtendedImage.network(
-                internetPackage.image,
+                AppConstant.imagePackage(internetPackage.image),
                 fit: BoxFit.cover,
                 width: 100,
                 height: 100,

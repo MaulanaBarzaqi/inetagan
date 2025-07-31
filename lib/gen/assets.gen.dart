@@ -41,6 +41,10 @@ class $AssetsIconsGen {
   /// File path: assets/icons/mail.svg
   SvgGenImage get mail => const SvgGenImage('assets/icons/mail.svg');
 
+  /// File path: assets/icons/sliders-horizontal.svg
+  SvgGenImage get slidersHorizontal =>
+      const SvgGenImage('assets/icons/sliders-horizontal.svg');
+
   /// File path: assets/icons/square-check-big.svg
   SvgGenImage get squareCheckBig =>
       const SvgGenImage('assets/icons/square-check-big.svg');
@@ -72,6 +76,7 @@ class $AssetsIconsGen {
     eye,
     lockKeyhole,
     mail,
+    slidersHorizontal,
     squareCheckBig,
     userRound,
     wallet,

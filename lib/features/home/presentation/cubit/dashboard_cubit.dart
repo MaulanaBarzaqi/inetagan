@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:inetagan/features/home/presentation/pages/home_page.dart';
-import 'package:inetagan/features/internet-package/presentation/pages/tabbar_packages.dart';
+import 'package:inetagan/features/internet-package/presentation/pages/all_packages_page.dart';
 
 class DashboardCubit extends Cubit<int> {
   DashboardCubit() : super(0);
@@ -11,7 +11,7 @@ class DashboardCubit extends Cubit<int> {
   final List menuDashboard = [
     ['Home', Icons.home, HomePage()],
     ['History', Icons.history, Center(child: Text("history"))],
-    ['Internet', Icons.wifi, TabbarPackages()],
+    ['Internet', Icons.wifi, AllPackagesPage()],
     ['Profile', Icons.account_box_rounded, Center(child: Text("profile"))],
   ];
 

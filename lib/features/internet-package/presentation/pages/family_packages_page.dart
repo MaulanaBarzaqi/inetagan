@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:inetagan/common/routes.dart';
+import 'package:inetagan/core/config/api_constant.dart';
 import 'package:inetagan/core/config/app_colors.dart';
 import 'package:inetagan/features/home/presentation/widgets/circle_loading_widget.dart';
 import 'package:inetagan/features/home/presentation/widgets/text_failure_widget.dart';
@@ -71,7 +72,7 @@ class _FamilyPackagesPageState extends State<FamilyPackagesPage> {
             ClipRRect(
               borderRadius: BorderRadius.circular(12),
               child: ExtendedImage.network(
-                package.image,
+                AppConstant.imagePackage(package.image),
                 fit: BoxFit.cover,
                 width: 100,
                 height: 100,
