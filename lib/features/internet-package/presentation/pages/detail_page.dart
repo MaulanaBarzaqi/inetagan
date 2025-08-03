@@ -79,56 +79,57 @@ class _DetailPageState extends State<DetailPage> {
     final int total =
         widget.internetPackage.monthlyBill +
         widget.internetPackage.installation;
-    return Column(
-      children: [
-        Container(
-          margin: EdgeInsets.symmetric(horizontal: 20),
-          padding: EdgeInsets.symmetric(horizontal: 27, vertical: 22),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(20),
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 20),
+      padding: EdgeInsets.symmetric(horizontal: 27, vertical: 22),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Column(
+        children: [
+          Text(
+            widget.internetPackage.name,
+            style: TextStyle(
+              fontWeight: FontWeight.w700,
+              fontSize: 24,
+              color: AppColors.primary,
+            ),
           ),
-          child: Column(
-            children: [
-              Text(
-                widget.internetPackage.name,
-                style: TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 24,
-                  color: AppColors.primary,
-                ),
-              ),
-              Gap(34),
-              DetailItemWidget(
-                text: 'Untuk',
-                detail: widget.internetPackage.idealDevice,
-              ),
-              Gap(11),
-              DetailItemWidget(
-                text: 'Kecepatan',
-                detail: widget.internetPackage.speed,
-              ),
-              Gap(11),
-              DetailItemWidget(
-                text: 'Cocok untuk',
-                detail: widget.internetPackage.category,
-              ),
-              Gap(11),
-              DetailItemWidget(
-                text: 'Biaya Pemasangan',
-                detail: widget.internetPackage.installation,
-              ),
-              Gap(11),
-              DetailItemWidget(
-                text: 'Biaya Bulanan',
-                detail: widget.internetPackage.monthlyBill,
-              ),
-              Gap(50),
-              ButtonSubcribeWidget(onTap: () {}, total: total),
-            ],
+          Gap(34),
+          DetailItemWidget(
+            text: 'Untuk',
+            detail: widget.internetPackage.idealDevice,
           ),
-        ),
-      ],
+          Gap(11),
+          DetailItemWidget(text: 'speed', detail: widget.internetPackage.speed),
+          Gap(11),
+          DetailItemWidget(
+            text: 'Cocok untuk',
+            detail: widget.internetPackage.category,
+          ),
+          Gap(11),
+          DetailItemWidget(
+            text: 'Biaya Pemasangan',
+            detail: widget.internetPackage.installation,
+          ),
+          Gap(11),
+          DetailItemWidget(
+            text: 'Biaya Bulanan',
+            detail: widget.internetPackage.monthlyBill,
+          ),
+          Gap(50),
+          ButtonSubcribeWidget(
+            onTap: () {
+              context.pushNamed(
+                RouteNames.subscribe,
+                extra: widget.internetPackage,
+              );
+            },
+            total: total,
+          ),
+        ],
+      ),
     );
   }
 }

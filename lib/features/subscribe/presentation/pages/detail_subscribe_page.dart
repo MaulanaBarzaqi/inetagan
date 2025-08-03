@@ -1,32 +1,24 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:go_router/go_router.dart';
-import 'package:inetagan/common/routes.dart';
 import 'package:inetagan/core/config/api_constant.dart';
 import 'package:inetagan/core/config/app_colors.dart';
+import 'package:inetagan/core/config/app_format.dart';
 import 'package:inetagan/core/widgets/button_widget.dart';
-import 'package:inetagan/core/widgets/input_widget.dart';
 import 'package:inetagan/features/home/presentation/widgets/circle_loading_widget.dart';
 import 'package:inetagan/features/internet-package/domain/entities/internet_package_entity.dart';
+import 'package:inetagan/features/subscribe/presentation/widgets/detail_item_widget.dart';
 import 'package:inetagan/gen/assets.gen.dart';
 
-class SubscribePage extends StatefulWidget {
-  const SubscribePage({super.key, required this.internetPackage});
+class DetailSubscribePage extends StatefulWidget {
+  const DetailSubscribePage({super.key, required this.internetPackage});
   final InternetPackageEntity internetPackage;
 
   @override
-  State<SubscribePage> createState() => _SubscribePageState();
+  State<DetailSubscribePage> createState() => _DetailSubscribePageState();
 }
 
-class _SubscribePageState extends State<SubscribePage> {
-  final edtFullName = TextEditingController();
-  final edtPhone = TextEditingController();
-  final edtNik = TextEditingController();
-  final edtAddress = TextEditingController();
-  final edtTime = TextEditingController();
-  final formKey = GlobalKey<FormState>();
-
+class _DetailSubscribePageState extends State<DetailSubscribePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,7 +30,7 @@ class _SubscribePageState extends State<SubscribePage> {
           Gap(20),
           buildPackage(),
           Gap(20),
-          buildForm(),
+          buildDetail(),
           Gap(20),
         ],
       ),
@@ -65,7 +57,7 @@ class _SubscribePageState extends State<SubscribePage> {
             ),
           ),
           Text(
-            'Berlangganan Internet',
+            'Detail Berlangganan',
             style: TextStyle(
               fontWeight: FontWeight.w700,
               fontSize: 16,
@@ -159,144 +151,59 @@ class _SubscribePageState extends State<SubscribePage> {
     );
   }
 
-  buildForm() {
+  buildDetail() {
+    final total =
+        widget.internetPackage.monthlyBill +
+        widget.internetPackage.installation;
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Column(
         children: [
           Container(
             padding: EdgeInsets.symmetric(horizontal: 27, vertical: 20),
             decoration: BoxDecoration(
-              color: AppColors.primary.withValues(alpha: 0.1),
+              color: Colors.white,
               borderRadius: BorderRadius.circular(20),
             ),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                DetailItemWidget(label: 'nama', itemDetail: 'maulana'),
+                DetailItemWidget(label: 'NIK', itemDetail: '088212312343'),
+                DetailItemWidget(label: 'WhatsApp', itemDetail: '02913902382'),
+                DetailItemWidget(
+                  label: 'Alamat',
+                  itemDetail: 'Jl. Raya No. 123, Jakarta Selatan',
+                ),
+                DetailItemWidget(
+                  label: 'Biaya Bulanan',
+                  itemDetail: widget.internetPackage.monthlyBill,
+                ),
+                DetailItemWidget(
+                  label: 'Biaya Pemasangan',
+                  itemDetail: widget.internetPackage.installation,
+                ),
                 Text(
-                  'Silahkan isi data diri anda',
+                  'Total Biaya',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w400,
+                    fontSize: 14,
+                    color: AppColors.tertiary,
+                  ),
+                ),
+                Gap(15),
+                Text(
+                  AppFormat.longPrice(total),
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 14,
+                    fontSize: 20,
                     color: AppColors.primary,
                   ),
                 ),
-                const Gap(12),
-                Text(
-                  'Nama Lengkap',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 16,
-                    color: AppColors.primary,
-                  ),
-                ),
-                const Gap(10),
-                InputWidget(
-                  controller: edtFullName,
-                  hintText: 'tulis nama lengkap anda',
-                  keyboardType: TextInputType.name,
-                  icon: Assets.icons.userRound,
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Please fill in this field';
-                    } else if (value.length > 30) {
-                      return 'Name too long';
-                    }
-                    return null;
-                  },
-                ),
-                const Gap(15),
-                Text(
-                  'Nomor NIK',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 16,
-                    color: AppColors.primary,
-                  ),
-                ),
-                const Gap(10),
-                InputWidget(
-                  controller: edtNik,
-                  hintText: 'tulis nomor NIK anda',
-                  keyboardType: TextInputType.name,
-                  icon: Assets.icons.card,
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Please fill in this field';
-                    } else if (value.length > 30) {
-                      return 'Name too long';
-                    }
-                    return null;
-                  },
-                ),
-                const Gap(15),
-                Text(
-                  'WhatsApp',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 16,
-                    color: AppColors.primary,
-                  ),
-                ),
-                const Gap(10),
-                InputWidget(
-                  controller: edtPhone,
-                  hintText: 'tulis nomor whatsapp anda',
-                  keyboardType: TextInputType.name,
-                  icon: Assets.icons.phone,
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Please fill in this field';
-                    } else if (value.length > 30) {
-                      return 'Name too long';
-                    }
-                    return null;
-                  },
-                ),
-                const Gap(15),
-                Text(
-                  'Alamat Lengkap',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 16,
-                    color: AppColors.primary,
-                  ),
-                ),
-                const Gap(10),
-                InputWidget(
-                  controller: edtAddress,
-                  hintText: 'tulis alamat lengkap anda',
-                  keyboardType: TextInputType.name,
-                  icon: Assets.icons.location,
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Please fill in this field';
-                    } else if (value.length > 30) {
-                      return 'Name too long';
-                    }
-                    return null;
-                  },
-                ),
-                const Gap(20),
               ],
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-            child: ButtonWidget(
-              ontap: () {
-                context.pushNamed(
-                  RouteNames.detailSubscribe,
-                  extra: widget.internetPackage,
-                );
-              },
-              text: 'Ajukan Berlangganan',
-            ),
-          ),
+          const Gap(30),
+          ButtonWidget(ontap: () {}, text: 'Ajukan'),
         ],
       ),
     );

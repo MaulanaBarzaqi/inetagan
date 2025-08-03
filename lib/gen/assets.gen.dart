@@ -20,6 +20,9 @@ class $AssetsIconsGen {
   /// File path: assets/icons/arrow-left.svg
   SvgGenImage get arrowLeft => const SvgGenImage('assets/icons/arrow-left.svg');
 
+  /// File path: assets/icons/card.svg
+  SvgGenImage get card => const SvgGenImage('assets/icons/card.svg');
+
   /// File path: assets/icons/circle-user.svg
   SvgGenImage get circleUser =>
       const SvgGenImage('assets/icons/circle-user.svg');
@@ -34,12 +37,18 @@ class $AssetsIconsGen {
   /// File path: assets/icons/eye.svg
   SvgGenImage get eye => const SvgGenImage('assets/icons/eye.svg');
 
+  /// File path: assets/icons/location.svg
+  SvgGenImage get location => const SvgGenImage('assets/icons/location.svg');
+
   /// File path: assets/icons/lock-keyhole.svg
   SvgGenImage get lockKeyhole =>
       const SvgGenImage('assets/icons/lock-keyhole.svg');
 
   /// File path: assets/icons/mail.svg
   SvgGenImage get mail => const SvgGenImage('assets/icons/mail.svg');
+
+  /// File path: assets/icons/phone.svg
+  SvgGenImage get phone => const SvgGenImage('assets/icons/phone.svg');
 
   /// File path: assets/icons/sliders-horizontal.svg
   SvgGenImage get slidersHorizontal =>
@@ -70,12 +79,15 @@ class $AssetsIconsGen {
   /// List of all assets
   List<SvgGenImage> get values => [
     arrowLeft,
+    card,
     circleUser,
     ellipsisVertical,
     eyeClosed,
     eye,
+    location,
     lockKeyhole,
     mail,
+    phone,
     slidersHorizontal,
     squareCheckBig,
     userRound,
@@ -90,6 +102,10 @@ class $AssetsIconsGen {
 class $AssetsImagesGen {
   const $AssetsImagesGen();
 
+  /// File path: assets/images/img_failed.png
+  AssetGenImage get imgFailed =>
+      const AssetGenImage('assets/images/img_failed.png');
+
   /// File path: assets/images/img_logo_inetagan.png
   AssetGenImage get imgLogoInetagan =>
       const AssetGenImage('assets/images/img_logo_inetagan.png');
@@ -98,8 +114,17 @@ class $AssetsImagesGen {
   AssetGenImage get imgSplashscreen =>
       const AssetGenImage('assets/images/img_splashscreen.png');
 
+  /// File path: assets/images/img_success.png
+  AssetGenImage get imgSuccess =>
+      const AssetGenImage('assets/images/img_success.png');
+
   /// List of all assets
-  List<AssetGenImage> get values => [imgLogoInetagan, imgSplashscreen];
+  List<AssetGenImage> get values => [
+    imgFailed,
+    imgLogoInetagan,
+    imgSplashscreen,
+    imgSuccess,
+  ];
 }
 
 class Assets {

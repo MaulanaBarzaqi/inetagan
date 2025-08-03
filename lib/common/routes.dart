@@ -7,6 +7,10 @@ import 'package:inetagan/features/internet-package/presentation/pages/all_packag
 import 'package:inetagan/features/signin/presentation/pages/landing_page.dart';
 import 'package:inetagan/features/signin/presentation/pages/sign_in_page.dart';
 import 'package:inetagan/features/signup/presentation/pages/sign_up_page.dart';
+import 'package:inetagan/features/subscribe/presentation/pages/detail_subscribe_page.dart';
+import 'package:inetagan/features/subscribe/presentation/pages/failed_subscribe_page.dart';
+import 'package:inetagan/features/subscribe/presentation/pages/subscribe_page.dart';
+import 'package:inetagan/features/subscribe/presentation/pages/success_subscribe_page.dart';
 
 class RouteNames {
   static const landing = 'landing';
@@ -16,6 +20,10 @@ class RouteNames {
   static const home = 'home';
   static const detail = 'detail';
   static const internetPackages = 'internetPackages';
+  static const subscribe = 'subscribe';
+  static const detailSubscribe = 'detailSubscribe';
+  static const success = 'success';
+  static const failed = 'failed';
 }
 
 final GoRouter router = GoRouter(
@@ -57,6 +65,32 @@ final GoRouter router = GoRouter(
         final package = state.extra as InternetPackageEntity;
         return DetailPage(internetPackage: package);
       },
+    ),
+    GoRoute(
+      name: RouteNames.subscribe,
+      path: '/subcribe',
+      builder: (context, state) {
+        final package = state.extra as InternetPackageEntity;
+        return SubscribePage(internetPackage: package);
+      },
+    ),
+    GoRoute(
+      name: RouteNames.detailSubscribe,
+      path: '/detail-subscribe',
+      builder: (context, state) {
+        final package = state.extra as InternetPackageEntity;
+        return DetailSubscribePage(internetPackage: package);
+      },
+    ),
+    GoRoute(
+      name: RouteNames.success,
+      path: '/success',
+      builder: (context, state) => SuccessSubscribePage(),
+    ),
+    GoRoute(
+      name: RouteNames.failed,
+      path: '/failed',
+      builder: (context, state) => FailedSubscribePage(),
     ),
   ],
 );
