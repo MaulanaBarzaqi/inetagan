@@ -23,6 +23,10 @@ class $AssetsIconsGen {
   /// File path: assets/icons/card.svg
   SvgGenImage get card => const SvgGenImage('assets/icons/card.svg');
 
+  /// File path: assets/icons/chevron-right.svg
+  SvgGenImage get chevronRight =>
+      const SvgGenImage('assets/icons/chevron-right.svg');
+
   /// File path: assets/icons/circle-user.svg
   SvgGenImage get circleUser =>
       const SvgGenImage('assets/icons/circle-user.svg');
@@ -36,6 +40,13 @@ class $AssetsIconsGen {
 
   /// File path: assets/icons/eye.svg
   SvgGenImage get eye => const SvgGenImage('assets/icons/eye.svg');
+
+  /// File path: assets/icons/icEditProfile.svg
+  SvgGenImage get icEditProfile =>
+      const SvgGenImage('assets/icons/icEditProfile.svg');
+
+  /// File path: assets/icons/icLogout.svg
+  SvgGenImage get icLogout => const SvgGenImage('assets/icons/icLogout.svg');
 
   /// File path: assets/icons/location.svg
   SvgGenImage get location => const SvgGenImage('assets/icons/location.svg');
@@ -80,10 +91,13 @@ class $AssetsIconsGen {
   List<SvgGenImage> get values => [
     arrowLeft,
     card,
+    chevronRight,
     circleUser,
     ellipsisVertical,
     eyeClosed,
     eye,
+    icEditProfile,
+    icLogout,
     location,
     lockKeyhole,
     mail,

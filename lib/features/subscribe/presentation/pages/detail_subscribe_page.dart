@@ -1,6 +1,8 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
+import 'package:inetagan/common/routes.dart';
 import 'package:inetagan/core/config/api_constant.dart';
 import 'package:inetagan/core/config/app_colors.dart';
 import 'package:inetagan/core/config/app_format.dart';
@@ -203,7 +205,12 @@ class _DetailSubscribePageState extends State<DetailSubscribePage> {
             ),
           ),
           const Gap(30),
-          ButtonWidget(ontap: () {}, text: 'Ajukan'),
+          ButtonWidget(
+            ontap: () {
+              context.pushNamed(RouteNames.success);
+            },
+            text: 'Ajukan',
+          ),
         ],
       ),
     );
