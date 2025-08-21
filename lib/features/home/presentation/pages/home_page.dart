@@ -7,12 +7,14 @@ import 'package:inetagan/common/routes.dart';
 import 'package:inetagan/core/config/api_constant.dart';
 import 'package:inetagan/core/config/app_colors.dart';
 import 'package:inetagan/core/config/app_format.dart';
+import 'package:inetagan/core/config/app_session.dart';
 import 'package:inetagan/features/home/domain/entities/banner_entity.dart';
 import 'package:inetagan/features/home/presentation/bloc/banner/banner_bloc.dart';
 import 'package:inetagan/features/home/presentation/widgets/circle_loading_widget.dart';
 import 'package:inetagan/features/home/presentation/widgets/text_failure_widget.dart';
 import 'package:inetagan/features/internet-package/domain/entities/internet_package_entity.dart';
 import 'package:inetagan/features/internet-package/presentation/bloc/all_internet_package/all_internet_package_bloc.dart';
+import 'package:inetagan/features/signin/data/models/sign_in_model.dart';
 import 'package:inetagan/gen/assets.gen.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -25,6 +27,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final bannerController = PageController();
+  SignInModel? currentUser;
 
   refresh() {
     context.read<AllInternetPackageBloc>().add(OnAllInternetPackageEvent());
@@ -34,7 +37,15 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     refresh();
+    _loadUser();
     super.initState();
+  }
+
+  Future<void> _loadUser() async {
+    final user = await AppSession.getUser();
+    setState(() {
+      currentUser = user;
+    });
   }
 
   @override
@@ -77,7 +88,7 @@ class _HomePageState extends State<HomePage> {
           ),
           SizedBox(width: 8),
           Text(
-            'Hi, Maulana!',
+            currentUser != null ? 'Hi, ${currentUser!.name}' : 'Hi, User',
             style: TextStyle(
               fontWeight: FontWeight.normal,
               fontSize: 14,

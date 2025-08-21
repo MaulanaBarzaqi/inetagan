@@ -1,10 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:inetagan/core/config/app_colors.dart';
+import 'package:inetagan/core/config/app_session.dart';
+import 'package:inetagan/features/signin/data/models/sign_in_model.dart';
 import 'package:inetagan/gen/assets.gen.dart';
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
+
+  @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  SignInModel? currentUser;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUser();
+  }
+
+  Future<void> _loadUser() async {
+    final user = await AppSession.getUser();
+    setState(() {
+      currentUser = user;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +90,7 @@ class ProfilePage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Maulana barzaqi',
+                currentUser?.name ?? 'Loading...',
                 style: TextStyle(
                   fontWeight: FontWeight.w400,
                   fontSize: 14,
@@ -76,7 +98,7 @@ class ProfilePage extends StatelessWidget {
                 ),
               ),
               Text(
-                'user@user.com',
+                currentUser?.email ?? '',
                 style: TextStyle(
                   fontWeight: FontWeight.w400,
                   fontSize: 14,
