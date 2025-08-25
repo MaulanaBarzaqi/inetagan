@@ -33,6 +33,11 @@ import 'package:inetagan/features/signup/data/repositories/sign_up_repository_im
 import 'package:inetagan/features/signup/domain/repositories/sign_up_repository.dart';
 import 'package:inetagan/features/signup/domain/usecases/sign_up_usecase.dart';
 import 'package:inetagan/features/signup/presentation/bloc/signup_bloc.dart';
+import 'package:inetagan/features/subscribe/data/datasources/subscribe_remote_datasource.dart';
+import 'package:inetagan/features/subscribe/data/repositories/subscribe_repository_impl.dart';
+import 'package:inetagan/features/subscribe/domain/repositories/subscribe_repository.dart';
+import 'package:inetagan/features/subscribe/domain/usecases/subscribe_usecase.dart';
+import 'package:inetagan/features/subscribe/presentation/bloc/subscribe_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final locator = GetIt.instance;
@@ -47,6 +52,7 @@ Future<void> initLocator() async {
   locator.registerFactory(() => FamilyPackageBloc(locator()));
   locator.registerFactory(() => StudentPackageBloc(locator()));
   locator.registerFactory(() => SearchInternetPackageBloc(locator()));
+  locator.registerFactory(() => SubscribeBloc(locator()));
 
   // usecase
   locator.registerLazySingleton(() => SignInUsecase(locator()));
@@ -57,6 +63,7 @@ Future<void> initLocator() async {
   locator.registerLazySingleton(() => GetFamilyPackageUsecase(locator()));
   locator.registerLazySingleton(() => GetStudentPackageUsecase(locator()));
   locator.registerLazySingleton(() => SearchInternetPackageUsecase(locator()));
+  locator.registerLazySingleton(() => SubscribeUsecase(locator()));
 
   // repository
   locator.registerLazySingleton<SignInRepository>(
@@ -82,6 +89,9 @@ Future<void> initLocator() async {
       localDatasource: locator(),
     ),
   );
+  locator.registerLazySingleton<SubscribeRepository>(
+    () => SubscribeRepositoryImpl(remoteDatasource: locator()),
+  );
 
   // datasource
   locator.registerLazySingleton<SignInRemoteDatasource>(
@@ -104,6 +114,9 @@ Future<void> initLocator() async {
   );
   locator.registerLazySingleton<InternetPackageLocalDatasource>(
     () => InternetPackageLocalDatasourceImpl(locator()),
+  );
+  locator.registerLazySingleton<SubscribeRemoteDatasource>(
+    () => SubscribeRemoteDatasourceImpl(locator()),
   );
 
   // platform

@@ -1,26 +1,57 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:inetagan/common/routes.dart';
 import 'package:inetagan/core/config/api_constant.dart';
 import 'package:inetagan/core/config/app_colors.dart';
 import 'package:inetagan/core/config/app_format.dart';
+import 'package:inetagan/core/config/app_session.dart';
 import 'package:inetagan/core/widgets/button_widget.dart';
+import 'package:inetagan/core/widgets/loading_widget.dart';
 import 'package:inetagan/features/home/presentation/widgets/circle_loading_widget.dart';
 import 'package:inetagan/features/internet-package/domain/entities/internet_package_entity.dart';
+import 'package:inetagan/features/signin/data/models/sign_in_model.dart';
+import 'package:inetagan/features/subscribe/presentation/bloc/subscribe_bloc.dart';
 import 'package:inetagan/features/subscribe/presentation/widgets/detail_item_widget.dart';
 import 'package:inetagan/gen/assets.gen.dart';
 
 class DetailSubscribePage extends StatefulWidget {
-  const DetailSubscribePage({super.key, required this.internetPackage});
+  const DetailSubscribePage({
+    super.key,
+    required this.internetPackage,
+    required this.name,
+    required this.nik,
+    required this.phone,
+    required this.address,
+  });
   final InternetPackageEntity internetPackage;
+  final String name;
+  final String nik;
+  final String phone;
+  final String address;
 
   @override
   State<DetailSubscribePage> createState() => _DetailSubscribePageState();
 }
 
 class _DetailSubscribePageState extends State<DetailSubscribePage> {
+  SignInModel? currentUser;
+
+  @override
+  void initState() {
+    _loadUser();
+    super.initState();
+  }
+
+  Future<void> _loadUser() async {
+    final user = await AppSession.getUser();
+    setState(() {
+      currentUser = user;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -169,13 +200,10 @@ class _DetailSubscribePageState extends State<DetailSubscribePage> {
             ),
             child: Column(
               children: [
-                DetailItemWidget(label: 'nama', itemDetail: 'maulana'),
-                DetailItemWidget(label: 'NIK', itemDetail: '088212312343'),
-                DetailItemWidget(label: 'WhatsApp', itemDetail: '02913902382'),
-                DetailItemWidget(
-                  label: 'Alamat',
-                  itemDetail: 'Jl. Raya No. 123, Jakarta Selatan',
-                ),
+                DetailItemWidget(label: 'nama', itemDetail: widget.name),
+                DetailItemWidget(label: 'NIK', itemDetail: widget.nik),
+                DetailItemWidget(label: 'WhatsApp', itemDetail: widget.phone),
+                DetailItemWidget(label: 'Alamat', itemDetail: widget.address),
                 DetailItemWidget(
                   label: 'Biaya Bulanan',
                   itemDetail: widget.internetPackage.monthlyBill,
@@ -205,11 +233,36 @@ class _DetailSubscribePageState extends State<DetailSubscribePage> {
             ),
           ),
           const Gap(30),
-          ButtonWidget(
-            ontap: () {
-              context.pushNamed(RouteNames.success);
+          BlocConsumer<SubscribeBloc, SubscribeState>(
+            listener: (context, state) {
+              if (state is SubscribeSuccess) {
+                context.goNamed(RouteNames.success);
+              }
+              if (state is SubscribeFailed) {
+                context.goNamed(RouteNames.failed);
+              }
             },
-            text: 'Ajukan',
+            builder: (context, state) {
+              if (state is SubscribeLoading) {
+                return LoadingWidget();
+              }
+              return ButtonWidget(
+                ontap: () {
+                  if (currentUser == null) return;
+                  context.read<SubscribeBloc>().add(
+                    OnSubscribeEvent(
+                      name: widget.name,
+                      nik: widget.nik,
+                      phone: widget.phone,
+                      address: widget.address,
+                      userId: currentUser!.id,
+                      internetPackageId: widget.internetPackage.id,
+                    ),
+                  );
+                },
+                text: 'Ajukan',
+              );
+            },
           ),
         ],
       ),

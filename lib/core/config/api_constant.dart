@@ -12,4 +12,5 @@ class AppConstant {
   static String search(String query) => '/internet-packages/search/$query';
   static String imagePackage(String imageName) => '$_host/storage/$imageName';
   static String imageBanner(String imageName) => '$_host/storage/$imageName';
+  static const subscribe = '/internet-installations/create';
 }

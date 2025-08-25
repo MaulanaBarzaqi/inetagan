@@ -78,8 +78,14 @@ final GoRouter router = GoRouter(
       name: RouteNames.detailSubscribe,
       path: '/detail-subscribe',
       builder: (context, state) {
-        final package = state.extra as InternetPackageEntity;
-        return DetailSubscribePage(internetPackage: package);
+        final extra = state.extra as Map<String, dynamic>;
+        return DetailSubscribePage(
+          internetPackage: extra['internetPackage'] as InternetPackageEntity,
+          name: extra['name'] as String,
+          nik: extra['nik'] as String,
+          phone: extra['phone'] as String,
+          address: extra['address'] as String,
+        );
       },
     ),
     GoRoute(

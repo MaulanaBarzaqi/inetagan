@@ -24,8 +24,16 @@ class _SubscribePageState extends State<SubscribePage> {
   final edtPhone = TextEditingController();
   final edtNik = TextEditingController();
   final edtAddress = TextEditingController();
-  final edtTime = TextEditingController();
   final formKey = GlobalKey<FormState>();
+
+  @override
+  void dispose() {
+    edtFullName.dispose();
+    edtPhone.dispose();
+    edtNik.dispose();
+    edtAddress.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -162,142 +170,152 @@ class _SubscribePageState extends State<SubscribePage> {
   buildForm() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Column(
-        children: [
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 27, vertical: 20),
-            decoration: BoxDecoration(
-              color: AppColors.primary.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(20),
+      child: Form(
+        key: formKey,
+        child: Column(
+          children: [
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 27, vertical: 20),
+              decoration: BoxDecoration(
+                color: AppColors.primary.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Silahkan isi data diri anda',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                      color: AppColors.primary,
+                    ),
+                  ),
+                  const Gap(12),
+                  Text(
+                    'Nama Lengkap',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 16,
+                      color: AppColors.primary,
+                    ),
+                  ),
+                  const Gap(10),
+                  InputWidget(
+                    controller: edtFullName,
+                    hintText: 'tulis nama lengkap anda',
+                    keyboardType: TextInputType.name,
+                    icon: Assets.icons.userRound,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Please fill in this field';
+                      } else if (value.length > 30) {
+                        return 'Name too long';
+                      }
+                      return null;
+                    },
+                  ),
+                  const Gap(15),
+                  Text(
+                    'Nomor NIK',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 16,
+                      color: AppColors.primary,
+                    ),
+                  ),
+                  const Gap(10),
+                  InputWidget(
+                    controller: edtNik,
+                    hintText: 'tulis nomor NIK anda',
+                    keyboardType: TextInputType.name,
+                    icon: Assets.icons.card,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Please fill in this field';
+                      } else if (value.length > 30) {
+                        return 'Name too long';
+                      }
+                      return null;
+                    },
+                  ),
+                  const Gap(15),
+                  Text(
+                    'WhatsApp',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 16,
+                      color: AppColors.primary,
+                    ),
+                  ),
+                  const Gap(10),
+                  InputWidget(
+                    controller: edtPhone,
+                    hintText: 'tulis nomor whatsapp anda',
+                    keyboardType: TextInputType.name,
+                    icon: Assets.icons.phone,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Please fill in this field';
+                      } else if (value.length > 30) {
+                        return 'Name too long';
+                      }
+                      return null;
+                    },
+                  ),
+                  const Gap(15),
+                  Text(
+                    'Alamat Lengkap',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 16,
+                      color: AppColors.primary,
+                    ),
+                  ),
+                  const Gap(10),
+                  InputWidget(
+                    controller: edtAddress,
+                    hintText: 'tulis alamat lengkap anda',
+                    keyboardType: TextInputType.name,
+                    icon: Assets.icons.location,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Please fill in this field';
+                      } else if (value.length > 30) {
+                        return 'Name too long';
+                      }
+                      return null;
+                    },
+                  ),
+                  const Gap(20),
+                ],
+              ),
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Silahkan isi data diri anda',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14,
-                    color: AppColors.primary,
-                  ),
-                ),
-                const Gap(12),
-                Text(
-                  'Nama Lengkap',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 16,
-                    color: AppColors.primary,
-                  ),
-                ),
-                const Gap(10),
-                InputWidget(
-                  controller: edtFullName,
-                  hintText: 'tulis nama lengkap anda',
-                  keyboardType: TextInputType.name,
-                  icon: Assets.icons.userRound,
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Please fill in this field';
-                    } else if (value.length > 30) {
-                      return 'Name too long';
-                    }
-                    return null;
-                  },
-                ),
-                const Gap(15),
-                Text(
-                  'Nomor NIK',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 16,
-                    color: AppColors.primary,
-                  ),
-                ),
-                const Gap(10),
-                InputWidget(
-                  controller: edtNik,
-                  hintText: 'tulis nomor NIK anda',
-                  keyboardType: TextInputType.name,
-                  icon: Assets.icons.card,
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Please fill in this field';
-                    } else if (value.length > 30) {
-                      return 'Name too long';
-                    }
-                    return null;
-                  },
-                ),
-                const Gap(15),
-                Text(
-                  'WhatsApp',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 16,
-                    color: AppColors.primary,
-                  ),
-                ),
-                const Gap(10),
-                InputWidget(
-                  controller: edtPhone,
-                  hintText: 'tulis nomor whatsapp anda',
-                  keyboardType: TextInputType.name,
-                  icon: Assets.icons.phone,
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Please fill in this field';
-                    } else if (value.length > 30) {
-                      return 'Name too long';
-                    }
-                    return null;
-                  },
-                ),
-                const Gap(15),
-                Text(
-                  'Alamat Lengkap',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 16,
-                    color: AppColors.primary,
-                  ),
-                ),
-                const Gap(10),
-                InputWidget(
-                  controller: edtAddress,
-                  hintText: 'tulis alamat lengkap anda',
-                  keyboardType: TextInputType.name,
-                  icon: Assets.icons.location,
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Please fill in this field';
-                    } else if (value.length > 30) {
-                      return 'Name too long';
-                    }
-                    return null;
-                  },
-                ),
-                const Gap(20),
-              ],
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+              child: ButtonWidget(
+                ontap: () {
+                  if (!formKey.currentState!.validate()) return;
+                  context.pushNamed(
+                    RouteNames.detailSubscribe,
+                    extra: {
+                      'internetPackage': widget.internetPackage,
+                      'name': edtFullName.text,
+                      'nik': edtNik.text,
+                      'phone': edtPhone.text,
+                      'address': edtAddress.text,
+                    },
+                  );
+                },
+                text: 'Ajukan Berlangganan',
+              ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-            child: ButtonWidget(
-              ontap: () {
-                context.pushNamed(
-                  RouteNames.detailSubscribe,
-                  extra: widget.internetPackage,
-                );
-              },
-              text: 'Ajukan Berlangganan',
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -8,7 +8,7 @@ class SubscribeEntity extends Equatable {
   final String phone;
   final String address;
   final int userId;
-  final String internetPackageId;
+  final int internetPackageId;
   final DateTime updatedAt;
   final DateTime createdAt;
 

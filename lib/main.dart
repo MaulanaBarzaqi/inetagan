@@ -12,6 +12,7 @@ import 'package:inetagan/features/internet-package/presentation/bloc/student_pac
 import 'package:inetagan/features/internet-package/presentation/cubit/tabbar_cubit.dart';
 import 'package:inetagan/features/signin/presentation/bloc/signin_bloc.dart';
 import 'package:inetagan/features/signup/presentation/bloc/signup_bloc.dart';
+import 'package:inetagan/features/subscribe/presentation/bloc/subscribe_bloc.dart';
 import 'package:inetagan/injection.dart';
 
 void main() async {
@@ -37,6 +38,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (_) => locator<FamilyPackageBloc>()),
         BlocProvider(create: (_) => locator<StudentPackageBloc>()),
         BlocProvider(create: (_) => locator<SearchInternetPackageBloc>()),
+        BlocProvider(create: (_) => locator<SubscribeBloc>()),
       ],
       child: MaterialApp.router(
         debugShowCheckedModeBanner: false,
