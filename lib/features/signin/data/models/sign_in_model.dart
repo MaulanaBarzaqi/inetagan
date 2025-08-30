@@ -28,6 +28,20 @@ class SignInModel extends SignInEntity {
     );
   }
 
+  factory SignInModel.fromJsonRead(Map<String, dynamic> json) {
+    return SignInModel(
+      id: json['id'],
+      name: json['name'],
+      email: json['email'],
+      role: json['role'],
+      deviceToken: json['device_token'],
+      emailVerifiedAt: json['email_verified_at'],
+      createdAt: DateTime.parse(json['created_at']),
+      updatedAt: DateTime.parse(json['updated_at']),
+      token: json['token'] ?? '',
+    );
+  }
+
   Map<String, dynamic> toJson() {
     return {
       'data': {

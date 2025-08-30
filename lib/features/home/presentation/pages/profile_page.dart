@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
+import 'package:inetagan/common/routes.dart';
 import 'package:inetagan/core/config/app_colors.dart';
 import 'package:inetagan/core/config/app_session.dart';
 import 'package:inetagan/features/signin/data/models/sign_in_model.dart';
@@ -57,9 +59,28 @@ class _ProfilePageState extends State<ProfilePage> {
             children: [
               buildProfile(),
               Gap(20),
-              buildItemProfile(Assets.icons.icEditProfile, 'Edit Profile'),
-              buildItemProfile(Assets.icons.lockKeyhole, 'Ganti Password'),
-              buildItemProfile(Assets.icons.icLogout, 'Logout'),
+              buildItemProfile(
+                icon: Assets.icons.icEditProfile,
+                label: 'Edit Profile',
+                ontap: () {},
+              ),
+              buildItemProfile(
+                icon: Assets.icons.wifi,
+                label: 'Pemasangan Saya',
+                ontap: () {
+                  context.goNamed(RouteNames.getSubscribe);
+                },
+              ),
+              buildItemProfile(
+                icon: Assets.icons.lockKeyhole,
+                label: 'Ganti Password',
+                ontap: () {},
+              ),
+              buildItemProfile(
+                icon: Assets.icons.icLogout,
+                label: 'Logout',
+                ontap: () {},
+              ),
             ],
           ),
         ),
@@ -112,32 +133,39 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  buildItemProfile(SvgGenImage icon, String label) {
+  buildItemProfile({
+    required SvgGenImage icon,
+    required String label,
+    required VoidCallback ontap,
+  }) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 15),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        height: 52,
-        decoration: BoxDecoration(
-          color: Colors.transparent,
-          borderRadius: BorderRadius.circular(50),
-          border: Border.all(color: AppColors.primary, width: 1),
-        ),
-        child: Row(
-          children: [
-            icon.svg(width: 24, height: 24),
-            Gap(14),
-            Text(
-              label,
-              style: TextStyle(
-                fontWeight: FontWeight.w400,
-                fontSize: 14,
-                color: AppColors.secondary,
+      child: GestureDetector(
+        onTap: ontap,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          height: 52,
+          decoration: BoxDecoration(
+            color: Colors.transparent,
+            borderRadius: BorderRadius.circular(50),
+            border: Border.all(color: AppColors.primary, width: 1),
+          ),
+          child: Row(
+            children: [
+              icon.svg(width: 24, height: 24),
+              Gap(14),
+              Text(
+                label,
+                style: TextStyle(
+                  fontWeight: FontWeight.w400,
+                  fontSize: 14,
+                  color: AppColors.secondary,
+                ),
               ),
-            ),
-            Spacer(),
-            Assets.icons.chevronRight.svg(height: 24, width: 24),
-          ],
+              Spacer(),
+              Assets.icons.chevronRight.svg(height: 24, width: 24),
+            ],
+          ),
         ),
       ),
     );

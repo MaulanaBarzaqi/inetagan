@@ -50,21 +50,23 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return RefreshIndicator.adaptive(
-      onRefresh: () async => refresh(),
-      child: ListView(
-        children: [
-          Gap(30),
-          header(),
-          Gap(20),
-          banner(),
-          Gap(20),
-          featured(),
-          Gap(20),
-          special(),
-          Gap(20),
-          allInternetPackages(),
-        ],
+    return Scaffold(
+      body: RefreshIndicator.adaptive(
+        onRefresh: () async => refresh(),
+        child: ListView(
+          children: [
+            Gap(30),
+            header(),
+            Gap(20),
+            banner(),
+            Gap(20),
+            featured(),
+            Gap(20),
+            special(),
+            Gap(20),
+            allInternetPackages(),
+          ],
+        ),
       ),
     );
   }

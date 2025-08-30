@@ -11,4 +11,6 @@ abstract class SubscribeRepository {
     int userId,
     int internetPackageId,
   );
+
+  Future<Either<Failure, SubscribeEntity>> getSubscription(int userId);
 }

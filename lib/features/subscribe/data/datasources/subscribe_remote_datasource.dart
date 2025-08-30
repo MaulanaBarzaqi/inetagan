@@ -14,6 +14,7 @@ abstract class SubscribeRemoteDatasource {
     int userId,
     int internetPackageId,
   );
+  Future<SubscribeModel> getSubscription(int userId);
 }
 
 class SubscribeRemoteDatasourceImpl implements SubscribeRemoteDatasource {
@@ -50,6 +51,23 @@ class SubscribeRemoteDatasourceImpl implements SubscribeRemoteDatasource {
       return data;
     } catch (e) {
       throw Exception('Failed to subscribe: $e');
+    }
+  }
+
+  @override
+  Future<SubscribeModel> getSubscription(int userId) async {
+    Uri url = Uri.parse(
+      '${AppConstant.baseUrl}${AppConstant.getInstallation(userId)}',
+    );
+    try {
+      final token = await AppSession.getBearerToken();
+      final response = await client.get(url, headers: AppRequest.header(token));
+      final jsonData = AppResponse.data(response);
+
+      final data = SubscribeModel.fromJsonRead(jsonData);
+      return data;
+    } catch (e) {
+      throw Exception('Failed to get subscription: $e');
     }
   }
 }

@@ -13,4 +13,6 @@ class AppConstant {
   static String imagePackage(String imageName) => '$_host/storage/$imageName';
   static String imageBanner(String imageName) => '$_host/storage/$imageName';
   static const subscribe = '/internet-installations/create';
+  static String getInstallation(int userId) =>
+      '/internet-installations/user/$userId';
 }

@@ -7,8 +7,10 @@ import 'package:inetagan/features/internet-package/presentation/pages/all_packag
 import 'package:inetagan/features/signin/presentation/pages/landing_page.dart';
 import 'package:inetagan/features/signin/presentation/pages/sign_in_page.dart';
 import 'package:inetagan/features/signup/presentation/pages/sign_up_page.dart';
+import 'package:inetagan/features/subscribe/domain/entities/subscribe_entity.dart';
 import 'package:inetagan/features/subscribe/presentation/pages/detail_subscribe_page.dart';
 import 'package:inetagan/features/subscribe/presentation/pages/failed_subscribe_page.dart';
+import 'package:inetagan/features/subscribe/presentation/pages/get_subscribe_page.dart';
 import 'package:inetagan/features/subscribe/presentation/pages/subscribe_page.dart';
 import 'package:inetagan/features/subscribe/presentation/pages/success_subscribe_page.dart';
 
@@ -24,6 +26,7 @@ class RouteNames {
   static const detailSubscribe = 'detailSubscribe';
   static const success = 'success';
   static const failed = 'failed';
+  static const getSubscribe = 'getSubscribe';
 }
 
 final GoRouter router = GoRouter(
@@ -97,6 +100,13 @@ final GoRouter router = GoRouter(
       name: RouteNames.failed,
       path: '/failed',
       builder: (context, state) => FailedSubscribePage(),
+    ),
+    GoRoute(
+      name: RouteNames.getSubscribe,
+      path: '/getSubscribe',
+      builder: (context, state) {
+        return GetSubscribePage();
+      },
     ),
   ],
 );

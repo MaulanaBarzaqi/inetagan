@@ -13,7 +13,7 @@ import 'package:inetagan/core/widgets/loading_widget.dart';
 import 'package:inetagan/features/home/presentation/widgets/circle_loading_widget.dart';
 import 'package:inetagan/features/internet-package/domain/entities/internet_package_entity.dart';
 import 'package:inetagan/features/signin/data/models/sign_in_model.dart';
-import 'package:inetagan/features/subscribe/presentation/bloc/subscribe_bloc.dart';
+import 'package:inetagan/features/subscribe/presentation/bloc/subscribe/subscribe_bloc.dart';
 import 'package:inetagan/features/subscribe/presentation/widgets/detail_item_widget.dart';
 import 'package:inetagan/gen/assets.gen.dart';
 

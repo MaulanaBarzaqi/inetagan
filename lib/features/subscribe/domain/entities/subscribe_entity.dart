@@ -1,5 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:equatable/equatable.dart';
+import 'package:inetagan/features/internet-package/domain/entities/internet_package_entity.dart';
+import 'package:inetagan/features/signin/domain/entities/sign_in_entity.dart';
 
 class SubscribeEntity extends Equatable {
   final int id;
@@ -7,10 +9,13 @@ class SubscribeEntity extends Equatable {
   final String nik;
   final String phone;
   final String address;
+  final String? status;
   final int userId;
   final int internetPackageId;
   final DateTime updatedAt;
   final DateTime createdAt;
+  final InternetPackageEntity? internetPackage;
+  final SignInEntity? user;
 
   const SubscribeEntity({
     required this.id,
@@ -18,24 +23,30 @@ class SubscribeEntity extends Equatable {
     required this.nik,
     required this.phone,
     required this.address,
+    this.status,
     required this.userId,
     required this.internetPackageId,
     required this.updatedAt,
     required this.createdAt,
+    this.internetPackage,
+    this.user,
   });
 
   @override
-  List<Object> get props {
+  List<Object?> get props {
     return [
       id,
       name,
       nik,
       phone,
       address,
+      status,
       userId,
       internetPackageId,
       updatedAt,
       createdAt,
+      internetPackage,
+      user,
     ];
   }
 }
