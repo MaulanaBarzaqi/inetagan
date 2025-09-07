@@ -23,11 +23,11 @@ class SignUpRepositoryImpl implements SignUpRepository {
     String email,
     String password,
   ) async {
-    final isConnected = await networkInfo.isConnected();
-    if (!isConnected) {
-      return Left(ConnnectionFailure('tidak ada koneksi internet'));
-    }
     try {
+      final isConnected = await networkInfo.isConnected();
+      if (!isConnected) {
+        return Left(ConnnectionFailure('tidak ada koneksi internet'));
+      }
       final result = await remoteDatasource.signUp(name, email, password);
       return Right(result);
     } on TimeoutException {

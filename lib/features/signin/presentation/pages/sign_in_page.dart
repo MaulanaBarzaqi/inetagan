@@ -3,13 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:inetagan/common/routes.dart';
-import 'package:inetagan/core/config/app_colors.dart';
-import 'package:inetagan/core/components/loading_widget.dart';
-import 'package:inetagan/core/config/app_validator.dart';
-import 'package:inetagan/features/signin/presentation/bloc/signin_bloc.dart';
 import 'package:inetagan/core/components/button_widget.dart';
+import 'package:inetagan/core/config/app_colors.dart';
+import 'package:inetagan/features/signin/presentation/bloc/signin_bloc.dart';
+import 'package:inetagan/features/signin/presentation/widgets/email_form_field_widget.dart';
 import 'package:inetagan/features/signin/presentation/widgets/error_dialog.dart';
-import 'package:inetagan/core/components/input_widget.dart';
+import 'package:inetagan/features/signin/presentation/widgets/password_form_field_widget.dart';
 import 'package:inetagan/gen/assets.gen.dart';
 
 class SignInPage extends StatefulWidget {
@@ -35,139 +34,95 @@ class _SignInPageState extends State<SignInPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView(
-        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 0),
-        children: [
-          const Gap(100),
-          Assets.images.imgLogoInetagan.image(width: 171, height: 71),
-          const Gap(30),
-          Text(
-            'Masuk akun',
-            style: TextStyle(
-              fontWeight: FontWeight.w700,
-              fontSize: 20,
-              color: AppColors.primary,
-            ),
-          ),
-          const Gap(30),
-          Form(
-            key: formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Email',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14,
-                    color: AppColors.primary,
-                  ),
-                ),
-                const Gap(12),
-                InputWidget(
-                  controller: edtEmail,
-                  hintText: 'tulis email anda',
-                  keyboardType: TextInputType.emailAddress,
-                  icon: Assets.icons.mail,
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  validator: AppValidator.validateEmail,
-                ),
-                const Gap(20),
-                Text(
-                  'Password',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14,
-                    color: AppColors.primary,
-                  ),
-                ),
-                const Gap(12),
-                InputWidget(
-                  controller: edtPassword,
-                  hintText: 'tulis password anda',
-                  keyboardType: TextInputType.visiblePassword,
-                  icon: Assets.icons.lockKeyhole,
-                  obscureText: obscureText,
-                  hasSuffix: true,
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  onSuffixPressed: () {
-                    setState(() {
-                      obscureText = !obscureText;
-                    });
-                  },
-                  validator: AppValidator.validatePassword,
-                ),
-              ],
-            ),
-          ),
-          const Gap(40),
-          Row(
+      body: BlocConsumer<SigninBloc, SigninState>(
+        listener: (context, state) {
+          if (state is SignInSuccess) {
+            context.goNamed(RouteNames.dashboard);
+          }
+          if (state is SignInFailed) {
+            showDialog(context: context, builder: (_) => ErrorDialog());
+          }
+        },
+        builder: (context, state) {
+          return Stack(
             children: [
-              Text(
-                'Belum Punya Akun? ',
-                style: TextStyle(
-                  fontWeight: FontWeight.w400,
-                  fontSize: 14,
-                  color: AppColors.primary,
-                ),
-              ),
-              InkWell(
-                onTap: () {
-                  context.goNamed(RouteNames.signup);
-                },
-                child: Text(
-                  'Daftar',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w700,
-                    fontSize: 15,
-                    color: AppColors.primary,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const Gap(40),
-          BlocConsumer<SigninBloc, SigninState>(
-            listener: (context, state) {
-              if (state is SignInSuccess) {
-                context.goNamed(RouteNames.dashboard);
-              }
-              if (state is SignInFailed) {
-                showDialog(context: context, builder: (_) => ErrorDialog());
-                // AppResponse.invalidInput(context, state.message);
-              }
-            },
-            builder: (context, state) {
-              if (state is SignInLoading) {
-                return LoadingWidget();
-              }
-              return ButtonWidget(
-                ontap: () {
-                  if (!formKey.currentState!.validate()) return;
-                  context.read<SigninBloc>().add(
-                    OnSignInEvent(
-                      email: edtEmail.text,
-                      password: edtPassword.text,
+              ListView(
+                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 0),
+                children: [
+                  const Gap(100),
+                  Assets.images.imgLogoInetagan.image(width: 171, height: 71),
+                  const Gap(30),
+                  Text(
+                    'Masuk akun',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 20,
+                      color: AppColors.primary,
                     ),
-                  );
-                },
-                text: 'Login',
-              );
-            },
-          ),
-          const Gap(35),
-          Text(
-            'Lupa Password',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontWeight: FontWeight.w400,
-              fontSize: 14,
-              color: AppColors.primary,
-            ),
-          ),
-
-          const Gap(30),
-        ],
+                  ),
+                  const Gap(30),
+                  Form(
+                    key: formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        EmailFormFieldWidget(controller: edtEmail),
+                        const Gap(20),
+                        PasswordFormFieldWidget(controller: edtPassword),
+                      ],
+                    ),
+                  ),
+                  const Gap(40),
+                  Row(
+                    children: [
+                      Text(
+                        'Belum Punya Akun? ',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w400,
+                          fontSize: 14,
+                          color: AppColors.primary,
+                        ),
+                      ),
+                      InkWell(
+                        onTap: () {
+                          context.goNamed(RouteNames.signup);
+                        },
+                        child: Text(
+                          'Daftar',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w700,
+                            fontSize: 15,
+                            color: AppColors.primary,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Gap(40),
+                  ButtonWidget(
+                    ontap: state is SignInLoading
+                        ? null
+                        : () {
+                            if (!formKey.currentState!.validate()) return;
+                            context.read<SigninBloc>().add(
+                              OnSignInEvent(
+                                email: edtEmail.text,
+                                password: edtPassword.text,
+                              ),
+                            );
+                          },
+                    text: 'Login',
+                  ),
+                ],
+              ),
+              if (state is SignInLoading)
+                Container(
+                  color: Colors.black.withValues(alpha: 0.3),
+                  child: Center(child: CircularProgressIndicator()),
+                ),
+            ],
+          );
+        },
       ),
     );
   }

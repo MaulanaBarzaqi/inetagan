@@ -15,53 +15,80 @@ class LandingPage extends StatefulWidget {
 }
 
 class _LandingPageState extends State<LandingPage> {
-  final SignInLocalDatasource local = SignInLocalDatasourceImpl();
+  final SignInLocalDatasource _localDatasource = SignInLocalDatasourceImpl();
+  bool _isRedirecting = false;
 
   @override
   void initState() {
-    handleRedirect();
     super.initState();
+    _handleInitialRedirect();
   }
 
-  Future<void> handleRedirect() async {
-    final route = await local.getRedirectRoute();
-    if (route != null) {
-      context.goNamed(route);
+  Future<void> _handleInitialRedirect() async {
+    if (_isRedirecting) return;
+
+    _isRedirecting = true;
+    try {
+      final route = await _localDatasource.determineRedirectRoute();
+      if (route != null && mounted) {
+        context.goNamed(route);
+      }
+    } catch (error) {
+      debugPrint('Redirect error : $error');
+    } finally {
+      if (mounted) {
+        setState(() => _isRedirecting = false);
+      }
+    }
+  }
+
+  Future<void> _navigateToSignIn() async {
+    try {
+      await _localDatasource.markAppAsLauched();
+      if (mounted) {
+        context.goNamed(RouteNames.signin);
+      }
+    } catch (error) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Failed to navigate: $error")));
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView(
-        padding: EdgeInsets.symmetric(horizontal: 25),
-        children: [
-          const Gap(100),
-          Assets.images.imgLogoInetagan.image(height: 80),
-          const Gap(15),
-          Assets.images.imgSplashscreen.image(height: 350),
-          const Gap(30),
-          Text(
-            'Saatnya beralih ke Fiber, Akses Internet\nSuper cepat dan canggih',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              height: 1.7,
-              fontWeight: FontWeight.w400,
-              fontSize: 13,
-              color: AppColors.tertiary,
-            ),
+      body: _isRedirecting ? _buildLoadingState() : _buildContent(),
+    );
+  }
+
+  Widget _buildLoadingState() {
+    return const Center(child: CircularProgressIndicator());
+  }
+
+  Widget _buildContent() {
+    return ListView(
+      padding: EdgeInsets.symmetric(horizontal: 25),
+      children: [
+        const Gap(100),
+        Assets.images.imgLogoInetagan.image(height: 80),
+        const Gap(15),
+        Assets.images.imgSplashscreen.image(height: 350),
+        const Gap(30),
+        Text(
+          'Saatnya beralih ke Fiber, Akses Internet\nSuper cepat dan canggih',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            height: 1.7,
+            fontWeight: FontWeight.w400,
+            fontSize: 13,
+            color: AppColors.tertiary,
           ),
-          const Gap(50),
-          ButtonWidget(
-            ontap: () async {
-              await local.setHasLaunched();
-              context.goNamed(RouteNames.signin);
-            },
-            text: 'explore now',
-          ),
-          const Gap(30),
-        ],
-      ),
+        ),
+        const Gap(50),
+        ButtonWidget(ontap: _navigateToSignIn, text: 'explore now'),
+        const Gap(30),
+      ],
     );
   }
 }

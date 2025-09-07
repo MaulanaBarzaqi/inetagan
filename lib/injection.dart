@@ -74,6 +74,7 @@ Future<void> initLocator() async {
     () => SignInRepositoryImpl(
       remoteDatasource: locator(),
       localDatasource: locator(),
+      networkInfo: locator(),
     ),
   );
   locator.registerLazySingleton<SignUpRepository>(

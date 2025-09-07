@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dartz/dartz.dart';
 import 'package:inetagan/core/errors/exceptions.dart';
 import 'package:inetagan/core/errors/failures.dart';
+import 'package:inetagan/core/platform/network_info.dart';
 import 'package:inetagan/features/signin/data/datasources/sign_in_local_datasource.dart';
 import 'package:inetagan/features/signin/data/datasources/sign_in_remote_datasource.dart';
 import 'package:inetagan/features/signin/domain/entities/sign_in_entity.dart';
@@ -11,10 +12,12 @@ import 'package:inetagan/features/signin/domain/repositories/sign_in_repository.
 class SignInRepositoryImpl implements SignInRepository {
   final SignInRemoteDatasource remoteDatasource;
   final SignInLocalDatasource localDatasource;
+  final NetworkInfo networkInfo;
 
   SignInRepositoryImpl({
     required this.remoteDatasource,
     required this.localDatasource,
+    required this.networkInfo,
   });
 
   @override
@@ -23,10 +26,14 @@ class SignInRepositoryImpl implements SignInRepository {
     String password,
   ) async {
     try {
+      final isConnected = await networkInfo.isConnected();
+      if (!isConnected) {
+        return Left(ConnnectionFailure('Tidak ada koneksi internet'));
+      }
       final result = await remoteDatasource.signIn(email, password);
 
-      await localDatasource.saveUser(result);
-      await localDatasource.saveBearerToken(result.token);
+      await localDatasource.cacheUser(result);
+      await localDatasource.cacheToken(result.token);
 
       return Right(result);
     } on TimeoutException {

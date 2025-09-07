@@ -10,7 +10,7 @@ import 'package:inetagan/features/signin/presentation/widgets/error_dialog.dart'
 import 'package:inetagan/features/signup/presentation/bloc/signup_bloc.dart';
 import 'package:inetagan/features/signup/presentation/widgets/email_form_field_widget.dart';
 import 'package:inetagan/features/signup/presentation/widgets/name_form_field_widget.dart';
-import 'package:inetagan/features/signup/presentation/widgets/password_form_widget.dart';
+import 'package:inetagan/features/signup/presentation/widgets/password_form_field_widget.dart';
 import 'package:inetagan/features/signup/presentation/widgets/password_required_widget.dart';
 import 'package:inetagan/gen/assets.gen.dart';
 
