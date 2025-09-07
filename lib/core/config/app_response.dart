@@ -8,28 +8,38 @@ import 'package:inetagan/core/errors/exceptions.dart';
 class AppResponse {
   static Map<String, dynamic> data(Response response) {
     DMethod.printResponse(response);
+    final statusCode = response.statusCode;
+    final responseBody = response.body;
 
-    switch (response.statusCode) {
+    switch (statusCode) {
       case 200: //read
       case 201: //create, update
-        var responseBody = jsonDecode(response.body);
-        return responseBody;
+        return jsonDecode(responseBody);
       case 204: //delete
         return {'success': true};
       case 400:
-        throw BadRequestException(response.body);
+        throw BadRequestException(_extractErrorMessage(responseBody));
       case 401:
-        throw UnauthorisedException(response.body);
+        throw UnauthorisedException(_extractErrorMessage(responseBody));
       case 422:
-        throw ForbiddenException(response.body);
+        throw ForbiddenException(_extractErrorMessage(responseBody));
       case 403:
-        throw InvalidInputException(response.body);
+        throw InvalidInputException(_extractErrorMessage(responseBody));
       case 404:
-        throw NotFoundException(response.body);
+        throw NotFoundException(_extractErrorMessage(responseBody));
       case 500:
-        throw ServerException(response.body);
+        throw ServerException(_extractErrorMessage(responseBody));
       default:
-        throw FetchFailureException(response.body);
+        throw FetchFailureException('Unexpected error: $statusCode');
+    }
+  }
+
+  static String _extractErrorMessage(String responseBody) {
+    try {
+      final json = jsonDecode(responseBody);
+      return json['message'] ?? json['error'] ?? responseBody;
+    } catch (e) {
+      return responseBody;
     }
   }
 
@@ -71,43 +81,5 @@ class AppResponse {
         );
       },
     );
-  }
-
-  static showErrorByException(BuildContext context, FailureException e) {
-    if (e is InvalidInputException || e is ForbiddenException) {
-      AppResponse.invalidInput(context, e.message);
-    } else {
-      String title = "terjadi kesalahan";
-      String content = "Ups terjadi kesalahan, silahkan coba lagi";
-
-      if (e is BadRequestException) {
-        content = 'Permintaan tidak valid.';
-      } else if (e is UnauthorisedException) {
-        content = 'Akses ditolak. Silakan login ulang.';
-      } else if (e is NotFoundException) {
-        content = 'Data tidak ditemukan.';
-      } else if (e is ServerException) {
-        content = 'Server sedang bermasalah.';
-      } else if (e is FetchFailureException) {
-        content = 'Gagal terhubung ke server.';
-      }
-      showDialog(
-        context: context,
-        builder: (_) {
-          return AlertDialog(
-            title: Text(title),
-            content: Text(content),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: Text("Tutup"),
-              ),
-            ],
-          );
-        },
-      );
-    }
   }
 }

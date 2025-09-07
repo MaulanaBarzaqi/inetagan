@@ -3,7 +3,7 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:inetagan/common/routes.dart';
 import 'package:inetagan/core/config/app_colors.dart';
-import 'package:inetagan/core/widgets/button_widget.dart';
+import 'package:inetagan/core/components/button_widget.dart';
 import 'package:inetagan/gen/assets.gen.dart';
 
 class SuccessSubscribePage extends StatelessWidget {

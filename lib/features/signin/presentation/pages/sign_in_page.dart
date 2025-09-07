@@ -4,11 +4,12 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:inetagan/common/routes.dart';
 import 'package:inetagan/core/config/app_colors.dart';
-import 'package:inetagan/core/widgets/loading_widget.dart';
+import 'package:inetagan/core/components/loading_widget.dart';
+import 'package:inetagan/core/config/app_validator.dart';
 import 'package:inetagan/features/signin/presentation/bloc/signin_bloc.dart';
-import 'package:inetagan/core/widgets/button_widget.dart';
+import 'package:inetagan/core/components/button_widget.dart';
 import 'package:inetagan/features/signin/presentation/widgets/error_dialog.dart';
-import 'package:inetagan/core/widgets/input_widget.dart';
+import 'package:inetagan/core/components/input_widget.dart';
 import 'package:inetagan/gen/assets.gen.dart';
 
 class SignInPage extends StatefulWidget {
@@ -69,16 +70,7 @@ class _SignInPageState extends State<SignInPage> {
                   keyboardType: TextInputType.emailAddress,
                   icon: Assets.icons.mail,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Please fill in this field';
-                    } else if (!RegExp(
-                      r'^[\w-\.]+@([\w-]+.)+[\w-]{2,4}$',
-                    ).hasMatch(value)) {
-                      return 'Please enter a valid email';
-                    }
-                    return null;
-                  },
+                  validator: AppValidator.validateEmail,
                 ),
                 const Gap(20),
                 Text(
@@ -103,16 +95,7 @@ class _SignInPageState extends State<SignInPage> {
                       obscureText = !obscureText;
                     });
                   },
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Please fill in this field';
-                    } else if (!RegExp(
-                      r'^(?=.*?[A-Z])(?=.*?[a-z]).{8,}$',
-                    ).hasMatch(value)) {
-                      return 'Please enter a valid password';
-                    }
-                    return null;
-                  },
+                  validator: AppValidator.validatePassword,
                 ),
               ],
             ),

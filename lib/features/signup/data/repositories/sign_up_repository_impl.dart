@@ -3,14 +3,19 @@ import 'dart:async';
 import 'package:dartz/dartz.dart';
 import 'package:inetagan/core/errors/exceptions.dart';
 import 'package:inetagan/core/errors/failures.dart';
+import 'package:inetagan/core/platform/network_info.dart';
 import 'package:inetagan/features/signup/data/datasources/sign_up_remote_datasource.dart';
 import 'package:inetagan/features/signup/domain/entities/sign_up_entity.dart';
 import 'package:inetagan/features/signup/domain/repositories/sign_up_repository.dart';
 
 class SignUpRepositoryImpl implements SignUpRepository {
+  final NetworkInfo networkInfo;
   final SignUpRemoteDatasource remoteDatasource;
 
-  SignUpRepositoryImpl({required this.remoteDatasource});
+  SignUpRepositoryImpl({
+    required this.remoteDatasource,
+    required this.networkInfo,
+  });
 
   @override
   Future<Either<Failure, SignUpEntity>> signUp(
@@ -18,6 +23,10 @@ class SignUpRepositoryImpl implements SignUpRepository {
     String email,
     String password,
   ) async {
+    final isConnected = await networkInfo.isConnected();
+    if (!isConnected) {
+      return Left(ConnnectionFailure('tidak ada koneksi internet'));
+    }
     try {
       final result = await remoteDatasource.signUp(name, email, password);
       return Right(result);

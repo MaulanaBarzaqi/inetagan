@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 
 class SignUpEntity extends Equatable {
   final int id;
+  final String uuid;
   final String name;
   final String email;
   final DateTime updatedAt;
@@ -10,6 +11,7 @@ class SignUpEntity extends Equatable {
 
   const SignUpEntity({
     required this.id,
+    required this.uuid,
     required this.name,
     required this.email,
     required this.updatedAt,
@@ -18,6 +20,6 @@ class SignUpEntity extends Equatable {
 
   @override
   List<Object> get props {
-    return [id, name, email, updatedAt, createdAt];
+    return [id, uuid, name, email, updatedAt, createdAt];
   }
 }

@@ -3,6 +3,7 @@ import 'package:inetagan/features/signup/domain/entities/sign_up_entity.dart';
 class SignUpModel extends SignUpEntity {
   const SignUpModel({
     required super.id,
+    required super.uuid,
     required super.name,
     required super.email,
     required super.updatedAt,
@@ -13,6 +14,7 @@ class SignUpModel extends SignUpEntity {
     final data = json['data'];
     return SignUpModel(
       id: data['id'],
+      uuid: data['uuid'],
       name: data['name'],
       email: data['email'],
       createdAt: DateTime.parse(data['created_at']),
@@ -24,6 +26,7 @@ class SignUpModel extends SignUpEntity {
     return {
       'data': {
         'id': id,
+        'uuid': uuid,
         'name': name,
         'email': email,
         'created_at': createdAt.toIso8601String(),

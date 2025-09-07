@@ -5,7 +5,7 @@ import 'package:inetagan/gen/assets.gen.dart';
 class InputWidget extends StatelessWidget {
   final TextEditingController controller;
   final String? Function(String?)? validator;
-  final String? Function(String?)? onChanged;
+  final ValueChanged<String>? onChanged;
   final String hintText;
   final bool obscureText;
   final bool hasSuffix;

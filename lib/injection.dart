@@ -77,7 +77,10 @@ Future<void> initLocator() async {
     ),
   );
   locator.registerLazySingleton<SignUpRepository>(
-    () => SignUpRepositoryImpl(remoteDatasource: locator()),
+    () => SignUpRepositoryImpl(
+      networkInfo: locator(),
+      remoteDatasource: locator(),
+    ),
   );
   locator.registerLazySingleton<BannerRepository>(
     () => BannerRepositoryImpl(
