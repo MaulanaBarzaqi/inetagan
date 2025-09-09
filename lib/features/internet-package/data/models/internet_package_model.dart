@@ -9,7 +9,8 @@ class InternetPackageModel extends InternetPackageEntity {
     required super.idealDevice,
     required super.installation,
     required super.monthlyBill,
-    required super.image,
+    super.image,
+    super.deletedAt,
     required super.createdAt,
     required super.updatedAt,
   });
@@ -24,6 +25,9 @@ class InternetPackageModel extends InternetPackageEntity {
         installation: json["installation"],
         monthlyBill: json["monthly_bill"],
         image: json["image"],
+        deletedAt: json["deleted_at"] != null
+            ? DateTime.parse(json["deleted_at"])
+            : null,
         createdAt: DateTime.parse(json["created_at"]),
         updatedAt: DateTime.parse(json["updated_at"]),
       );
@@ -37,6 +41,7 @@ class InternetPackageModel extends InternetPackageEntity {
     "installation": installation,
     "monthly_bill": monthlyBill,
     "image": image,
+    "deleted_at": deletedAt?.toIso8601String(),
     "created_at": createdAt.toIso8601String(),
     "updated_at": updatedAt.toIso8601String(),
   };
@@ -50,6 +55,7 @@ class InternetPackageModel extends InternetPackageEntity {
     installation: installation,
     monthlyBill: monthlyBill,
     image: image,
+    deletedAt: deletedAt,
     createdAt: createdAt,
     updatedAt: updatedAt,
   );

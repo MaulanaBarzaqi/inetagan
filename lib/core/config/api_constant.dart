@@ -1,6 +1,6 @@
 class AppConstant {
   static const appName = 'Inetagan';
-  static const _host = 'http://192.168.1.8:8000';
+  static const _host = 'http://192.168.1.2:8000';
 
   /// ``` baseUrl = 'http://192.168.100.52:8000' ```
   static const baseUrl = '$_host/api';

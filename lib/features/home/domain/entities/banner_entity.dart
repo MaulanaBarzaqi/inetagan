@@ -3,18 +3,31 @@ import 'package:equatable/equatable.dart';
 class BannerEntity extends Equatable {
   final int id;
   final String title;
-  final String image;
+  final String? image;
+  final DateTime? deletedAt;
   final DateTime createdAt;
   final DateTime updatedAt;
 
   const BannerEntity({
     required this.id,
     required this.title,
-    required this.image,
+    this.image,
+    this.deletedAt,
     required this.createdAt,
     required this.updatedAt,
   });
 
   @override
-  List<Object?> get props => [id, title, image, createdAt, updatedAt];
+  List<Object?> get props => [
+    id,
+    title,
+    image,
+    deletedAt,
+    createdAt,
+    updatedAt,
+  ];
+
+  bool get hasImage => image != null && image!.isNotEmpty;
+
+  bool get isDeleted => deletedAt != null;
 }

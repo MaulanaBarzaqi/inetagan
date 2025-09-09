@@ -6,8 +6,6 @@ import 'package:go_router/go_router.dart';
 import 'package:inetagan/common/routes.dart';
 import 'package:inetagan/core/config/api_constant.dart';
 import 'package:inetagan/core/config/app_colors.dart';
-import 'package:inetagan/features/home/presentation/widgets/circle_loading_widget.dart';
-import 'package:inetagan/features/home/presentation/widgets/text_failure_widget.dart';
 import 'package:inetagan/features/internet-package/domain/entities/internet_package_entity.dart';
 import 'package:inetagan/features/internet-package/presentation/bloc/all_internet_package/all_internet_package_bloc.dart';
 import 'package:inetagan/features/internet-package/presentation/bloc/search_internet_package/search_internet_package_bloc.dart';
@@ -134,7 +132,7 @@ class _AllPackagesPageState extends State<AllPackagesPage> {
             return const Center(child: CircularProgressIndicator());
           }
           if (searchState is SearchInternetPackageFailed) {
-            return TextFailureWidget(message: searchState.message);
+            return Center(child: Text(searchState.message));
           }
           if (searchState is SearchInternetPackageSuccess &&
               searchState.data.isNotEmpty) {
@@ -145,10 +143,10 @@ class _AllPackagesPageState extends State<AllPackagesPage> {
           return BlocBuilder<AllInternetPackageBloc, AllInternetPackageState>(
             builder: (context, allState) {
               if (allState is AllInternetPackageLoading) {
-                return const CircleLoadingWidget();
+                return Center(child: CircularProgressIndicator.adaptive());
               }
               if (allState is AllInternetPackageFailed) {
-                return TextFailureWidget(message: allState.message);
+                return Center(child: Text(allState.message));
               }
               if (allState is AllInternetPackageSuccess) {
                 return listPackages(allState.data);
@@ -176,7 +174,7 @@ class _AllPackagesPageState extends State<AllPackagesPage> {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(12),
                   child: ExtendedImage.network(
-                    AppConstant.imagePackage(package.image),
+                    AppConstant.imagePackage(package.image!),
                     fit: BoxFit.cover,
                     width: 100,
                     height: 100,
@@ -191,7 +189,9 @@ class _AllPackagesPageState extends State<AllPackagesPage> {
                         );
                       }
                       if (state.extendedImageLoadState == LoadState.loading) {
-                        return const CircleLoadingWidget();
+                        return Center(
+                          child: CircularProgressIndicator.adaptive(),
+                        );
                       }
                       return null;
                     },

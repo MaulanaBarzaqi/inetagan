@@ -25,9 +25,10 @@ class BannerRepositoryImpl implements BannerRepository {
     if (online) {
       try {
         final result = await remoteDatasource.all();
-        await localDatasource.cacheAll(result);
-        final list = result.map((e) => e.toEntity).toList();
-        return Right(list);
+        await localDatasource.cacheBanners(result);
+
+        final entities = result.map((model) => model.toEntity).toList();
+        return Right(entities);
       } on TimeoutException {
         return Left(TimeoutFailure('Time out. no response'));
       } on NotFoundException catch (e) {
@@ -39,9 +40,9 @@ class BannerRepositoryImpl implements BannerRepository {
       }
     } else {
       try {
-        final result = await localDatasource.getAll();
-        final list = result.map((e) => e.toEntity).toList();
-        return Right(list);
+        final cachedBanners = await localDatasource.getCachedBanners();
+        final entities = cachedBanners.map((model) => model.toEntity).toList();
+        return Right(entities);
       } on CachedException {
         return Left(CachedFailure('data is not presents'));
       }

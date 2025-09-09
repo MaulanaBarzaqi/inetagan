@@ -8,7 +8,8 @@ class InternetPackageEntity extends Equatable {
   final String idealDevice;
   final int installation;
   final int monthlyBill;
-  final String image;
+  final String? image;
+  final DateTime? deletedAt;
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -20,13 +21,14 @@ class InternetPackageEntity extends Equatable {
     required this.idealDevice,
     required this.installation,
     required this.monthlyBill,
-    required this.image,
+    this.image,
+    this.deletedAt,
     required this.createdAt,
     required this.updatedAt,
   });
 
   @override
-  List<Object> get props {
+  List<Object?> get props {
     return [
       id,
       name,
@@ -36,8 +38,13 @@ class InternetPackageEntity extends Equatable {
       installation,
       monthlyBill,
       image,
+      deletedAt,
       createdAt,
       updatedAt,
     ];
   }
+
+  bool get hasImage => image != null && image!.isNotEmpty;
+
+  bool get isDeleted => deletedAt != null;
 }

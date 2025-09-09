@@ -1,22 +1,17 @@
-import 'package:extended_image/extended_image.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide ErrorWidget;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
-import 'package:go_router/go_router.dart';
-import 'package:inetagan/common/routes.dart';
-import 'package:inetagan/core/config/api_constant.dart';
 import 'package:inetagan/core/config/app_colors.dart';
-import 'package:inetagan/core/config/app_format.dart';
 import 'package:inetagan/core/config/app_session.dart';
 import 'package:inetagan/features/home/domain/entities/banner_entity.dart';
 import 'package:inetagan/features/home/presentation/bloc/banner/banner_bloc.dart';
-import 'package:inetagan/features/home/presentation/widgets/circle_loading_widget.dart';
-import 'package:inetagan/features/home/presentation/widgets/text_failure_widget.dart';
+import 'package:inetagan/features/home/presentation/widgets/banner/banner_widget.dart';
 import 'package:inetagan/features/internet-package/domain/entities/internet_package_entity.dart';
 import 'package:inetagan/features/internet-package/presentation/bloc/all_internet_package/all_internet_package_bloc.dart';
 import 'package:inetagan/features/signin/data/models/sign_in_model.dart';
 import 'package:inetagan/gen/assets.gen.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:inetagan/features/home/presentation/widgets/package/package_widget.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -64,7 +59,7 @@ class _HomePageState extends State<HomePage> {
             Gap(20),
             special(),
             Gap(20),
-            allInternetPackages(),
+            allPackages(),
           ],
         ),
       ),
@@ -111,83 +106,52 @@ class _HomePageState extends State<HomePage> {
         BlocBuilder<BannerBloc, BannerState>(
           builder: (context, state) {
             if (state is BannerLoading) {
-              return CircleLoadingWidget();
+              return BannerLoadingWidget();
             }
             if (state is BannerFailed) {
-              return TextFailureWidget(message: state.message);
+              return BannerErrorWidget(message: state.message);
             }
             if (state is BannerSuccess) {
               List<BannerEntity> list = state.data;
-              return AspectRatio(
-                aspectRatio: 2.5,
-                child: PageView.builder(
-                  itemCount: list.length,
-                  controller: bannerController,
-                  physics: BouncingScrollPhysics(),
-                  itemBuilder: (context, index) {
-                    BannerEntity banner = list[index];
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 15),
-                      child: SizedBox(
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(16),
-                          child: ExtendedImage.network(
-                            AppConstant.imageBanner(banner.image),
-                            fit: BoxFit.cover,
-                            handleLoadingProgress: true,
-                            loadStateChanged: (state) {
-                              if (state.extendedImageLoadState ==
-                                  LoadState.failed) {
-                                return AspectRatio(
-                                  aspectRatio: 16 / 9,
-                                  child: Material(
-                                    borderRadius: BorderRadius.circular(16),
-                                    color: Colors.grey[300],
-                                    child: const Icon(
-                                      Icons.broken_image,
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                );
-                              }
-                              if (state.extendedImageLoadState ==
-                                  LoadState.loading) {
-                                return AspectRatio(
-                                  aspectRatio: 16 / 9,
-                                  child: Material(
-                                    borderRadius: BorderRadius.circular(16),
-                                    color: Colors.grey[300],
-                                    child: const CircleLoadingWidget(),
-                                  ),
-                                );
-                              }
-                              return null;
-                            },
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
+              // Jika tidak ada data banner sama sekali
+              if (list.isEmpty) {
+                return BannerEmptyWidget();
+              }
+              // Filter hanya banner yang tidak di-delete
+              final activeBanners = list
+                  .where((banner) => !banner.isDeleted)
+                  .toList();
+              // Jika tidak ada active banners
+              if (activeBanners.isEmpty) {
+                return BannerEmptyWidget();
+              }
+              return BannerCarouselWidget(
+                banners: activeBanners,
+                controller: bannerController,
               );
             }
-            return Container();
+            return BannerLoadingWidget();
           },
         ),
         Gap(10),
         BlocBuilder<BannerBloc, BannerState>(
           builder: (context, state) {
             if (state is BannerSuccess) {
-              return SmoothPageIndicator(
-                controller: bannerController,
-                count: state.data.length,
-                effect: WormEffect(
-                  dotColor: AppColors.tertiary,
-                  activeDotColor: AppColors.primary,
-                  dotHeight: 9,
-                  dotWidth: 9,
-                ),
-              );
+              final activeBanners = state.data
+                  .where((banner) => !banner.isDeleted)
+                  .toList();
+              if (activeBanners.length > 1) {
+                return SmoothPageIndicator(
+                  controller: bannerController,
+                  count: activeBanners.length,
+                  effect: WormEffect(
+                    dotColor: AppColors.tertiary,
+                    activeDotColor: AppColors.primary,
+                    dotHeight: 9,
+                    dotWidth: 9,
+                  ),
+                );
+              }
             }
             return SizedBox();
           },
@@ -261,7 +225,7 @@ class _HomePageState extends State<HomePage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: EdgeInsetsGeometry.symmetric(horizontal: 30),
+          padding: EdgeInsets.symmetric(horizontal: 30),
           child: Text(
             'Paket Special',
             style: TextStyle(
@@ -275,132 +239,50 @@ class _HomePageState extends State<HomePage> {
         BlocBuilder<AllInternetPackageBloc, AllInternetPackageState>(
           builder: (context, state) {
             if (state is AllInternetPackageLoading) {
-              return CircleLoadingWidget();
+              return SizedBox(
+                height: 295,
+                child: Center(child: CircularProgressIndicator.adaptive()),
+              );
             }
             if (state is AllInternetPackageFailed) {
-              return TextFailureWidget(message: state.message);
+              return FailedWidget(height: 295, message: state.message);
             }
             if (state is AllInternetPackageSuccess) {
               List<InternetPackageEntity> list = state.data;
+              if (list.isEmpty) {
+                return EmptyWidget(height: 295);
+              }
               return SizedBox(
                 height: 295,
                 child: ListView.builder(
-                  itemCount: 4,
                   scrollDirection: Axis.horizontal,
+                  padding: EdgeInsets.symmetric(horizontal: 24),
+                  itemCount: list.length,
                   itemBuilder: (context, index) {
-                    InternetPackageEntity internetPackage = list[index];
-                    final margin = EdgeInsets.only(
-                      left: index == 0 ? 24 : 12,
-                      right: index == list.length - 1 ? 24 : 12,
+                    return PackageSpecialItemWidget(
+                      package: list[index],
+                      index: index,
+                      total: list.length,
                     );
-                    return buildItemSpecial(internetPackage, margin);
                   },
                 ),
               );
             }
-            return SizedBox(height: 120);
+            return SizedBox(
+              height: 295,
+              child: Center(child: CircularProgressIndicator.adaptive()),
+            );
           },
         ),
       ],
     );
   }
 
-  Widget buildItemSpecial(
-    InternetPackageEntity internetPackage,
-    EdgeInsetsGeometry margin,
-  ) {
-    return GestureDetector(
-      onTap: () => context.goNamed(RouteNames.detail, extra: internetPackage),
-      child: Container(
-        width: 252,
-        margin: margin,
-        padding: EdgeInsetsDirectional.symmetric(horizontal: 16, vertical: 14),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ExtendedImage.network(
-              AppConstant.imagePackage(internetPackage.image),
-              width: 220,
-              height: 170,
-              fit: BoxFit.cover,
-              handleLoadingProgress: true,
-              loadStateChanged: (state) {
-                if (state.extendedImageLoadState == LoadState.failed) {
-                  return AspectRatio(
-                    aspectRatio: 16 / 9,
-                    child: Material(
-                      borderRadius: BorderRadius.circular(16),
-                      color: Colors.grey[300],
-                      child: Icon(Icons.broken_image, color: Colors.black),
-                    ),
-                  );
-                }
-                if (state.extendedImageLoadState == LoadState.loading) {
-                  return AspectRatio(
-                    aspectRatio: 16 / 9,
-                    child: Material(
-                      borderRadius: BorderRadius.circular(16),
-                      color: Colors.grey[300],
-                      child: CircleLoadingWidget(),
-                    ),
-                  );
-                }
-                return null;
-              },
-            ),
-            Gap(20),
-            Text(
-              internetPackage.name,
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 18,
-                color: AppColors.tertiary,
-              ),
-            ),
-            Gap(2),
-            Text(
-              internetPackage.idealDevice,
-              style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w400,
-                color: AppColors.secondary,
-              ),
-            ),
-            Gap(2),
-            Row(
-              children: [
-                Text(
-                  AppFormat.longPrice(internetPackage.monthlyBill),
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 18,
-                    color: AppColors.primary,
-                  ),
-                ),
-                Text(
-                  '/Bulan',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 18,
-                    color: AppColors.tertiary,
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  allInternetPackages() {
+  allPackages() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 30),
+      padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -419,7 +301,7 @@ class _HomePageState extends State<HomePage> {
                   "Lihat Semua",
                   style: TextStyle(
                     fontWeight: FontWeight.w500,
-                    fontSize: 15,
+                    fontSize: 14,
                     color: AppColors.primary,
                   ),
                 ),
@@ -430,115 +312,36 @@ class _HomePageState extends State<HomePage> {
           BlocBuilder<AllInternetPackageBloc, AllInternetPackageState>(
             builder: (context, state) {
               if (state is AllInternetPackageLoading) {
-                return const CircleLoadingWidget();
+                return SizedBox(
+                  height: 200,
+                  child: Center(child: CircularProgressIndicator.adaptive()),
+                );
               }
               if (state is AllInternetPackageFailed) {
-                return TextFailureWidget(message: state.message);
+                return FailedWidget(height: 200, message: state.message);
               }
               if (state is AllInternetPackageSuccess) {
                 List<InternetPackageEntity> list = state.data;
+                // Jika tidak ada data package
+                if (list.isEmpty) {
+                  return EmptyWidget(height: 200);
+                }
                 return ListView.builder(
-                  itemCount: 3,
+                  itemCount: list.length,
                   shrinkWrap: true,
-                  physics: const BouncingScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                   itemBuilder: (context, index) {
-                    InternetPackageEntity internetPackage = list[index];
-                    return itemAllInternetPackages(internetPackage);
+                    return PackageListItemWidget(package: list[index]);
                   },
                 );
               }
-              return const SizedBox(height: 120);
+              return SizedBox(
+                height: 200,
+                child: Center(child: CircularProgressIndicator.adaptive()),
+              );
             },
           ),
         ],
-      ),
-    );
-  }
-
-  Widget itemAllInternetPackages(InternetPackageEntity internetPackage) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 20),
-      child: GestureDetector(
-        onTap: () => context.goNamed(RouteNames.detail, extra: internetPackage),
-        child: Row(
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: ExtendedImage.network(
-                AppConstant.imagePackage(internetPackage.image),
-                fit: BoxFit.cover,
-                width: 100,
-                height: 100,
-                handleLoadingProgress: true,
-                loadStateChanged: (state) {
-                  if (state.extendedImageLoadState == LoadState.failed) {
-                    return AspectRatio(
-                      aspectRatio: 16 / 9,
-                      child: Material(
-                        borderRadius: BorderRadius.circular(16),
-                        color: Colors.grey[300],
-                        child: const Icon(
-                          Icons.broken_image,
-                          color: Colors.black,
-                        ),
-                      ),
-                    );
-                  }
-                  if (state.extendedImageLoadState == LoadState.loading) {
-                    return AspectRatio(
-                      aspectRatio: 16 / 9,
-                      child: Material(
-                        borderRadius: BorderRadius.circular(16),
-                        color: Colors.grey[300],
-                        child: const CircleLoadingWidget(),
-                      ),
-                    );
-                  }
-                  return null;
-                },
-              ),
-            ),
-            const Gap(10),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    internetPackage.name,
-                    style: const TextStyle(
-                      color: AppColors.secondary,
-                      height: 1,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const Gap(10),
-                  Text(
-                    internetPackage.idealDevice,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      height: 1,
-                      fontSize: 14,
-                      color: AppColors.tertiary,
-                    ),
-                  ),
-                  const Gap(10),
-                  Text(
-                    internetPackage.speed,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      height: 1,
-                      fontSize: 14,
-                      color: AppColors.primary,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }

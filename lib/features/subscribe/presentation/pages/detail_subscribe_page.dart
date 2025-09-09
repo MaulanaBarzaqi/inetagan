@@ -10,7 +10,6 @@ import 'package:inetagan/core/config/app_format.dart';
 import 'package:inetagan/core/config/app_session.dart';
 import 'package:inetagan/core/components/button_widget.dart';
 import 'package:inetagan/core/components/loading_widget.dart';
-import 'package:inetagan/features/home/presentation/widgets/circle_loading_widget.dart';
 import 'package:inetagan/features/internet-package/domain/entities/internet_package_entity.dart';
 import 'package:inetagan/features/signin/data/models/sign_in_model.dart';
 import 'package:inetagan/features/subscribe/presentation/bloc/subscribe/subscribe_bloc.dart';
@@ -121,7 +120,7 @@ class _DetailSubscribePageState extends State<DetailSubscribePage> {
             ClipRRect(
               borderRadius: BorderRadius.circular(12),
               child: ExtendedImage.network(
-                AppConstant.imagePackage(widget.internetPackage.image),
+                AppConstant.imagePackage(widget.internetPackage.image!),
                 fit: BoxFit.cover,
                 width: 100,
                 height: 100,
@@ -136,7 +135,7 @@ class _DetailSubscribePageState extends State<DetailSubscribePage> {
                     );
                   }
                   if (state.extendedImageLoadState == LoadState.loading) {
-                    return const CircleLoadingWidget();
+                    return Center(child: CircularProgressIndicator.adaptive());
                   }
                   return null;
                 },

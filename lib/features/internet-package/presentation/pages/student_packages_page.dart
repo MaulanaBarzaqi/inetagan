@@ -6,8 +6,6 @@ import 'package:go_router/go_router.dart';
 import 'package:inetagan/common/routes.dart';
 import 'package:inetagan/core/config/api_constant.dart';
 import 'package:inetagan/core/config/app_colors.dart';
-import 'package:inetagan/features/home/presentation/widgets/circle_loading_widget.dart';
-import 'package:inetagan/features/home/presentation/widgets/text_failure_widget.dart';
 import 'package:inetagan/features/internet-package/domain/entities/internet_package_entity.dart';
 import 'package:inetagan/features/internet-package/presentation/bloc/student_package/student_package_bloc.dart';
 
@@ -36,10 +34,10 @@ class _StudentPackagesPageState extends State<StudentPackagesPage> {
       child: BlocBuilder<StudentPackageBloc, StudentPackageState>(
         builder: (context, state) {
           if (state is StudentPackageLoading) {
-            return CircleLoadingWidget();
+            return Center(child: CircularProgressIndicator.adaptive());
           }
           if (state is StudentPackageFailed) {
-            return TextFailureWidget(message: state.message);
+            return Center(child: Text(state.message));
           }
           if (state is StudentPackageSuccess) {
             List<InternetPackageEntity> list = state.data;
@@ -72,7 +70,7 @@ class _StudentPackagesPageState extends State<StudentPackagesPage> {
             ClipRRect(
               borderRadius: BorderRadius.circular(12),
               child: ExtendedImage.network(
-                AppConstant.imagePackage(package.image),
+                AppConstant.imagePackage(package.image!),
                 fit: BoxFit.cover,
                 width: 100,
                 height: 100,
@@ -97,7 +95,9 @@ class _StudentPackagesPageState extends State<StudentPackagesPage> {
                       child: Material(
                         borderRadius: BorderRadius.circular(16),
                         color: Colors.grey[300],
-                        child: const CircleLoadingWidget(),
+                        child: Center(
+                          child: CircularProgressIndicator.adaptive(),
+                        ),
                       ),
                     );
                   }
