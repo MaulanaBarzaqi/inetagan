@@ -5,13 +5,13 @@ import 'package:inetagan/core/config/app_colors.dart';
 import 'package:inetagan/core/config/app_session.dart';
 import 'package:inetagan/features/home/domain/entities/banner_entity.dart';
 import 'package:inetagan/features/home/presentation/bloc/banner/banner_bloc.dart';
-import 'package:inetagan/features/home/presentation/widgets/banner/banner_widget.dart';
+import 'package:inetagan/features/home/presentation/widgets/banner_widget.dart';
 import 'package:inetagan/features/internet-package/domain/entities/internet_package_entity.dart';
 import 'package:inetagan/features/internet-package/presentation/bloc/all_internet_package/all_internet_package_bloc.dart';
 import 'package:inetagan/features/signin/data/models/sign_in_model.dart';
 import 'package:inetagan/gen/assets.gen.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'package:inetagan/features/home/presentation/widgets/package/package_widget.dart';
+import 'package:inetagan/features/internet-package/presentation/widgets/package_widget.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -257,7 +257,7 @@ class _HomePageState extends State<HomePage> {
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   padding: EdgeInsets.symmetric(horizontal: 24),
-                  itemCount: list.length,
+                  itemCount: 4,
                   itemBuilder: (context, index) {
                     return PackageSpecialItemWidget(
                       package: list[index],
@@ -327,7 +327,7 @@ class _HomePageState extends State<HomePage> {
                   return EmptyWidget(height: 200);
                 }
                 return ListView.builder(
-                  itemCount: list.length,
+                  itemCount: 3,
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   itemBuilder: (context, index) {

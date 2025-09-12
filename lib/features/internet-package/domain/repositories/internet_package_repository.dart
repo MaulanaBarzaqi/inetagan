@@ -4,8 +4,8 @@ import 'package:inetagan/features/internet-package/domain/entities/internet_pack
 
 abstract class InternetPackageRepository {
   Future<Either<Failure, List<InternetPackageEntity>>> all();
-  Future<Either<Failure, List<InternetPackageEntity>>> student();
-  Future<Either<Failure, List<InternetPackageEntity>>> family();
-  Future<Either<Failure, List<InternetPackageEntity>>> corporate();
   Future<Either<Failure, List<InternetPackageEntity>>> search(String query);
+  Future<Either<Failure, List<InternetPackageEntity>>> getByCategory(
+    String categorySlug,
+  );
 }

@@ -1,18 +1,15 @@
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
-import 'package:go_router/go_router.dart';
-import 'package:inetagan/common/routes.dart';
-import 'package:inetagan/core/config/api_constant.dart';
 import 'package:inetagan/core/config/app_colors.dart';
+import 'package:inetagan/features/category/domain/entities/category_entity.dart';
+import 'package:inetagan/features/category/presentation/cubit/category_cubit.dart';
+import 'package:inetagan/features/category/presentation/pages/categories_tab_bar.dart';
 import 'package:inetagan/features/internet-package/domain/entities/internet_package_entity.dart';
 import 'package:inetagan/features/internet-package/presentation/bloc/all_internet_package/all_internet_package_bloc.dart';
+import 'package:inetagan/features/internet-package/presentation/bloc/get_by_category/get_by_category_bloc.dart';
 import 'package:inetagan/features/internet-package/presentation/bloc/search_internet_package/search_internet_package_bloc.dart';
-import 'package:inetagan/features/internet-package/presentation/cubit/tabbar_cubit.dart';
-import 'package:inetagan/features/internet-package/presentation/pages/corporate_packages_page.dart';
-import 'package:inetagan/features/internet-package/presentation/pages/family_packages_page.dart';
-import 'package:inetagan/features/internet-package/presentation/pages/student_packages_page.dart';
+import 'package:inetagan/features/internet-package/presentation/widgets/package_widget.dart';
 
 class AllPackagesPage extends StatefulWidget {
   const AllPackagesPage({super.key});
@@ -23,8 +20,9 @@ class AllPackagesPage extends StatefulWidget {
 
 class _AllPackagesPageState extends State<AllPackagesPage> {
   final edtSearch = TextEditingController();
+  int _selectedTabIndex = 0;
 
-  search() {
+  void search() {
     final query = edtSearch.text.trim();
     if (query.isEmpty) return;
     context.read<SearchInternetPackageBloc>().add(
@@ -32,8 +30,26 @@ class _AllPackagesPageState extends State<AllPackagesPage> {
     );
   }
 
+  void _onTabChanged(int index, List<CategoryEntity> categories) {
+    setState(() => _selectedTabIndex = index);
+    final selectedCategory = categories[index];
+
+    if (selectedCategory.slug == 'all') {
+      context.read<AllInternetPackageBloc>().add(OnAllInternetPackageEvent());
+    } else {
+      context.read<GetByCategoryBloc>().add(
+        OnGetByCategoryEvent(selectedCategory.slug),
+      );
+    }
+    context.read<SearchInternetPackageBloc>().add(
+      OnResetInternetPackageEvent(),
+    );
+    edtSearch.clear();
+  }
+
   @override
   void initState() {
+    context.read<CategoryCubit>().loadCategories();
     context.read<AllInternetPackageBloc>().add(OnAllInternetPackageEvent());
     context.read<SearchInternetPackageBloc>().add(
       OnResetInternetPackageEvent(),
@@ -43,82 +59,61 @@ class _AllPackagesPageState extends State<AllPackagesPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => TabbarCubit(),
-      child: Scaffold(
-        body: SafeArea(
-          child: Column(
-            children: [
-              const Gap(24),
-              buildSearch(),
-              const Gap(12),
-              BlocBuilder<TabbarCubit, int>(
+    return Scaffold(
+      body: SafeArea(
+        child: Column(
+          children: [
+            const Gap(24),
+            buildSearch(),
+            const Gap(12),
+            Expanded(
+              child: BlocBuilder<CategoryCubit, CategoryState>(
                 builder: (context, state) {
-                  final cubit = context.read<TabbarCubit>();
-                  return Expanded(
-                    child: Column(
+                  if (state is CategoryLoading) {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                  if (state is CategoryError) {
+                    return FailedWidget(height: 400, message: state.message);
+                  }
+                  if (state is CategoryLoaded) {
+                    final categories = context
+                        .read<CategoryCubit>()
+                        .getCategoriesWithAll();
+                    if (categories.length <= 1) {
+                      return EmptyWidget(height: 400);
+                    }
+                    return Column(
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Row(
-                              children: List.generate(cubit.labels.length, (i) {
-                                final selected = i == state;
-                                return Padding(
-                                  padding: const EdgeInsets.only(right: 12),
-                                  child: ChoiceChip(
-                                    side: BorderSide.none,
-                                    showCheckmark: false,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(30),
-                                    ),
-                                    label: Text(
-                                      cubit.labels[i],
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: selected
-                                            ? FontWeight.bold
-                                            : FontWeight.normal,
-                                        color: selected
-                                            ? AppColors.primary
-                                            : AppColors.tertiary,
-                                      ),
-                                    ),
-                                    selected: selected,
-                                    onSelected: (_) => cubit.change(i),
-                                    selectedColor: AppColors.primary.withAlpha(
-                                      60,
-                                    ),
-                                  ),
-                                );
-                              }),
-                            ),
-                          ),
+                        CategoriesTabBar(
+                          categories: categories,
+                          selectedIndex: _selectedTabIndex,
+                          onTabChanged: (index) =>
+                              _onTabChanged(index, categories),
                         ),
-                        const Gap(16),
-                        Expanded(
-                          child: switch (state) {
-                            0 => buildAllPackagePage(),
-                            1 => const StudentPackagesPage(),
-                            2 => const FamilyPackagesPage(),
-                            3 => const CorporatePackagesPage(),
-                            _ => const SizedBox.shrink(),
-                          },
-                        ),
+                        Gap(16),
+                        Expanded(child: _buildContent()),
                       ],
-                    ),
-                  );
+                    );
+                  }
+                  return SizedBox();
                 },
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  Widget buildAllPackagePage() {
+  Widget _buildContent() {
+    if (_selectedTabIndex == 0) {
+      return _buildAllPackagePage();
+    } else {
+      return _buildCategoryPackagePage();
+    }
+  }
+
+  Widget _buildAllPackagePage() {
     return RefreshIndicator.adaptive(
       onRefresh: () async {
         context.read<AllInternetPackageBloc>().add(OnAllInternetPackageEvent());
@@ -132,10 +127,33 @@ class _AllPackagesPageState extends State<AllPackagesPage> {
             return const Center(child: CircularProgressIndicator());
           }
           if (searchState is SearchInternetPackageFailed) {
-            return Center(child: Text(searchState.message));
+            return FailedWidget(height: 300, message: searchState.message);
           }
-          if (searchState is SearchInternetPackageSuccess &&
-              searchState.data.isNotEmpty) {
+          if (searchState is SearchInternetPackageSuccess) {
+            if (searchState.data.isEmpty) {
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.search_off, size: 50, color: Colors.grey),
+                  Gap(16),
+                  Text(
+                    'tidak ditemukan paket dengan kata kunci "${edtSearch.text}"',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.grey),
+                  ),
+                  Gap(20),
+                  ElevatedButton(
+                    onPressed: () {
+                      edtSearch.clear();
+                      context.read<SearchInternetPackageBloc>().add(
+                        OnResetInternetPackageEvent(),
+                      );
+                    },
+                    child: const Text('Reset Pencarian'),
+                  ),
+                ],
+              );
+            }
             return listPackages(searchState.data);
           }
 
@@ -146,9 +164,12 @@ class _AllPackagesPageState extends State<AllPackagesPage> {
                 return Center(child: CircularProgressIndicator.adaptive());
               }
               if (allState is AllInternetPackageFailed) {
-                return Center(child: Text(allState.message));
+                return FailedWidget(height: 300, message: allState.message);
               }
               if (allState is AllInternetPackageSuccess) {
+                if (allState.data.isEmpty) {
+                  return EmptyWidget(height: 300);
+                }
                 return listPackages(allState.data);
               }
               return const SizedBox();
@@ -160,84 +181,47 @@ class _AllPackagesPageState extends State<AllPackagesPage> {
   }
 
   Widget listPackages(List<InternetPackageEntity> list) {
+    if (list.isEmpty) {
+      return EmptyWidget(height: 300);
+    }
+
     return ListView.builder(
       padding: const EdgeInsets.symmetric(horizontal: 24),
       itemCount: list.length,
       itemBuilder: (context, index) {
         final package = list[index];
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 20),
-          child: GestureDetector(
-            onTap: () => context.goNamed(RouteNames.detail, extra: package),
-            child: Row(
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: ExtendedImage.network(
-                    AppConstant.imagePackage(package.image!),
-                    fit: BoxFit.cover,
-                    width: 100,
-                    height: 100,
-                    handleLoadingProgress: true,
-                    loadStateChanged: (state) {
-                      if (state.extendedImageLoadState == LoadState.failed) {
-                        return Container(
-                          width: 100,
-                          height: 100,
-                          color: Colors.grey[300],
-                          child: const Icon(Icons.broken_image),
-                        );
-                      }
-                      if (state.extendedImageLoadState == LoadState.loading) {
-                        return Center(
-                          child: CircularProgressIndicator.adaptive(),
-                        );
-                      }
-                      return null;
-                    },
-                  ),
-                ),
-                const Gap(10),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        package.name,
-                        style: const TextStyle(
-                          color: AppColors.secondary,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const Gap(10),
-                      Text(
-                        package.idealDevice,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: AppColors.tertiary,
-                        ),
-                      ),
-                      const Gap(10),
-                      Text(
-                        package.speed,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: AppColors.primary,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
+        return ItemListPackageWidget(package: package);
+      },
+    );
+  }
+
+  Widget _buildCategoryPackagePage() {
+    return RefreshIndicator.adaptive(
+      onRefresh: () async {
+        final categories = context.read<CategoryCubit>().getCategoriesWithAll();
+        final selectedCategory = categories[_selectedTabIndex];
+        context.read<GetByCategoryBloc>().add(
+          OnGetByCategoryEvent(selectedCategory.slug),
         );
       },
+      child: BlocBuilder<GetByCategoryBloc, GetByCategoryState>(
+        builder: (context, state) {
+          if (state is GetByCategoryLoading) {
+            return Center(child: CircularProgressIndicator());
+          }
+          if (state is GetByCategoryFailed) {
+            return FailedWidget(height: 300, message: state.message);
+          }
+          if (state is GetByCategorySuccess) {
+            if (state.data.isEmpty) {
+              return EmptyWidget(height: 300);
+            }
+            return listPackages(state.data);
+          }
+
+          return SizedBox();
+        },
+      ),
     );
   }
 

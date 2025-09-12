@@ -1,5 +1,5 @@
 import 'package:http/http.dart' as http;
-import 'package:inetagan/core/config/api_constant.dart';
+import 'package:inetagan/core/config/app_constant.dart';
 import 'package:inetagan/core/config/app_request.dart';
 import 'package:inetagan/core/config/app_response.dart';
 import 'package:inetagan/core/config/app_session.dart';

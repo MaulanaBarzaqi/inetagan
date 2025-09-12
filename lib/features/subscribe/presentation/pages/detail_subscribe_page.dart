@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:inetagan/common/routes.dart';
-import 'package:inetagan/core/config/api_constant.dart';
+import 'package:inetagan/core/config/app_constant.dart';
 import 'package:inetagan/core/config/app_colors.dart';
 import 'package:inetagan/core/config/app_format.dart';
 import 'package:inetagan/core/config/app_session.dart';

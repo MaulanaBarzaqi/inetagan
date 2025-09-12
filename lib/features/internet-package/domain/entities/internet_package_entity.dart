@@ -1,9 +1,10 @@
 import 'package:equatable/equatable.dart';
+import 'package:inetagan/features/category/domain/entities/category_entity.dart';
 
 class InternetPackageEntity extends Equatable {
   final int id;
   final String name;
-  final String category;
+  final CategoryEntity? category;
   final String speed;
   final String idealDevice;
   final int installation;
@@ -16,7 +17,7 @@ class InternetPackageEntity extends Equatable {
   const InternetPackageEntity({
     required this.id,
     required this.name,
-    required this.category,
+    this.category,
     required this.speed,
     required this.idealDevice,
     required this.installation,

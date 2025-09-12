@@ -19,15 +19,17 @@ class InternetPackageRepositoryImpl implements InternetPackageRepository {
     required this.remoteDatasource,
     required this.localDatasource,
   });
+
   @override
   Future<Either<Failure, List<InternetPackageEntity>>> all() async {
-    bool online = await networkInfo.isConnected();
+    final bool online = await networkInfo.isConnected();
     if (online) {
       try {
         final result = await remoteDatasource.all();
-        await localDatasource.cacheAll(result);
-        final list = result.map((e) => e.toEntity).toList();
-        return Right(list);
+        await localDatasource.cacheInternetPackages(result);
+
+        final entities = result.map((model) => model.toEntity).toList();
+        return Right(entities);
       } on TimeoutException {
         return Left(TimeoutFailure('Time out. no response'));
       } on NotFoundException catch (e) {
@@ -39,66 +41,16 @@ class InternetPackageRepositoryImpl implements InternetPackageRepository {
       }
     } else {
       try {
-        final result = await localDatasource.getAll();
-        final list = result.map((e) => e.toEntity).toList();
-        return Right(list);
-      } on CachedException {
-        return Left(CachedFailure('data is not presents'));
+        final cachedPackages = await localDatasource
+            .getCachedInternetPackages();
+        final entities = cachedPackages.map((model) => model.toEntity).toList();
+
+        return Right(entities);
+      } on CachedException catch (e) {
+        return Left(CachedFailure(e.message));
+      } catch (e) {
+        return Left(CachedFailure('failed to load cached packages: $e'));
       }
-    }
-  }
-
-  @override
-  Future<Either<Failure, List<InternetPackageEntity>>> corporate() async {
-    try {
-      final result = await remoteDatasource.corporate();
-
-      final list = result.map((e) => e.toEntity).toList();
-      return Right(list);
-    } on TimeoutException {
-      return Left(TimeoutFailure('Time out. no response'));
-    } on NotFoundException catch (e) {
-      return Left(NotFoundFailure(e.message.toString()));
-    } on ServerException {
-      return Left(ServerFailure('server error'));
-    } catch (e) {
-      return Left(ServerFailure('something went wrong: $e'));
-    }
-  }
-
-  @override
-  Future<Either<Failure, List<InternetPackageEntity>>> family() async {
-    try {
-      final result = await remoteDatasource.family();
-
-      final list = result.map((e) => e.toEntity).toList();
-      return Right(list);
-    } on TimeoutException {
-      return Left(TimeoutFailure('Time out. no response'));
-    } on NotFoundException catch (e) {
-      return Left(NotFoundFailure(e.message.toString()));
-    } on ServerException {
-      return Left(ServerFailure('server error'));
-    } catch (e) {
-      return Left(ServerFailure('something went wrong: $e'));
-    }
-  }
-
-  @override
-  Future<Either<Failure, List<InternetPackageEntity>>> student() async {
-    try {
-      final result = await remoteDatasource.student();
-
-      final list = result.map((e) => e.toEntity).toList();
-      return Right(list);
-    } on TimeoutException {
-      return Left(TimeoutFailure('Time out. no response'));
-    } on NotFoundException catch (e) {
-      return Left(NotFoundFailure(e.message.toString()));
-    } on ServerException {
-      return Left(ServerFailure('server error'));
-    } catch (e) {
-      return Left(ServerFailure('something went wrong: $e'));
     }
   }
 
@@ -106,19 +58,80 @@ class InternetPackageRepositoryImpl implements InternetPackageRepository {
   Future<Either<Failure, List<InternetPackageEntity>>> search(
     String query,
   ) async {
-    try {
-      final result = await remoteDatasource.search(query);
+    final bool online = await networkInfo.isConnected();
+    if (online) {
+      try {
+        final result = await remoteDatasource.search(query);
 
-      final list = result.map((e) => e.toEntity).toList();
-      return Right(list);
-    } on TimeoutException {
-      return Left(TimeoutFailure('Time out. no response'));
-    } on NotFoundException catch (e) {
-      return Left(NotFoundFailure(e.message.toString()));
-    } on ServerException {
-      return Left(ServerFailure('server error'));
-    } catch (e) {
-      return Left(ServerFailure('something went wrong: $e'));
+        final entities = result.map((model) => model.toEntity).toList();
+        return Right(entities);
+      } on TimeoutException {
+        return Left(TimeoutFailure('Time out. no response'));
+      } on NotFoundException catch (e) {
+        return Left(NotFoundFailure(e.message.toString()));
+      } on ServerException {
+        return Left(ServerFailure('server error'));
+      } catch (e) {
+        return Left(ServerFailure('failed to search packages: $e'));
+      }
+    } else {
+      try {
+        final cachedPackages = await localDatasource
+            .getCachedInternetPackages();
+        final searchedPackages = cachedPackages
+            .where(
+              (package) =>
+                  package.name.toLowerCase().contains(query.toLowerCase()),
+            )
+            .toList();
+        final entities = searchedPackages
+            .map((model) => model.toEntity)
+            .toList();
+        return Right(entities);
+      } on CachedException catch (e) {
+        return Left(CachedFailure(e.message));
+      } catch (e) {
+        return Left(CachedFailure('Failed to search cached packages: $e'));
+      }
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<InternetPackageEntity>>> getByCategory(
+    String categorySlug,
+  ) async {
+    final bool online = await networkInfo.isConnected();
+    if (online) {
+      try {
+        final result = await remoteDatasource.getByCategory(categorySlug);
+        final entities = result.map((model) => model.toEntity).toList();
+
+        return Right(entities);
+      } on TimeoutException {
+        return Left(TimeoutFailure('Time out. no response'));
+      } on NotFoundException catch (e) {
+        return Left(NotFoundFailure(e.message.toString()));
+      } on ServerException {
+        return Left(ServerFailure('server error'));
+      } catch (e) {
+        return Left(ServerFailure('Failed to load packages by category: $e'));
+      }
+    } else {
+      try {
+        final cachedPackages = await localDatasource
+            .getCachedInternetPackages();
+        final filteredPackages = cachedPackages
+            .where((package) => package.category?.slug == categorySlug)
+            .toList();
+        final entities = filteredPackages
+            .map((model) => model.toEntity)
+            .toList();
+        return Right(entities);
+      } on CachedException catch (e) {
+        return Left(CachedFailure(e.message));
+      } catch (e) {
+        return Left(CachedFailure('Failed to filter cached packages: $e'));
+      }
     }
   }
 }

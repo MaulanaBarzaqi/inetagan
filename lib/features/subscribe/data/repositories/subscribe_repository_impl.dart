@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:dartz/dartz.dart';
 import 'package:inetagan/core/errors/exceptions.dart';
 import 'package:inetagan/core/errors/failures.dart';

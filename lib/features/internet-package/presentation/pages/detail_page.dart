@@ -98,24 +98,28 @@ class _DetailPageState extends State<DetailPage> {
           ),
           Gap(34),
           DetailItemWidget(
-            text: 'Untuk',
+            label: 'Untuk',
             detail: widget.internetPackage.idealDevice,
           ),
           Gap(11),
-          DetailItemWidget(text: 'speed', detail: widget.internetPackage.speed),
-          Gap(11),
           DetailItemWidget(
-            text: 'Cocok untuk',
-            detail: widget.internetPackage.category,
+            label: 'speed',
+            detail: widget.internetPackage.speed,
           ),
           Gap(11),
           DetailItemWidget(
-            text: 'Biaya Pemasangan',
+            label: 'kategori',
+            detail:
+                widget.internetPackage.category?.name ?? 'tidak ada category',
+          ),
+          Gap(11),
+          DetailItemWidget(
+            label: 'Biaya Pemasangan',
             detail: widget.internetPackage.installation,
           ),
           Gap(11),
           DetailItemWidget(
-            text: 'Biaya Bulanan',
+            label: 'Biaya Bulanan',
             detail: widget.internetPackage.monthlyBill,
           ),
           Gap(50),

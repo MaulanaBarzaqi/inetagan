@@ -5,9 +5,13 @@ import 'package:inetagan/core/config/app_format.dart';
 import 'package:inetagan/gen/assets.gen.dart';
 
 class DetailItemWidget extends StatelessWidget {
-  final String text;
+  final String label;
   final dynamic detail;
-  const DetailItemWidget({super.key, required this.text, required this.detail});
+  const DetailItemWidget({
+    super.key,
+    required this.label,
+    required this.detail,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +32,7 @@ class DetailItemWidget extends StatelessWidget {
           Assets.icons.squareCheckBig.svg(width: 24, height: 24),
           Gap(15),
           Text(
-            text,
+            label,
             style: TextStyle(
               fontWeight: FontWeight.w400,
               fontSize: 12,
