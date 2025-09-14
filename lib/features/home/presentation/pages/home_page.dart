@@ -7,7 +7,7 @@ import 'package:inetagan/features/home/presentation/bloc/banner/banner_bloc.dart
 import 'package:inetagan/features/home/presentation/widgets/banner_widget.dart';
 import 'package:inetagan/features/internet-package/domain/entities/internet_package_entity.dart';
 import 'package:inetagan/features/internet-package/presentation/bloc/all_internet_package/all_internet_package_bloc.dart';
-import 'package:inetagan/features/profile/presentation/bloc/cubit/profile_cubit.dart';
+import 'package:inetagan/features/profile/presentation/cubit/profile/profile_cubit.dart';
 import 'package:inetagan/gen/assets.gen.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:inetagan/features/internet-package/presentation/widgets/package_widget.dart';

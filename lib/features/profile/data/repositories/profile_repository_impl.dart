@@ -6,6 +6,7 @@ class ProfileRepositoryImpl extends ProfileRepository {
   final ProfileLocalDatasource localDatasource;
 
   ProfileRepositoryImpl(this.localDatasource);
+
   @override
   Future<UserEntity?> getProfile() async {
     try {
@@ -13,6 +14,15 @@ class ProfileRepositoryImpl extends ProfileRepository {
       return profile;
     } catch (e) {
       throw Exception('Failed to get profile from repository: $e');
+    }
+  }
+
+  @override
+  Future<void> logOut() async {
+    try {
+      await localDatasource.logOut();
+    } catch (e) {
+      throw Exception('Failed to logout from repository: $e');
     }
   }
 }

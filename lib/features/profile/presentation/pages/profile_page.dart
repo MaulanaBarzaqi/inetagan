@@ -4,8 +4,8 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:inetagan/common/routes.dart';
 import 'package:inetagan/core/config/app_colors.dart';
-import 'package:inetagan/features/profile/data/models/user_model.dart';
-import 'package:inetagan/features/profile/presentation/bloc/cubit/profile_cubit.dart';
+import 'package:inetagan/features/profile/presentation/cubit/log_out/log_out_cubit.dart';
+import 'package:inetagan/features/profile/presentation/cubit/profile/profile_cubit.dart';
 import 'package:inetagan/gen/assets.gen.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -16,75 +16,157 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  UserModel? currentUser;
+  bool _isMounted = false;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPersistentFrameCallback((_) {
-      context.read<ProfileCubit>().getProfile();
+    _isMounted = true;
+
+    Future.delayed(Duration.zero, () {
+      if (_isMounted) {
+        context.read<ProfileCubit>().getProfile();
+      }
     });
   }
 
   @override
+  void dispose() {
+    _isMounted = false;
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ProfileCubit, ProfileState>(
-      builder: (context, state) {
-        return ListView(
-          padding: EdgeInsets.all(0),
-          children: [
-            Gap(30 + MediaQuery.of(context).padding.top),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 24),
-              child: Text(
-                'My Profile',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 30,
-                  color: AppColors.primary,
-                ),
-              ),
-            ),
-            Gap(41),
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 30),
-              padding: EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Column(
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<LogOutCubit, LogOutState>(
+          listener: (context, state) {
+            if (state is LogOutSuccess && _isMounted) {
+              context.goNamed(RouteNames.signin);
+            }
+          },
+        ),
+      ],
+      child: Stack(
+        children: [
+          BlocBuilder<ProfileCubit, ProfileState>(
+            builder: (context, state) {
+              return ListView(
+                padding: EdgeInsets.all(0),
                 children: [
-                  buildProfile(state),
-                  Gap(20),
-                  buildItemProfile(
-                    icon: Assets.icons.icEditProfile,
-                    label: 'Edit Profile',
-                    ontap: () {},
+                  Gap(30 + MediaQuery.of(context).padding.top),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 24),
+                    child: Text(
+                      'My Profile',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 30,
+                        color: AppColors.primary,
+                      ),
+                    ),
                   ),
-                  buildItemProfile(
-                    icon: Assets.icons.wifi,
-                    label: 'Pemasangan Saya',
-                    ontap: () {
-                      context.goNamed(RouteNames.getSubscribe);
-                    },
-                  ),
-                  buildItemProfile(
-                    icon: Assets.icons.lockKeyhole,
-                    label: 'Ganti Password',
-                    ontap: () {},
-                  ),
-                  buildItemProfile(
-                    icon: Assets.icons.icLogout,
-                    label: 'Logout',
-                    ontap: () {},
+                  Gap(41),
+                  Container(
+                    margin: EdgeInsets.symmetric(horizontal: 30),
+                    padding: EdgeInsets.all(24),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Column(
+                      children: [
+                        buildProfile(state),
+                        Gap(20),
+                        buildItemProfile(
+                          icon: Assets.icons.icEditProfile,
+                          label: 'Edit Profile',
+                          ontap: () {},
+                        ),
+                        buildItemProfile(
+                          icon: Assets.icons.wifi,
+                          label: 'Pemasangan Saya',
+                          ontap: () {
+                            context.goNamed(RouteNames.getSubscribe);
+                          },
+                        ),
+                        buildItemProfile(
+                          icon: Assets.icons.lockKeyhole,
+                          label: 'Ganti Password',
+                          ontap: () {},
+                        ),
+                        buildItemProfile(
+                          icon: Assets.icons.icLogout,
+                          label: 'Logout',
+                          ontap: () async {
+                            final shouldLogout = await showDialog<bool>(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                title: Text("Log out"),
+                                content: Text("are you sure want to logout?"),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () =>
+                                        Navigator.pop(context, false),
+                                    child: Text("cancel"),
+                                  ),
+                                  TextButton(
+                                    onPressed: () =>
+                                        Navigator.pop(context, true),
+                                    child: Text("logout"),
+                                  ),
+                                ],
+                              ),
+                            );
+                            if (shouldLogout == true && _isMounted) {
+                              context.read<LogOutCubit>().logOut();
+                            }
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                 ],
-              ),
-            ),
-          ],
-        );
-      },
+              );
+            },
+          ),
+          BlocBuilder<LogOutCubit, LogOutState>(
+            builder: (context, state) {
+              if (state is LogOutLoading && _isMounted) {
+                return Container(
+                  color: Colors.black.withValues(alpha: 0.3),
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        AppColors.primary,
+                      ),
+                    ),
+                  ),
+                );
+              }
+              return SizedBox.shrink();
+            },
+          ),
+          BlocBuilder<ProfileCubit, ProfileState>(
+            builder: (context, state) {
+              if (state is ProfileLoading && _isMounted) {
+                return Container(
+                  color: Colors.black.withValues(alpha: 0.3),
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        AppColors.primary,
+                      ),
+                    ),
+                  ),
+                );
+              }
+              return SizedBox.shrink();
+            },
+          ),
+        ],
+      ),
     );
   }
 
@@ -185,7 +267,11 @@ class _ProfilePageState extends State<ProfilePage> {
           if (state is ProfileError || state is ProfileEmpty)
             IconButton(
               icon: Icon(Icons.refresh, color: AppColors.primary),
-              onPressed: () => context.read<ProfileCubit>().getProfile(),
+              onPressed: () {
+                if (_isMounted) {
+                  context.read<ProfileCubit>().getProfile();
+                }
+              },
             ),
         ],
       ),

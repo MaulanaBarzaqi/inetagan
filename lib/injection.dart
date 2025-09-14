@@ -36,7 +36,9 @@ import 'package:inetagan/features/profile/data/datasources/profile_local_datasou
 import 'package:inetagan/features/profile/data/repositories/profile_repository_impl.dart';
 import 'package:inetagan/features/profile/domain/repositories/profile_repository.dart';
 import 'package:inetagan/features/profile/domain/usecases/get_profile_usecase.dart';
-import 'package:inetagan/features/profile/presentation/bloc/cubit/profile_cubit.dart';
+import 'package:inetagan/features/profile/domain/usecases/log_out_usecase.dart';
+import 'package:inetagan/features/profile/presentation/cubit/log_out/log_out_cubit.dart';
+import 'package:inetagan/features/profile/presentation/cubit/profile/profile_cubit.dart';
 import 'package:inetagan/features/subscribe/data/datasources/subscribe_remote_datasource.dart';
 import 'package:inetagan/features/subscribe/data/repositories/subscribe_repository_impl.dart';
 import 'package:inetagan/features/subscribe/domain/repositories/subscribe_repository.dart';
@@ -60,6 +62,7 @@ Future<void> initLocator() async {
   locator.registerFactory(() => SignInBloc(locator()));
   locator.registerFactory(() => SignUpBloc(locator()));
   locator.registerFactory(() => ProfileCubit(locator()));
+  locator.registerFactory(() => LogOutCubit(locator()));
 
   // usecase
   locator.registerLazySingleton(() => SignInUsecase(locator()));
@@ -72,6 +75,7 @@ Future<void> initLocator() async {
   locator.registerLazySingleton(() => SubscribeUsecase(locator()));
   locator.registerLazySingleton(() => GetSubscriptionUsecase(locator()));
   locator.registerLazySingleton(() => GetProfileUsecase(locator()));
+  locator.registerLazySingleton(() => LogOutUsecase(locator()));
 
   // repository
   locator.registerLazySingleton<AuthRepository>(

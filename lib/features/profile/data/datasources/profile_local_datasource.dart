@@ -4,6 +4,7 @@ import 'package:inetagan/features/profile/data/models/user_model.dart';
 
 abstract class ProfileLocalDatasource {
   Future<UserModel?> getProfile();
+  Future<void> logOut();
 }
 
 class ProfileLocalDatasourceImpl implements ProfileLocalDatasource {
@@ -21,6 +22,16 @@ class ProfileLocalDatasourceImpl implements ProfileLocalDatasource {
       return UserModel.fromAuthModel(authModel);
     } catch (e) {
       throw Exception('Failed to get profile: $e');
+    }
+  }
+
+  @override
+  Future<void> logOut() async {
+    try {
+      await authLocalDatasource.clearUserData();
+      await authLocalDatasource.removeToken();
+    } catch (e) {
+      throw Exception('Failed to logout: $e');
     }
   }
 }

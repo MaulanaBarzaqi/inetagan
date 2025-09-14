@@ -10,7 +10,8 @@ import 'package:inetagan/features/home/presentation/cubit/dashboard_cubit.dart';
 import 'package:inetagan/features/internet-package/presentation/bloc/all_internet_package/all_internet_package_bloc.dart';
 import 'package:inetagan/features/internet-package/presentation/bloc/get_by_category/get_by_category_bloc.dart';
 import 'package:inetagan/features/internet-package/presentation/bloc/search_internet_package/search_internet_package_bloc.dart';
-import 'package:inetagan/features/profile/presentation/bloc/cubit/profile_cubit.dart';
+import 'package:inetagan/features/profile/presentation/cubit/log_out/log_out_cubit.dart';
+import 'package:inetagan/features/profile/presentation/cubit/profile/profile_cubit.dart';
 import 'package:inetagan/features/subscribe/presentation/bloc/get_subscription/get_subscription_bloc.dart';
 import 'package:inetagan/features/subscribe/presentation/bloc/subscribe/subscribe_bloc.dart';
 import 'package:inetagan/injection.dart';
@@ -30,6 +31,7 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider(create: (_) => DashboardCubit()),
         BlocProvider(create: (_) => locator<ProfileCubit>()),
+        BlocProvider(create: (_) => locator<LogOutCubit>()),
         BlocProvider(create: (_) => locator<SignInBloc>()),
         BlocProvider(create: (_) => locator<SignUpBloc>()),
         BlocProvider(create: (_) => locator<CategoryCubit>()),

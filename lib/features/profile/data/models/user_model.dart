@@ -28,6 +28,19 @@ class UserModel extends UserEntity {
     updatedAt: DateTime.parse(json["updated_at"]),
   );
 
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "uuid": uuid,
+    "name": name,
+    "email": email,
+    "role": role,
+    "region_id": regionId,
+    "device_token": deviceToken,
+    "email_verified_at": emailVerifiedAt,
+    "created_at": createdAt.toIso8601String(),
+    "updated_at": updatedAt.toIso8601String(),
+  };
+
   factory UserModel.fromAuthModel(AuthModel authModel) {
     final user = authModel.data;
     return UserModel(
@@ -42,17 +55,4 @@ class UserModel extends UserEntity {
       updatedAt: user.updatedAt,
     );
   }
-
-  Map<String, dynamic> toJson() => {
-    "id": id,
-    "uuid": uuid,
-    "name": name,
-    "email": email,
-    "role": role,
-    "region_id": regionId,
-    "device_token": deviceToken,
-    "email_verified_at": emailVerifiedAt,
-    "created_at": createdAt.toIso8601String(),
-    "updated_at": updatedAt.toIso8601String(),
-  };
 }
