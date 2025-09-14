@@ -8,7 +8,7 @@ import 'package:inetagan/core/config/app_format.dart';
 import 'package:inetagan/core/config/app_session.dart';
 import 'package:inetagan/core/components/button_widget.dart';
 import 'package:inetagan/core/components/loading_widget.dart';
-import 'package:inetagan/features/signin/data/models/sign_in_model.dart';
+import 'package:inetagan/features/profile/data/models/user_model.dart';
 import 'package:inetagan/features/subscribe/domain/entities/subscribe_entity.dart';
 import 'package:inetagan/features/subscribe/presentation/bloc/get_subscription/get_subscription_bloc.dart';
 import 'package:inetagan/features/subscribe/presentation/widgets/detail_item_widget.dart';
@@ -23,7 +23,7 @@ class GetSubscribePage extends StatefulWidget {
 
 class _GetSubscribePageState extends State<GetSubscribePage> {
   SubscribeEntity? subscribe;
-  SignInModel? currentUser;
+  UserModel? currentUser;
 
   @override
   void initState() {

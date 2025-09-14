@@ -1,0 +1,5 @@
+import 'package:inetagan/features/profile/domain/entities/user_entity.dart';
+
+abstract class ProfileRepository {
+  Future<UserEntity?> getProfile();
+}

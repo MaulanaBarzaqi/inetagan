@@ -1,5 +1,5 @@
 import 'package:inetagan/features/internet-package/data/models/internet_package_model.dart';
-import 'package:inetagan/features/signin/data/models/sign_in_model.dart';
+import 'package:inetagan/features/profile/data/models/user_model.dart';
 import 'package:inetagan/features/subscribe/domain/entities/subscribe_entity.dart';
 
 class SubscribeModel extends SubscribeEntity {
@@ -65,9 +65,7 @@ class SubscribeModel extends SubscribeEntity {
       internetPackage: data["internet_package"] != null
           ? InternetPackageModel.fromJson(data["internet_package"])
           : null,
-      user: data["user"] != null
-          ? SignInModel.fromJsonRead(data["user"])
-          : null,
+      user: data["user"] != null ? UserModel.fromJson(data["user"]) : null,
     );
   }
 
@@ -85,6 +83,6 @@ class SubscribeModel extends SubscribeEntity {
     "internet_package": internetPackage != null
         ? (internetPackage as InternetPackageModel).toJson()
         : null,
-    "user": user != null ? (user as SignInModel).toJson() : null,
+    "user": user != null ? (user as UserModel).toJson() : null,
   };
 }

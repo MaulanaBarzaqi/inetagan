@@ -1,14 +1,13 @@
-import 'package:flutter/material.dart' hide ErrorWidget;
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:inetagan/core/config/app_colors.dart';
-import 'package:inetagan/core/config/app_session.dart';
 import 'package:inetagan/features/home/domain/entities/banner_entity.dart';
 import 'package:inetagan/features/home/presentation/bloc/banner/banner_bloc.dart';
 import 'package:inetagan/features/home/presentation/widgets/banner_widget.dart';
 import 'package:inetagan/features/internet-package/domain/entities/internet_package_entity.dart';
 import 'package:inetagan/features/internet-package/presentation/bloc/all_internet_package/all_internet_package_bloc.dart';
-import 'package:inetagan/features/signin/data/models/sign_in_model.dart';
+import 'package:inetagan/features/profile/presentation/bloc/cubit/profile_cubit.dart';
 import 'package:inetagan/gen/assets.gen.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:inetagan/features/internet-package/presentation/widgets/package_widget.dart';
@@ -22,25 +21,17 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final bannerController = PageController();
-  SignInModel? currentUser;
 
   refresh() {
     context.read<AllInternetPackageBloc>().add(OnAllInternetPackageEvent());
     context.read<BannerBloc>().add(OnBannerEvent());
+    context.read<ProfileCubit>().getProfile();
   }
 
   @override
   void initState() {
     refresh();
-    _loadUser();
     super.initState();
-  }
-
-  Future<void> _loadUser() async {
-    final user = await AppSession.getUser();
-    setState(() {
-      currentUser = user;
-    });
   }
 
   @override
@@ -67,35 +58,44 @@ class _HomePageState extends State<HomePage> {
   }
 
   header() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 30),
-      child: Row(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(color: Theme.of(context).primaryColor),
-            ),
-            padding: EdgeInsets.all(2),
-            child: CircleAvatar(
-              radius: 16,
-              backgroundColor: Colors.transparent,
-              child: Assets.icons.circleUser.svg(height: 24, width: 24),
-            ),
+    return BlocBuilder<ProfileCubit, ProfileState>(
+      builder: (context, state) {
+        String userName = 'Hi, User!';
+
+        if (state is ProfileLoaded) {
+          userName = 'Hi, ${state.profile.name}';
+        }
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 30),
+          child: Row(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(color: Theme.of(context).primaryColor),
+                ),
+                padding: EdgeInsets.all(2),
+                child: CircleAvatar(
+                  radius: 16,
+                  backgroundColor: Colors.transparent,
+                  child: Assets.icons.circleUser.svg(height: 24, width: 24),
+                ),
+              ),
+              SizedBox(width: 8),
+              Text(
+                userName,
+                style: TextStyle(
+                  fontWeight: FontWeight.normal,
+                  fontSize: 14,
+                  color: AppColors.tertiary,
+                ),
+              ),
+              Spacer(),
+              Icon(Icons.notifications_none),
+            ],
           ),
-          SizedBox(width: 8),
-          Text(
-            currentUser != null ? 'Hi, ${currentUser!.name}' : 'Hi, User',
-            style: TextStyle(
-              fontWeight: FontWeight.normal,
-              fontSize: 14,
-              color: AppColors.tertiary,
-            ),
-          ),
-          Spacer(),
-          Icon(Icons.notifications_none),
-        ],
-      ),
+        );
+      },
     );
   }
 

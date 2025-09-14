@@ -1,16 +1,16 @@
 import 'dart:convert';
-import 'package:inetagan/features/signin/data/models/sign_in_model.dart';
+import 'package:inetagan/features/profile/data/models/user_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AppSession {
   // USER
-  static Future<SignInModel?> getUser() async {
+  static Future<UserModel?> getUser() async {
     final pref = await SharedPreferences.getInstance();
     String? userString = pref.getString('data');
     if (userString == null) return null;
 
     var userMap = jsonDecode(userString);
-    return SignInModel.fromJson(userMap);
+    return UserModel.fromJson(userMap);
   }
 
   static Future<bool> setUser(Map userMap) async {

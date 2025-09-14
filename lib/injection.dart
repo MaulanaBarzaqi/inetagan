@@ -2,6 +2,12 @@ import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:inetagan/core/platform/network_info.dart';
+import 'package:inetagan/features/auth/data/datasources/auth_local_datasource.dart';
+import 'package:inetagan/features/auth/data/datasources/auth_remote_datasource.dart';
+import 'package:inetagan/features/auth/data/repositories/auth_repository_impl.dart';
+import 'package:inetagan/features/auth/domain/repositories/auth_repository.dart';
+import 'package:inetagan/features/auth/presentation/bloc/sign_in/sign_in_bloc.dart';
+import 'package:inetagan/features/auth/presentation/bloc/sign_up/sign_up_bloc.dart';
 import 'package:inetagan/features/category/data/datasources/category_local_datasource.dart';
 import 'package:inetagan/features/category/data/datasources/category_remote_datasource.dart';
 import 'package:inetagan/features/category/data/repositories/category_repository_impl.dart';
@@ -24,17 +30,13 @@ import 'package:inetagan/features/internet-package/domain/usecases/search_intern
 import 'package:inetagan/features/internet-package/presentation/bloc/all_internet_package/all_internet_package_bloc.dart';
 import 'package:inetagan/features/internet-package/presentation/bloc/get_by_category/get_by_category_bloc.dart';
 import 'package:inetagan/features/internet-package/presentation/bloc/search_internet_package/search_internet_package_bloc.dart';
-import 'package:inetagan/features/signin/data/datasources/sign_in_local_datasource.dart';
-import 'package:inetagan/features/signin/data/datasources/sign_in_remote_datasource.dart';
-import 'package:inetagan/features/signin/data/repositories/sign_in_repository_impl.dart';
-import 'package:inetagan/features/signin/domain/repositories/sign_in_repository.dart';
-import 'package:inetagan/features/signin/domain/usecases/sign_in_usecase.dart';
-import 'package:inetagan/features/signin/presentation/bloc/signin_bloc.dart';
-import 'package:inetagan/features/signup/data/datasources/sign_up_remote_datasource.dart';
-import 'package:inetagan/features/signup/data/repositories/sign_up_repository_impl.dart';
-import 'package:inetagan/features/signup/domain/repositories/sign_up_repository.dart';
-import 'package:inetagan/features/signup/domain/usecases/sign_up_usecase.dart';
-import 'package:inetagan/features/signup/presentation/bloc/signup_bloc.dart';
+import 'package:inetagan/features/auth/domain/usecases/sign_in_usecase.dart';
+import 'package:inetagan/features/auth/domain/usecases/sign_up_usecase.dart';
+import 'package:inetagan/features/profile/data/datasources/profile_local_datasource.dart';
+import 'package:inetagan/features/profile/data/repositories/profile_repository_impl.dart';
+import 'package:inetagan/features/profile/domain/repositories/profile_repository.dart';
+import 'package:inetagan/features/profile/domain/usecases/get_profile_usecase.dart';
+import 'package:inetagan/features/profile/presentation/bloc/cubit/profile_cubit.dart';
 import 'package:inetagan/features/subscribe/data/datasources/subscribe_remote_datasource.dart';
 import 'package:inetagan/features/subscribe/data/repositories/subscribe_repository_impl.dart';
 import 'package:inetagan/features/subscribe/domain/repositories/subscribe_repository.dart';
@@ -48,8 +50,6 @@ final locator = GetIt.instance;
 
 Future<void> initLocator() async {
   // bloc
-  locator.registerFactory(() => SigninBloc(locator()));
-  locator.registerFactory(() => SignupBloc(locator()));
   locator.registerFactory(() => BannerBloc(locator()));
   locator.registerFactory(() => CategoryCubit(locator()));
   locator.registerFactory(() => GetByCategoryBloc(locator()));
@@ -57,6 +57,9 @@ Future<void> initLocator() async {
   locator.registerFactory(() => SearchInternetPackageBloc(locator()));
   locator.registerFactory(() => SubscribeBloc(locator()));
   locator.registerFactory(() => GetSubscriptionBloc(locator()));
+  locator.registerFactory(() => SignInBloc(locator()));
+  locator.registerFactory(() => SignUpBloc(locator()));
+  locator.registerFactory(() => ProfileCubit(locator()));
 
   // usecase
   locator.registerLazySingleton(() => SignInUsecase(locator()));
@@ -68,19 +71,14 @@ Future<void> initLocator() async {
   locator.registerLazySingleton(() => SearchInternetPackageUsecase(locator()));
   locator.registerLazySingleton(() => SubscribeUsecase(locator()));
   locator.registerLazySingleton(() => GetSubscriptionUsecase(locator()));
+  locator.registerLazySingleton(() => GetProfileUsecase(locator()));
 
   // repository
-  locator.registerLazySingleton<SignInRepository>(
-    () => SignInRepositoryImpl(
+  locator.registerLazySingleton<AuthRepository>(
+    () => AuthRepositoryImpl(
+      networkInfo: locator(),
       remoteDatasource: locator(),
       localDatasource: locator(),
-      networkInfo: locator(),
-    ),
-  );
-  locator.registerLazySingleton<SignUpRepository>(
-    () => SignUpRepositoryImpl(
-      networkInfo: locator(),
-      remoteDatasource: locator(),
     ),
   );
   locator.registerLazySingleton<BannerRepository>(
@@ -107,37 +105,52 @@ Future<void> initLocator() async {
   locator.registerLazySingleton<SubscribeRepository>(
     () => SubscribeRepositoryImpl(remoteDatasource: locator()),
   );
+  locator.registerLazySingleton<ProfileRepository>(
+    () => ProfileRepositoryImpl(locator()),
+  );
 
   // datasource
-  locator.registerLazySingleton<SignInRemoteDatasource>(
-    () => SignInRemoteDatasourceImpl(locator()),
+  locator.registerLazySingleton<AuthRemoteDatasource>(
+    () => AuthRemoteDatasourceImpl(locator()),
   );
-  locator.registerLazySingleton<SignInLocalDatasource>(
-    () => SignInLocalDatasourceImpl(),
-  );
-  locator.registerLazySingleton<SignUpRemoteDatasource>(
-    () => SignUpRemoteDatasourceImpl(locator()),
+  locator.registerLazySingleton<AuthLocalDatasource>(
+    () => AuthLocalDatasourceImpl(locator()),
   );
   locator.registerLazySingleton<BannerRemoteDatasource>(
-    () => BannerRemoteDatasourceImpl(locator()),
+    () => BannerRemoteDatasourceImpl(
+      client: locator(),
+      localDatasource: locator(),
+    ),
   );
   locator.registerLazySingleton<BannerLocalDatasource>(
     () => BannerLocalDatasourceImpl(locator()),
   );
   locator.registerLazySingleton<CategoryRemoteDatasource>(
-    () => CategoryRemoteDatasourceImpl(locator()),
+    () => CategoryRemoteDatasourceImpl(
+      client: locator(),
+      localDatasource: locator(),
+    ),
   );
   locator.registerLazySingleton<CategoryLocalDatasource>(
     () => CategoryLocalDatasourceImpl(locator()),
   );
   locator.registerLazySingleton<InternetPackageRemoteDatasource>(
-    () => InternetPackageRemoteDatasourceImpl(locator()),
+    () => InternetPackageRemoteDatasourceImpl(
+      client: locator(),
+      localDatasource: locator(),
+    ),
   );
   locator.registerLazySingleton<InternetPackageLocalDatasource>(
     () => InternetPackageLocalDatasourceImpl(locator()),
   );
   locator.registerLazySingleton<SubscribeRemoteDatasource>(
-    () => SubscribeRemoteDatasourceImpl(locator()),
+    () => SubscribeRemoteDatasourceImpl(
+      client: locator(),
+      localDatasource: locator(),
+    ),
+  );
+  locator.registerLazySingleton<ProfileLocalDatasource>(
+    () => ProfileLocalDatasourceImpl(locator()),
   );
 
   // platform

@@ -2,7 +2,7 @@ import 'package:http/http.dart' as http;
 import 'package:inetagan/core/config/app_constant.dart';
 import 'package:inetagan/core/config/app_request.dart';
 import 'package:inetagan/core/config/app_response.dart';
-import 'package:inetagan/core/config/app_session.dart';
+import 'package:inetagan/features/auth/data/datasources/auth_local_datasource.dart';
 import 'package:inetagan/features/subscribe/data/models/subscribe_model.dart';
 
 abstract class SubscribeRemoteDatasource {
@@ -19,8 +19,12 @@ abstract class SubscribeRemoteDatasource {
 
 class SubscribeRemoteDatasourceImpl implements SubscribeRemoteDatasource {
   final http.Client client;
+  final AuthLocalDatasource localDatasource;
 
-  SubscribeRemoteDatasourceImpl(this.client);
+  SubscribeRemoteDatasourceImpl({
+    required this.client,
+    required this.localDatasource,
+  });
 
   @override
   Future<SubscribeModel> subscribe(
@@ -33,7 +37,7 @@ class SubscribeRemoteDatasourceImpl implements SubscribeRemoteDatasource {
   ) async {
     Uri url = Uri.parse('${AppConstant.baseUrl}${AppConstant.subscribe}');
     try {
-      final token = await AppSession.getBearerToken();
+      final token = await localDatasource.getCachedToken();
       final response = await client.post(
         url,
         headers: AppRequest.header(token),
@@ -60,7 +64,7 @@ class SubscribeRemoteDatasourceImpl implements SubscribeRemoteDatasource {
       '${AppConstant.baseUrl}${AppConstant.getInstallation(userId)}',
     );
     try {
-      final token = await AppSession.getBearerToken();
+      final token = await localDatasource.getCachedToken();
       final response = await client.get(url, headers: AppRequest.header(token));
       final jsonData = AppResponse.data(response);
 

@@ -2,7 +2,7 @@ import 'package:http/http.dart' as http;
 import 'package:inetagan/core/config/app_constant.dart';
 import 'package:inetagan/core/config/app_request.dart';
 import 'package:inetagan/core/config/app_response.dart';
-import 'package:inetagan/core/config/app_session.dart';
+import 'package:inetagan/features/auth/data/datasources/auth_local_datasource.dart';
 import 'package:inetagan/features/home/data/models/banner_model.dart';
 
 abstract class BannerRemoteDatasource {
@@ -11,13 +11,17 @@ abstract class BannerRemoteDatasource {
 
 class BannerRemoteDatasourceImpl implements BannerRemoteDatasource {
   final http.Client client;
+  final AuthLocalDatasource localDatasource;
 
-  BannerRemoteDatasourceImpl(this.client);
+  BannerRemoteDatasourceImpl({
+    required this.client,
+    required this.localDatasource,
+  });
 
   @override
   Future<List<BannerModel>> all() async {
     Uri url = Uri.parse('${AppConstant.baseUrl}${AppConstant.banner}');
-    final token = await AppSession.getBearerToken();
+    final token = await localDatasource.getCachedToken();
     final response = await client.get(url, headers: AppRequest.header(token));
     try {
       final data = AppResponse.data(response);

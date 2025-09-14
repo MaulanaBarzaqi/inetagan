@@ -2,14 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:inetagan/common/routes.dart';
+import 'package:inetagan/features/auth/presentation/bloc/sign_in/sign_in_bloc.dart';
+import 'package:inetagan/features/auth/presentation/bloc/sign_up/sign_up_bloc.dart';
 import 'package:inetagan/features/category/presentation/cubit/category_cubit.dart';
 import 'package:inetagan/features/home/presentation/bloc/banner/banner_bloc.dart';
 import 'package:inetagan/features/home/presentation/cubit/dashboard_cubit.dart';
 import 'package:inetagan/features/internet-package/presentation/bloc/all_internet_package/all_internet_package_bloc.dart';
 import 'package:inetagan/features/internet-package/presentation/bloc/get_by_category/get_by_category_bloc.dart';
 import 'package:inetagan/features/internet-package/presentation/bloc/search_internet_package/search_internet_package_bloc.dart';
-import 'package:inetagan/features/signin/presentation/bloc/signin_bloc.dart';
-import 'package:inetagan/features/signup/presentation/bloc/signup_bloc.dart';
+import 'package:inetagan/features/profile/presentation/bloc/cubit/profile_cubit.dart';
 import 'package:inetagan/features/subscribe/presentation/bloc/get_subscription/get_subscription_bloc.dart';
 import 'package:inetagan/features/subscribe/presentation/bloc/subscribe/subscribe_bloc.dart';
 import 'package:inetagan/injection.dart';
@@ -28,10 +29,11 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => DashboardCubit()),
+        BlocProvider(create: (_) => locator<ProfileCubit>()),
+        BlocProvider(create: (_) => locator<SignInBloc>()),
+        BlocProvider(create: (_) => locator<SignUpBloc>()),
         BlocProvider(create: (_) => locator<CategoryCubit>()),
         BlocProvider(create: (_) => locator<GetByCategoryBloc>()),
-        BlocProvider(create: (_) => locator<SigninBloc>()),
-        BlocProvider(create: (_) => locator<SignupBloc>()),
         BlocProvider(create: (_) => locator<BannerBloc>()),
         BlocProvider(create: (_) => locator<AllInternetPackageBloc>()),
         BlocProvider(create: (_) => locator<SearchInternetPackageBloc>()),

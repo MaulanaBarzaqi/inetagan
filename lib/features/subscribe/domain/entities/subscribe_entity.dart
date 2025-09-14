@@ -1,7 +1,6 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:equatable/equatable.dart';
 import 'package:inetagan/features/internet-package/domain/entities/internet_package_entity.dart';
-import 'package:inetagan/features/signin/domain/entities/sign_in_entity.dart';
+import 'package:inetagan/features/profile/domain/entities/user_entity.dart';
 
 class SubscribeEntity extends Equatable {
   final int id;
@@ -15,7 +14,7 @@ class SubscribeEntity extends Equatable {
   final DateTime updatedAt;
   final DateTime createdAt;
   final InternetPackageEntity? internetPackage;
-  final SignInEntity? user;
+  final UserEntity? user;
 
   const SubscribeEntity({
     required this.id,
