@@ -20,6 +20,12 @@ class $AssetsIconsGen {
   /// File path: assets/icons/arrow-left.svg
   SvgGenImage get arrowLeft => const SvgGenImage('assets/icons/arrow-left.svg');
 
+  /// File path: assets/icons/bill.svg
+  SvgGenImage get bill => const SvgGenImage('assets/icons/bill.svg');
+
+  /// File path: assets/icons/calendar.svg
+  SvgGenImage get calendar => const SvgGenImage('assets/icons/calendar.svg');
+
   /// File path: assets/icons/card.svg
   SvgGenImage get card => const SvgGenImage('assets/icons/card.svg');
 
@@ -48,6 +54,18 @@ class $AssetsIconsGen {
   /// File path: assets/icons/icLogout.svg
   SvgGenImage get icLogout => const SvgGenImage('assets/icons/icLogout.svg');
 
+  /// File path: assets/icons/info-approved.svg
+  SvgGenImage get infoApproved =>
+      const SvgGenImage('assets/icons/info-approved.svg');
+
+  /// File path: assets/icons/info-pending.svg
+  SvgGenImage get infoPending =>
+      const SvgGenImage('assets/icons/info-pending.svg');
+
+  /// File path: assets/icons/info-reject.svg
+  SvgGenImage get infoReject =>
+      const SvgGenImage('assets/icons/info-reject.svg');
+
   /// File path: assets/icons/location.svg
   SvgGenImage get location => const SvgGenImage('assets/icons/location.svg');
 
@@ -68,6 +86,9 @@ class $AssetsIconsGen {
   /// File path: assets/icons/square-check-big.svg
   SvgGenImage get squareCheckBig =>
       const SvgGenImage('assets/icons/square-check-big.svg');
+
+  /// File path: assets/icons/usd-circle.svg
+  SvgGenImage get usdCircle => const SvgGenImage('assets/icons/usd-circle.svg');
 
   /// File path: assets/icons/user-round.svg
   SvgGenImage get userRound => const SvgGenImage('assets/icons/user-round.svg');
@@ -90,6 +111,8 @@ class $AssetsIconsGen {
   /// List of all assets
   List<SvgGenImage> get values => [
     arrowLeft,
+    bill,
+    calendar,
     card,
     chevronRight,
     circleUser,
@@ -98,12 +121,16 @@ class $AssetsIconsGen {
     eye,
     icEditProfile,
     icLogout,
+    infoApproved,
+    infoPending,
+    infoReject,
     location,
     lockKeyhole,
     mail,
     phone,
     slidersHorizontal,
     squareCheckBig,
+    usdCircle,
     userRound,
     wallet,
     wifiCog,

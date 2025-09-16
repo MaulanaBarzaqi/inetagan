@@ -4,13 +4,11 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:inetagan/common/routes.dart';
 import 'package:inetagan/core/components/button_widget.dart';
+import 'package:inetagan/core/components/input_widget.dart';
 import 'package:inetagan/core/config/app_colors.dart';
 import 'package:inetagan/core/config/app_validator.dart';
 import 'package:inetagan/features/auth/presentation/bloc/sign_up/sign_up_bloc.dart';
-import 'package:inetagan/features/auth/presentation/widgets/email_form_field_widget.dart';
 import 'package:inetagan/features/auth/presentation/widgets/error_dialog.dart';
-import 'package:inetagan/features/auth/presentation/widgets/name_form_field_widget.dart';
-import 'package:inetagan/features/auth/presentation/widgets/password_form_field_widget.dart';
 import 'package:inetagan/features/auth/presentation/widgets/password_required_widget.dart';
 import 'package:inetagan/gen/assets.gen.dart';
 
@@ -26,7 +24,7 @@ class _SignUpPageState extends State<SignUpPage> {
   final edtEmail = TextEditingController();
   final edtPassword = TextEditingController();
   final formKey = GlobalKey<FormState>();
-  bool obscureText = true;
+  bool _obscureText = true;
 
   bool containsUpperCase = false;
   bool containsLowerCase = false;
@@ -79,27 +77,75 @@ class _SignUpPageState extends State<SignUpPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        NameFormFieldWidget(controller: edtName),
+                        // NameFormFieldWidget(controller: edtName),
+                        InputWidget(
+                          label: 'Nama',
+                          controller: edtName,
+                          hintText: 'tulis nama anda',
+                          icon: Assets.icons.userRound,
+                          keyboardType: TextInputType.name,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          validator: AppValidator.validateName,
+                        ),
                         const Gap(20),
                         // email
-                        EmailFormFieldWidget(controller: edtEmail),
+                        // EmailFormFieldWidget(controller: edtEmail),
+                        InputWidget(
+                          label: 'Email',
+                          controller: edtEmail,
+                          hintText: 'tulis email anda',
+                          icon: Assets.icons.mail,
+                          keyboardType: TextInputType.emailAddress,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          validator: AppValidator.validateEmail,
+                        ),
                         const Gap(20),
                         // password
-                        PasswordFormFieldWidget(
+                        InputWidget(
+                          label: 'Password',
                           controller: edtPassword,
-                          onChanged: (val) {
+                          hintText: 'tulis password anda',
+                          icon: Assets.icons.lockKeyhole,
+                          keyboardType: TextInputType.visiblePassword,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          validator: AppValidator.validatePassword,
+                          obscureText: _obscureText,
+                          hasSuffix: true,
+                          onSuffixPressed: () {
+                            setState(() {
+                              _obscureText = !_obscureText;
+                            });
+                          },
+                          onChanged: (value) {
                             setState(() {
                               containsUpperCase = AppValidator.hasUpperCase(
-                                val,
+                                value,
                               );
                               containsLowerCase = AppValidator.hasLowerCase(
-                                val,
+                                value,
                               );
-                              containsNumber = AppValidator.hasNumber(val);
-                              contains8Length = AppValidator.hasMinLength(val);
+                              containsNumber = AppValidator.hasNumber(value);
+                              contains8Length = AppValidator.hasMinLength(
+                                value,
+                              );
                             });
                           },
                         ),
+                        // PasswordFormFieldWidget(
+                        //   controller: edtPassword,
+                        //   onChanged: (val) {
+                        //     setState(() {
+                        // containsUpperCase = AppValidator.hasUpperCase(
+                        //   val,
+                        // );
+                        // containsLowerCase = AppValidator.hasLowerCase(
+                        //   val,
+                        // );
+                        // containsNumber = AppValidator.hasNumber(val);
+                        // contains8Length = AppValidator.hasMinLength(val);
+                        //     });
+                        //   },
+                        // ),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [

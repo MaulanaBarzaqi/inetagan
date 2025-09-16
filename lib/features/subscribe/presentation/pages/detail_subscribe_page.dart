@@ -1,17 +1,15 @@
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:inetagan/common/routes.dart';
-import 'package:inetagan/core/config/app_constant.dart';
 import 'package:inetagan/core/config/app_colors.dart';
 import 'package:inetagan/core/config/app_format.dart';
-import 'package:inetagan/core/config/app_session.dart';
 import 'package:inetagan/core/components/button_widget.dart';
 import 'package:inetagan/core/components/loading_widget.dart';
 import 'package:inetagan/features/internet-package/domain/entities/internet_package_entity.dart';
-import 'package:inetagan/features/profile/data/models/user_model.dart';
+import 'package:inetagan/features/internet-package/presentation/widgets/package_image_widget.dart';
+import 'package:inetagan/features/profile/presentation/cubit/profile/profile_cubit.dart';
 import 'package:inetagan/features/subscribe/presentation/bloc/subscribe/subscribe_bloc.dart';
 import 'package:inetagan/features/subscribe/presentation/widgets/detail_item_widget.dart';
 import 'package:inetagan/gen/assets.gen.dart';
@@ -36,35 +34,47 @@ class DetailSubscribePage extends StatefulWidget {
 }
 
 class _DetailSubscribePageState extends State<DetailSubscribePage> {
-  UserModel? currentUser;
-
   @override
   void initState() {
-    _loadUser();
+    context.read<ProfileCubit>().getProfile();
     super.initState();
-  }
-
-  Future<void> _loadUser() async {
-    final user = await AppSession.getUser();
-    setState(() {
-      currentUser = user;
-    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView(
-        padding: EdgeInsets.all(0),
-        children: [
-          Gap(20 + MediaQuery.of(context).padding.top),
-          buildHeader(),
-          Gap(20),
-          buildPackage(),
-          Gap(20),
-          buildDetail(),
-          Gap(20),
-        ],
+      body: BlocConsumer<SubscribeBloc, SubscribeState>(
+        listener: (context, subscribeState) {
+          if (subscribeState is SubscribeSuccess) {
+            context.goNamed(RouteNames.success);
+          }
+          if (subscribeState is SubscribeFailed) {
+            context.goNamed(RouteNames.failed);
+          }
+        },
+        builder: (context, subscribeState) {
+          return Stack(
+            children: [
+              ListView(
+                padding: EdgeInsets.all(0),
+                children: [
+                  Gap(20 + MediaQuery.of(context).padding.top),
+                  buildHeader(),
+                  Gap(20),
+                  buildPackage(),
+                  Gap(20),
+                  buildDetail(),
+                  Gap(20),
+                ],
+              ),
+              if (subscribeState is SubscribeLoading)
+                Container(
+                  color: Colors.black.withValues(alpha: 0.3),
+                  child: Center(child: CircularProgressIndicator()),
+                ),
+            ],
+          );
+        },
       ),
     );
   }
@@ -113,33 +123,14 @@ class _DetailSubscribePageState extends State<DetailSubscribePage> {
 
   buildPackage() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 25),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: GestureDetector(
         child: Row(
           children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: ExtendedImage.network(
-                AppConstant.imagePackage(widget.internetPackage.image!),
-                fit: BoxFit.cover,
-                width: 100,
-                height: 100,
-                handleLoadingProgress: true,
-                loadStateChanged: (state) {
-                  if (state.extendedImageLoadState == LoadState.failed) {
-                    return Container(
-                      width: 100,
-                      height: 100,
-                      color: Colors.grey[300],
-                      child: const Icon(Icons.broken_image),
-                    );
-                  }
-                  if (state.extendedImageLoadState == LoadState.loading) {
-                    return Center(child: CircularProgressIndicator.adaptive());
-                  }
-                  return null;
-                },
-              ),
+            PackageImageWidget(
+              package: widget.internetPackage,
+              width: 100,
+              height: 100,
             ),
             const Gap(10),
             Expanded(
@@ -199,67 +190,137 @@ class _DetailSubscribePageState extends State<DetailSubscribePage> {
             ),
             child: Column(
               children: [
-                DetailItemWidget(label: 'nama', itemDetail: widget.name),
-                DetailItemWidget(label: 'NIK', itemDetail: widget.nik),
-                DetailItemWidget(label: 'WhatsApp', itemDetail: widget.phone),
-                DetailItemWidget(label: 'Alamat', itemDetail: widget.address),
                 DetailItemWidget(
+                  icon: Assets.icons.userRound,
+                  label: 'nama',
+                  itemDetail: widget.name,
+                ),
+                DetailItemWidget(
+                  icon: Assets.icons.card,
+                  label: 'NIK',
+                  itemDetail: widget.nik,
+                ),
+                DetailItemWidget(
+                  icon: Assets.icons.phone,
+                  label: 'WhatsApp',
+                  itemDetail: widget.phone,
+                ),
+                DetailItemWidget(
+                  icon: Assets.icons.location,
+                  label: 'Alamat',
+                  itemDetail: widget.address,
+                ),
+                DetailItemWidget(
+                  icon: Assets.icons.usdCircle,
                   label: 'Biaya Bulanan',
                   itemDetail: widget.internetPackage.monthlyBill,
                 ),
                 DetailItemWidget(
+                  icon: Assets.icons.bill,
                   label: 'Biaya Pemasangan',
                   itemDetail: widget.internetPackage.installation,
                 ),
-                Text(
-                  'Total Biaya',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w400,
-                    fontSize: 14,
-                    color: AppColors.tertiary,
+                Divider(),
+                Container(
+                  padding: EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: AppColors.primary.withValues(alpha: 0.05),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: AppColors.primary.withValues(alpha: 0.2),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          "Total Biaya",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.primary,
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Text(
+                          AppFormat.longPrice(total),
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.primary,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                Gap(15),
-                Text(
-                  AppFormat.longPrice(total),
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                    color: AppColors.primary,
+                Gap(5),
+                Padding(
+                  padding: const EdgeInsets.only(top: 4.0, right: 16.0),
+                  child: Text(
+                    'info:\n Hanya bisa 1 kali dilalakukan oleh setiap user.',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey[600],
+                      fontStyle: FontStyle.italic,
+                    ),
                   ),
                 ),
               ],
             ),
           ),
           const Gap(30),
-          BlocConsumer<SubscribeBloc, SubscribeState>(
-            listener: (context, state) {
-              if (state is SubscribeSuccess) {
-                context.goNamed(RouteNames.success);
-              }
-              if (state is SubscribeFailed) {
-                context.goNamed(RouteNames.failed);
-              }
-            },
-            builder: (context, state) {
-              if (state is SubscribeLoading) {
+          BlocBuilder<ProfileCubit, ProfileState>(
+            builder: (context, profileState) {
+              if (profileState is ProfileLoading) {
                 return LoadingWidget();
+              }
+              if (profileState is ProfileError) {
+                return Column(
+                  children: [
+                    Text(
+                      'Error: ${profileState.message}',
+                      style: TextStyle(color: Colors.red),
+                    ),
+                    Gap(10),
+                    ButtonWidget(
+                      ontap: () => context.read<ProfileCubit>().getProfile(),
+                      text: 'Retry',
+                    ),
+                  ],
+                );
+              }
+              if (profileState is ProfileEmpty) {
+                return Text(
+                  'User data not found',
+                  style: TextStyle(color: Colors.red),
+                );
+              }
+
+              if (profileState is ProfileLoaded) {
+                return ButtonWidget(
+                  ontap: () {
+                    context.read<SubscribeBloc>().add(
+                      OnSubscribeEvent(
+                        name: widget.name,
+                        nik: widget.nik,
+                        phone: widget.phone,
+                        address: widget.address,
+                        userId: profileState.profile.id,
+                        internetPackageId: widget.internetPackage.id,
+                      ),
+                    );
+                  },
+                  text: 'Ajukan',
+                );
               }
               return ButtonWidget(
                 ontap: () {
-                  if (currentUser == null) return;
-                  context.read<SubscribeBloc>().add(
-                    OnSubscribeEvent(
-                      name: widget.name,
-                      nik: widget.nik,
-                      phone: widget.phone,
-                      address: widget.address,
-                      userId: currentUser!.id,
-                      internetPackageId: widget.internetPackage.id,
-                    ),
-                  );
+                  context.read<ProfileCubit>().getProfile();
                 },
-                text: 'Ajukan',
+                text: 'Load User Data',
               );
             },
           ),

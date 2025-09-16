@@ -1,29 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:inetagan/core/config/app_format.dart';
 import 'package:inetagan/gen/assets.gen.dart';
 
-class DetailItemWidget extends StatelessWidget {
-  final SvgGenImage icon;
+class BuildInfoRowWidget extends StatelessWidget {
   final String label;
-  final dynamic itemDetail;
-  const DetailItemWidget({
+  final String value;
+  final SvgGenImage? icon;
+  const BuildInfoRowWidget({
     super.key,
-    required this.icon,
     required this.label,
-    required this.itemDetail,
+    required this.value,
+    this.icon,
   });
 
   @override
   Widget build(BuildContext context) {
-    final String formattedDetail = itemDetail is int
-        ? AppFormat.longPrice(itemDetail)
-        : itemDetail.toString();
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 5),
+      padding: EdgeInsets.symmetric(vertical: 10),
       child: Row(
         children: [
-          icon.svg(width: 20, height: 20),
+          icon!.svg(width: 20, height: 20),
           Gap(12),
           Expanded(
             child: Text(
@@ -37,14 +33,14 @@ class DetailItemWidget extends StatelessWidget {
           ),
           Expanded(
             child: Text(
-              formattedDetail,
-              textAlign: TextAlign.right,
-              overflow: TextOverflow.ellipsis,
+              value,
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
                 color: Colors.black87,
               ),
+              textAlign: TextAlign.right,
+              overflow: TextOverflow.ellipsis,
             ),
           ),
         ],

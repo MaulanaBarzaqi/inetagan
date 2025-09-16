@@ -17,7 +17,7 @@ class AppValidator {
   static final RegExp nikRegex = RegExp(r'^[0-9]{16}$');
 
   // Phone number validation (Indonesian format)
-  static final RegExp phoneRegex = RegExp(r'^(\+62|62|0)[0-9]{9,12}$');
+  static final RegExp phoneRegex = RegExp(r'^(?:\+?62|0)8[1-9][0-9]{6,9}$');
 
   // Address validation (more flexible, just check length)
   static final RegExp addressRegex = RegExp(r'^.{1,200}$');
@@ -74,7 +74,7 @@ class AppValidator {
       return 'input tidak boleh kosong!';
     }
     if (!nikRegex.hasMatch(value)) {
-      return 'NIK must be 16 digits';
+      return 'NIK harus berjumlah 16 digits';
     }
     return null;
   }
@@ -83,18 +83,22 @@ class AppValidator {
     if (value == null || value.isEmpty) {
       return 'input tidak boleh kosong!';
     }
-    if (!phoneRegex.hasMatch(value)) {
-      return 'Please enter a valid phone number';
+    final cleanedValue = value.replaceAll(RegExp(r'[\s\-]'), '');
+    if (!phoneRegex.hasMatch(cleanedValue)) {
+      return 'Format nomor WhatsApp tidak valid. Contoh: 08123456789';
     }
     return null;
   }
 
   static String? validateAddress(String? value) {
     if (value == null || value.isEmpty) {
-      return 'input tidak boleh kosong!';
+      return 'Alamat tidak boleh kosong!';
+    }
+    if (value.length < 10) {
+      return 'Alamat terlalu pendek (minimal 10 karakter)';
     }
     if (value.length > 200) {
-      return 'Address too long (max 200 characters)';
+      return 'Alamat terlalu panjang (maksimal 200 karakter)';
     }
     return null;
   }

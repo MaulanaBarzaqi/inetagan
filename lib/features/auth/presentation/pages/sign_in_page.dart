@@ -4,12 +4,11 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:inetagan/common/routes.dart';
 import 'package:inetagan/core/components/button_widget.dart';
+import 'package:inetagan/core/components/input_widget.dart';
 import 'package:inetagan/core/config/app_colors.dart';
+import 'package:inetagan/core/config/app_validator.dart';
 import 'package:inetagan/features/auth/presentation/bloc/sign_in/sign_in_bloc.dart';
-// import 'package:inetagan/features/signin/presentation/bloc/signin_bloc.dart';
-import 'package:inetagan/features/auth/presentation/widgets/email_form_field_widget.dart';
 import 'package:inetagan/features/auth/presentation/widgets/error_dialog.dart';
-import 'package:inetagan/features/auth/presentation/widgets/password_form_field_widget.dart';
 import 'package:inetagan/gen/assets.gen.dart';
 
 class SignInPage extends StatefulWidget {
@@ -67,9 +66,32 @@ class _SignInPageState extends State<SignInPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        EmailFormFieldWidget(controller: edtEmail),
+                        InputWidget(
+                          label: 'Email',
+                          controller: edtEmail,
+                          hintText: 'tulis email anda',
+                          icon: Assets.icons.mail,
+                          keyboardType: TextInputType.emailAddress,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          validator: AppValidator.validateEmail,
+                        ),
                         const Gap(20),
-                        PasswordFormFieldWidget(controller: edtPassword),
+                        InputWidget(
+                          label: 'Password',
+                          controller: edtPassword,
+                          hintText: 'tulis password anda',
+                          icon: Assets.icons.lockKeyhole,
+                          keyboardType: TextInputType.visiblePassword,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          validator: AppValidator.validatePassword,
+                          obscureText: obscureText,
+                          hasSuffix: true,
+                          onSuffixPressed: () {
+                            setState(() {
+                              obscureText = !obscureText;
+                            });
+                          },
+                        ),
                       ],
                     ),
                   ),

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:inetagan/core/config/app_colors.dart';
 import 'package:inetagan/gen/assets.gen.dart';
 
 class InputWidget extends StatelessWidget {
+  final String label;
   final TextEditingController controller;
   final String? Function(String?)? validator;
   final ValueChanged<String>? onChanged;
@@ -16,6 +18,7 @@ class InputWidget extends StatelessWidget {
 
   const InputWidget({
     super.key,
+    required this.label,
     required this.controller,
     required this.hintText,
     this.obscureText = false,
@@ -30,47 +33,61 @@ class InputWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      validator: validator,
-      controller: controller,
-      obscureText: obscureText,
-      keyboardType: keyboardType,
-      autovalidateMode: autovalidateMode,
-      onChanged: onChanged,
-      style: const TextStyle(
-        fontSize: 16,
-        fontWeight: FontWeight.normal,
-        color: AppColors.primary,
-      ),
-      decoration: InputDecoration(
-        filled: true,
-        fillColor: Colors.white,
-        suffixIcon: hasSuffix
-            ? Padding(
-                padding: const EdgeInsets.only(right: 12),
-                child: IconButton(
-                  onPressed: onSuffixPressed,
-                  icon: obscureText
-                      ? Assets.icons.eyeClosed.svg(width: 24, height: 24)
-                      : Assets.icons.eye.svg(width: 24, height: 24),
-                ),
-              )
-            : null,
-        prefixIcon: UnconstrainedBox(
-          alignment: const Alignment(0.3, 0),
-          child: icon.svg(width: 24, height: 24),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 16,
+            color: AppColors.primary,
+          ),
         ),
-        hintText: hintText,
-        hintStyle: TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 14,
-          color: Colors.grey[500],
+        const Gap(12),
+        TextFormField(
+          validator: validator,
+          controller: controller,
+          obscureText: obscureText,
+          keyboardType: keyboardType,
+          autovalidateMode: autovalidateMode,
+          onChanged: onChanged,
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.normal,
+            color: AppColors.primary,
+          ),
+          decoration: InputDecoration(
+            filled: true,
+            fillColor: Colors.white,
+            suffixIcon: hasSuffix
+                ? Padding(
+                    padding: const EdgeInsets.only(right: 12),
+                    child: IconButton(
+                      onPressed: onSuffixPressed,
+                      icon: obscureText
+                          ? Assets.icons.eyeClosed.svg(width: 24, height: 24)
+                          : Assets.icons.eye.svg(width: 24, height: 24),
+                    ),
+                  )
+                : null,
+            prefixIcon: UnconstrainedBox(
+              alignment: const Alignment(0.3, 0),
+              child: icon.svg(width: 24, height: 24),
+            ),
+            hintText: hintText,
+            hintStyle: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 14,
+              color: Colors.grey[500],
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(50),
+              borderSide: BorderSide.none,
+            ),
+          ),
         ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(50),
-          borderSide: BorderSide.none,
-        ),
-      ),
+      ],
     );
   }
 }
