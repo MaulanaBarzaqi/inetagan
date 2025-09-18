@@ -40,6 +40,30 @@ class _DetailSubscribePageState extends State<DetailSubscribePage> {
     super.initState();
   }
 
+  void _showAlreadySubscribedDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Sudah Berlangganan'),
+          content: Text(
+            'Anda sudah memiliki langganan internet aktif.'
+            'setiap user hanya dapat melakukan satu kali berlangganan.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                context.pop();
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,7 +73,11 @@ class _DetailSubscribePageState extends State<DetailSubscribePage> {
             context.goNamed(RouteNames.success);
           }
           if (subscribeState is SubscribeFailed) {
-            context.goNamed(RouteNames.failed);
+            if (subscribeState.message.contains('sudah memiliki')) {
+              _showAlreadySubscribedDialog(context);
+            } else {
+              context.goNamed(RouteNames.failed);
+            }
           }
         },
         builder: (context, subscribeState) {
@@ -285,9 +313,13 @@ class _DetailSubscribePageState extends State<DetailSubscribePage> {
                       style: TextStyle(color: Colors.red),
                     ),
                     Gap(10),
-                    ButtonWidget(
-                      ontap: () => context.read<ProfileCubit>().getProfile(),
-                      text: 'Retry',
+                    IconButton(
+                      onPressed: () =>
+                          context.read<ProfileCubit>().getProfile(),
+                      icon: Icon(
+                        Icons.replay_rounded,
+                        color: AppColors.tertiary,
+                      ),
                     ),
                   ],
                 );
@@ -300,27 +332,32 @@ class _DetailSubscribePageState extends State<DetailSubscribePage> {
               }
 
               if (profileState is ProfileLoaded) {
+                final hasExistingSubscription =
+                    profileState.profile.hasActiveInstallation;
+
                 return ButtonWidget(
                   ontap: () {
-                    context.read<SubscribeBloc>().add(
-                      OnSubscribeEvent(
-                        name: widget.name,
-                        nik: widget.nik,
-                        phone: widget.phone,
-                        address: widget.address,
-                        userId: profileState.profile.id,
-                        internetPackageId: widget.internetPackage.id,
-                      ),
-                    );
+                    if (hasExistingSubscription) {
+                      _showAlreadySubscribedDialog(context);
+                    } else {
+                      context.read<SubscribeBloc>().add(
+                        OnSubscribeEvent(
+                          name: widget.name,
+                          nik: widget.nik,
+                          phone: widget.phone,
+                          address: widget.address,
+                          userId: profileState.profile.id,
+                          internetPackageId: widget.internetPackage.id,
+                        ),
+                      );
+                    }
                   },
                   text: 'Ajukan',
                 );
               }
-              return ButtonWidget(
-                ontap: () {
-                  context.read<ProfileCubit>().getProfile();
-                },
-                text: 'Load User Data',
+              return IconButton(
+                onPressed: () => context.read<ProfileCubit>().getProfile(),
+                icon: Icon(Icons.replay_rounded, color: AppColors.tertiary),
               );
             },
           ),

@@ -7,6 +7,7 @@ class UserEntity extends Equatable {
   final String email;
   final String? role;
   final int? regionId;
+  final int? internetInstallationId;
   final String? deviceToken;
   final DateTime? emailVerifiedAt;
   final DateTime createdAt;
@@ -19,6 +20,7 @@ class UserEntity extends Equatable {
     required this.email,
     this.role,
     this.regionId,
+    this.internetInstallationId,
     this.deviceToken,
     this.emailVerifiedAt,
     required this.createdAt,
@@ -34,10 +36,13 @@ class UserEntity extends Equatable {
       email,
       role,
       regionId,
+      internetInstallationId,
       deviceToken,
       emailVerifiedAt,
       createdAt,
       updatedAt,
     ];
   }
+
+  bool get hasActiveInstallation => internetInstallationId != null;
 }
