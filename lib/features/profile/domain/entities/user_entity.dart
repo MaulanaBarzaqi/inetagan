@@ -8,7 +8,7 @@ class UserEntity extends Equatable {
   final String? role;
   final int? regionId;
   final int? internetInstallationId;
-  final String? deviceToken;
+  final String? fcmToken;
   final DateTime? emailVerifiedAt;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -21,7 +21,7 @@ class UserEntity extends Equatable {
     this.role,
     this.regionId,
     this.internetInstallationId,
-    this.deviceToken,
+    this.fcmToken,
     this.emailVerifiedAt,
     required this.createdAt,
     required this.updatedAt,
@@ -37,7 +37,7 @@ class UserEntity extends Equatable {
       role,
       regionId,
       internetInstallationId,
-      deviceToken,
+      fcmToken,
       emailVerifiedAt,
       createdAt,
       updatedAt,
