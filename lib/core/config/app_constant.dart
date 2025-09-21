@@ -6,6 +6,7 @@ class AppConstant {
   static const baseUrl = '$_host/api';
   static const register = '/register';
   static const login = '/login';
+  static const sendFcmToken = '/user/fcm-token';
   static const banner = '/banners/list';
   static const categories = '/categories/list';
   static const internetPlans = '/internet-packages/list';

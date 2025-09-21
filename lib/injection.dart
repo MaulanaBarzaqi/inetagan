@@ -2,6 +2,7 @@ import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:inetagan/core/platform/network_info.dart';
+import 'package:inetagan/core/services/fcm_service.dart';
 import 'package:inetagan/features/auth/data/datasources/auth_local_datasource.dart';
 import 'package:inetagan/features/auth/data/datasources/auth_remote_datasource.dart';
 import 'package:inetagan/features/auth/data/repositories/auth_repository_impl.dart';
@@ -120,7 +121,11 @@ Future<void> initLocator() async {
 
   // datasource
   locator.registerLazySingleton<AuthRemoteDatasource>(
-    () => AuthRemoteDatasourceImpl(locator()),
+    () => AuthRemoteDatasourceImpl(
+      client: locator(),
+      fcmService: locator(),
+      localDatasource: locator(),
+    ),
   );
   locator.registerLazySingleton<AuthLocalDatasource>(
     () => AuthLocalDatasourceImpl(locator()),
@@ -164,10 +169,10 @@ Future<void> initLocator() async {
   locator.registerLazySingleton<ProfileLocalDatasource>(
     () => ProfileLocalDatasourceImpl(locator()),
   );
-
+  // service fcm
+  locator.registerLazySingleton(() => FcmService());
   // platform
   locator.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl(locator()));
-
   // external
   final pref = await SharedPreferences.getInstance();
   locator.registerLazySingleton(() => pref);

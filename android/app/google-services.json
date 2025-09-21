@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "302966417806",
+    "project_id": "inet-bf940",
+    "storage_bucket": "inet-bf940.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:302966417806:android:eb6fd604a0fb90c1d4dcdf",
+        "android_client_info": {
+          "package_name": "com.example.inetagan"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAfH8js3R_zhVLpHm4ns_OHlis-T6SkwgA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
