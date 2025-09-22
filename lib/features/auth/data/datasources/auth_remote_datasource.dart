@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:inetagan/core/config/app_constant.dart';
 import 'package:inetagan/core/config/app_request.dart';
@@ -85,7 +84,7 @@ class AuthRemoteDatasourceImpl implements AuthRemoteDatasource {
       final response = await client.post(
         url,
         headers: AppRequest.header(token),
-        body: jsonEncode({'fcm_token': fcmToken}),
+        body: {'fcm_token': fcmToken},
       );
       AppResponse.data(response);
       print('FCM token updated successfully: $fcmToken');
