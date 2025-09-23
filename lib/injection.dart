@@ -34,6 +34,7 @@ import 'package:inetagan/features/internet-package/presentation/bloc/search_inte
 import 'package:inetagan/features/auth/domain/usecases/sign_in_usecase.dart';
 import 'package:inetagan/features/auth/domain/usecases/sign_up_usecase.dart';
 import 'package:inetagan/features/profile/data/datasources/profile_local_datasource.dart';
+import 'package:inetagan/features/profile/data/datasources/profile_remote_datasource.dart';
 import 'package:inetagan/features/profile/data/repositories/profile_repository_impl.dart';
 import 'package:inetagan/features/profile/domain/repositories/profile_repository.dart';
 import 'package:inetagan/features/profile/domain/usecases/get_profile_usecase.dart';
@@ -116,7 +117,10 @@ Future<void> initLocator() async {
     ),
   );
   locator.registerLazySingleton<ProfileRepository>(
-    () => ProfileRepositoryImpl(locator()),
+    () => ProfileRepositoryImpl(
+      remoteDatasource: locator(),
+      localDatasource: locator(),
+    ),
   );
 
   // datasource
@@ -165,6 +169,12 @@ Future<void> initLocator() async {
   );
   locator.registerLazySingleton<SubscribeLocalDatasource>(
     () => SubscribeLocalDatasourceImpl(locator()),
+  );
+  locator.registerLazySingleton<ProfileRemoteDatasource>(
+    () => ProfileRemoteDatasourceImpl(
+      client: locator(),
+      localDatasource: locator(),
+    ),
   );
   locator.registerLazySingleton<ProfileLocalDatasource>(
     () => ProfileLocalDatasourceImpl(locator()),

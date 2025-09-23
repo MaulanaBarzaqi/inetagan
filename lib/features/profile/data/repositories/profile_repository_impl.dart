@@ -1,11 +1,16 @@
 import 'package:inetagan/features/profile/data/datasources/profile_local_datasource.dart';
+import 'package:inetagan/features/profile/data/datasources/profile_remote_datasource.dart';
 import 'package:inetagan/features/profile/domain/entities/user_entity.dart';
 import 'package:inetagan/features/profile/domain/repositories/profile_repository.dart';
 
 class ProfileRepositoryImpl extends ProfileRepository {
   final ProfileLocalDatasource localDatasource;
+  final ProfileRemoteDatasource remoteDatasource;
 
-  ProfileRepositoryImpl(this.localDatasource);
+  ProfileRepositoryImpl({
+    required this.localDatasource,
+    required this.remoteDatasource,
+  });
 
   @override
   Future<UserEntity?> getProfile() async {
@@ -20,7 +25,7 @@ class ProfileRepositoryImpl extends ProfileRepository {
   @override
   Future<void> logOut() async {
     try {
-      await localDatasource.logOut();
+      await remoteDatasource.logOut();
     } catch (e) {
       throw Exception('Failed to logout from repository: $e');
     }
