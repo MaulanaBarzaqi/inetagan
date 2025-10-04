@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
-import 'package:go_router/go_router.dart';
-import 'package:inetagan/common/routes.dart';
 import 'package:inetagan/core/components/button_widget.dart';
 import 'package:inetagan/core/components/input_widget.dart';
 import 'package:inetagan/core/config/app_colors.dart';
@@ -11,6 +9,7 @@ import 'package:inetagan/features/auth/presentation/bloc/sign_up/sign_up_bloc.da
 import 'package:inetagan/features/auth/presentation/widgets/error_dialog.dart';
 import 'package:inetagan/features/auth/presentation/widgets/password_required_widget.dart';
 import 'package:inetagan/gen/assets.gen.dart';
+import 'package:inetagan/routes/app_router.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -45,7 +44,7 @@ class _SignUpPageState extends State<SignUpPage> {
       body: BlocConsumer<SignUpBloc, SignUpState>(
         listener: (context, state) {
           if (state is SignUpSuccess) {
-            context.goNamed(RouteNames.signin);
+            SignInRoute().go(context);
           } else if (state is SignUpFailed) {
             showDialog(context: context, builder: (_) => ErrorDialog());
           }
@@ -216,7 +215,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       ),
                       InkWell(
                         onTap: () {
-                          context.goNamed(RouteNames.signin);
+                          SignInRoute().go(context);
                         },
                         child: Text(
                           'Login',

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:inetagan/common/routes.dart';
 import 'package:inetagan/core/config/app_colors.dart';
 import 'package:inetagan/features/internet-package/domain/entities/internet_package_entity.dart';
+import '../../../../routes/app_router.dart';
 import 'package_image_widget.dart';
 
 class PackageListItemWidget extends StatelessWidget {
@@ -15,7 +14,7 @@ class PackageListItemWidget extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: 20),
       child: GestureDetector(
-        onTap: () => context.goNamed(RouteNames.detail, extra: package),
+        onTap: () => DetailRoute($extra: package).go(context),
         child: Row(
           children: [
             // Image

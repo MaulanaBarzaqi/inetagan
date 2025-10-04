@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
-import 'package:inetagan/common/routes.dart';
 import 'package:inetagan/core/config/app_colors.dart';
 import 'package:inetagan/core/components/button_widget.dart';
 import 'package:inetagan/features/auth/data/datasources/auth_local_datasource.dart';
@@ -31,9 +30,9 @@ class _LandingPageState extends State<LandingPage> {
 
     _isRedirecting = true;
     try {
-      final route = await _localDatasource.determineRedirectRoute();
-      if (route != null && mounted) {
-        context.goNamed(route);
+      final routeName = await _localDatasource.determineRedirectRoute();
+      if (routeName != null && mounted) {
+        context.go(routeName);
       }
     } catch (error) {
       debugPrint('Redirect error : $error');
@@ -48,7 +47,7 @@ class _LandingPageState extends State<LandingPage> {
     try {
       await _localDatasource.markAppAsLauched();
       if (mounted) {
-        context.goNamed(RouteNames.signin);
+        context.go('/signin');
       }
     } catch (error) {
       ScaffoldMessenger.of(

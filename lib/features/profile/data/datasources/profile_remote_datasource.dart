@@ -1,3 +1,4 @@
+import 'package:d_method/d_method.dart';
 import 'package:http/http.dart' as http;
 import 'package:inetagan/core/config/app_constant.dart';
 import 'package:inetagan/core/config/app_request.dart';
@@ -34,7 +35,12 @@ class ProfileRemoteDatasourceImpl implements ProfileRemoteDatasource {
     try {
       final token = await localDatasource.getCachedToken();
       if (token == null) {
-        print('no token found, skipping FCM token removal from server');
+        DMethod.logTitle(
+          'SKIP FCM REMOVAL',
+          'No auth token found\nSkipping FCM token removal from server',
+          titleCode: 226, // Kuning - warning
+        );
+        return;
       }
       Uri url = Uri.parse(
         '${AppConstant.baseUrl}${AppConstant.removeFcmToken}',
@@ -43,9 +49,15 @@ class ProfileRemoteDatasourceImpl implements ProfileRemoteDatasource {
           .post(url, headers: AppRequest.header(token))
           .timeout(Duration(seconds: 10));
       AppResponse.data(response);
-      print('fcm token removed from servser successfully');
+      DMethod.logTitle(
+        '✅ FCM TOKEN REMOVED',
+        'Status: ${response.statusCode}\nFCM token successfully removed from server',
+      );
     } catch (e) {
-      print('Failed to remove FCM token from server: $e');
+      DMethod.logTitle(
+        'FCM REMOVAL FAILED',
+        'Error: $e\nFailed to remove FCM token from server',
+      );
     }
   }
 }

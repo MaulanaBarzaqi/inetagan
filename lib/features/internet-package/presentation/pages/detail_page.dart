@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
-import 'package:inetagan/common/routes.dart';
 import 'package:inetagan/core/config/app_colors.dart';
 import 'package:inetagan/features/internet-package/domain/entities/internet_package_entity.dart';
 import 'package:inetagan/features/internet-package/presentation/widgets/button_subscribe_widget.dart';
 import 'package:inetagan/features/internet-package/presentation/widgets/detail_item_widget.dart';
 import 'package:inetagan/gen/assets.gen.dart';
+import 'package:inetagan/routes/app_router.dart';
 
 class DetailPage extends StatefulWidget {
   const DetailPage({super.key, required this.internetPackage});
@@ -40,7 +40,7 @@ class _DetailPageState extends State<DetailPage> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           GestureDetector(
-            onTap: () => context.goNamed(RouteNames.dashboard),
+            onTap: () => DashboardRoute().replace(context),
             child: Container(
               height: 46,
               width: 46,
@@ -125,8 +125,13 @@ class _DetailPageState extends State<DetailPage> {
           Gap(50),
           ButtonSubcribeWidget(
             onTap: () {
-              context.pushNamed(
-                RouteNames.subscribe,
+              // SubscribeRoute().go(context, extra: package);
+              // context.pushNamed(
+              //   RouteNames.subscribe,
+              //   extra: widget.internetPackage,
+              // );
+              context.push(
+                '/dashboard/subscribe',
                 extra: widget.internetPackage,
               );
             },

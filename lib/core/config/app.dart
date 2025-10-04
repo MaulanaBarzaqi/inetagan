@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:inetagan/common/routes.dart';
 import 'package:inetagan/features/auth/presentation/bloc/sign_in/sign_in_bloc.dart';
 import 'package:inetagan/features/auth/presentation/bloc/sign_up/sign_up_bloc.dart';
 import 'package:inetagan/features/category/presentation/cubit/category_cubit.dart';
@@ -15,6 +14,7 @@ import 'package:inetagan/features/profile/presentation/cubit/profile/profile_cub
 import 'package:inetagan/features/subscribe/presentation/bloc/get_subscription/get_subscription_bloc.dart';
 import 'package:inetagan/features/subscribe/presentation/bloc/subscribe/subscribe_bloc.dart';
 import 'package:inetagan/injection.dart';
+import 'package:inetagan/routes/app_router.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

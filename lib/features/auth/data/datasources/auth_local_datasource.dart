@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:inetagan/common/routes.dart';
 import 'package:inetagan/features/auth/data/models/auth_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -116,9 +115,9 @@ class AuthLocalDatasourceImpl implements AuthLocalDatasource {
         return null;
       }
       if (token != null && token.isNotEmpty) {
-        return RouteNames.dashboard;
+        return '/dashboard/home';
       }
-      return RouteNames.signin;
+      return '/signin';
     } catch (e) {
       debugPrint('Error determining redirect route: $e');
       return null;

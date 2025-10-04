@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:go_router/go_router.dart';
-import 'package:inetagan/common/routes.dart';
 import 'package:inetagan/core/config/app_colors.dart';
 import 'package:inetagan/core/components/button_widget.dart';
 import 'package:inetagan/core/components/input_widget.dart';
@@ -9,6 +7,7 @@ import 'package:inetagan/core/config/app_validator.dart';
 import 'package:inetagan/features/internet-package/domain/entities/internet_package_entity.dart';
 import 'package:inetagan/features/internet-package/presentation/widgets/package_widget.dart';
 import 'package:inetagan/gen/assets.gen.dart';
+import 'package:inetagan/routes/app_router.dart';
 
 class SubscribePage extends StatefulWidget {
   const SubscribePage({super.key, required this.internetPackage});
@@ -208,15 +207,12 @@ class _SubscribePageState extends State<SubscribePage> {
             ButtonWidget(
               ontap: () {
                 if (!formKey.currentState!.validate()) return;
-                context.pushNamed(
-                  RouteNames.detailSubscribe,
-                  extra: {
-                    'internetPackage': widget.internetPackage,
-                    'name': edtFullName.text,
-                    'nik': edtNik.text,
-                    'phone': edtPhone.text,
-                    'address': edtAddress.text,
-                  },
+                DetailSubscribeRoute(
+                  name: edtFullName.text,
+                  nik: edtNik.text,
+                  phone: edtPhone.text,
+                  address: edtAddress.text,
+                  $extra: widget.internetPackage,
                 );
               },
               text: 'Berlangganan',

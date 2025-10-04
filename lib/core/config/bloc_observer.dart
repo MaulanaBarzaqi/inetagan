@@ -1,33 +1,40 @@
+import 'package:d_method/d_method.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class MyBlocObserver extends BlocObserver {
   @override
   void onCreate(BlocBase bloc) {
     super.onCreate(bloc);
-    print('Bloc created: ${bloc.runtimeType}');
+    DMethod.logTitle('Bloc created:', '${bloc.runtimeType}');
   }
 
   @override
   void onEvent(Bloc bloc, Object? event) {
     super.onEvent(bloc, event);
-    print('Event: ${event.runtimeType} in ${bloc.runtimeType}');
+    DMethod.logTitle('Event:', '${event.runtimeType} in ${bloc.runtimeType}');
   }
 
   @override
   void onChange(BlocBase bloc, Change change) {
     super.onChange(bloc, change);
-    print('Change in ${bloc.runtimeType}: $change');
+    DMethod.logTitle(
+      'state changed:',
+      '${bloc.runtimeType}\nFrom: ${change.currentState.runtimeType}\nTo: ${change.nextState.runtimeType}',
+    );
   }
 
   @override
   void onError(BlocBase bloc, Object error, StackTrace stackTrace) {
-    print('Error in ${bloc.runtimeType}: $error');
+    DMethod.logTitle(
+      'bloc error:',
+      '${bloc.runtimeType}\nError: $error\nStackTrace: $stackTrace',
+    );
     super.onError(bloc, error, stackTrace);
   }
 
   @override
   void onClose(BlocBase bloc) {
+    DMethod.logTitle('bloc closed:', '${bloc.runtimeType}');
     super.onClose(bloc);
-    print('Bloc closed: ${bloc.runtimeType}');
   }
 }

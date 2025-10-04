@@ -1,3 +1,4 @@
+import 'package:d_method/d_method.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -23,16 +24,17 @@ class FcmService {
       //   sound: true,
       // );
       String? token = await _firebaseMessaging.getToken();
-      print('FCM token: $token');
+      DMethod.logTitle('FCM token:', '$token');
       return token;
     } catch (e) {
-      print('error getting FCM token: $e');
+      DMethod.logTitle('error getting FCM token:', '$e');
       return null;
     }
   }
 
   Future<void> setupListeners() async {
     try {
+      DMethod.log('Setting up FCM listeners...');
       await _setupAndroidNotifications();
       // reques permission untk android 13+
       await _requestNotificationPermission();
@@ -40,7 +42,10 @@ class FcmService {
       FirebaseMessaging.onBackgroundMessage(_firebaseBackgroundHandler);
       // Foreground message handler
       FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-        print('Received message in foreground: ${message.messageId}');
+        DMethod.logTitle(
+          'FCM FOREGROUND MESSAGE',
+          'Message ID: ${message.messageId}\nData: ${message.data}',
+        );
         _showAndroidNotification(message);
       });
       // Ketika app terminated dan dibuka via notification
@@ -51,10 +56,12 @@ class FcmService {
       }
       // Ketika app in background dan dibuka via notification
       FirebaseMessaging.onMessageOpenedApp.listen(_handleMessage);
-
-      print('FCM Android listeners setup completed successfully');
+      DMethod.logTitle(
+        'FCM SETUP COMPLETED',
+        'All listeners configured successfully',
+      );
     } catch (e) {
-      print('Error setting up FCM listeners: $e');
+      DMethod.logTitle('FCM SETUP ERROR', 'Error: $e');
     }
   }
 
@@ -66,38 +73,46 @@ class FcmService {
         badge: true,
         sound: true,
       );
-      print('Notification permission: ${settings.authorizationStatus}');
+      DMethod.logTitle(
+        'NOTIFICATION PERMISSION',
+        'Status: ${settings.authorizationStatus}',
+      );
     } catch (e) {
-      print('Error requesting notification permission: $e');
+      DMethod.logTitle('PERMISSION REQUEST ERROR', 'Error: $e');
     }
   }
 
   Future<void> _setupAndroidNotifications() async {
-    // buat notification channel
-    const AndroidNotificationChannel channel = AndroidNotificationChannel(
-      _chanelId,
-      _channelName,
-      description: _channelDescription,
-      importance: Importance.high,
-      playSound: true,
-      sound: RawResourceAndroidNotificationSound('notification'),
-      enableVibration: true,
-    );
-    // create notifications channel untuk android
-    await _localNotifications
-        .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin
-        >()
-        ?.createNotificationChannel(channel);
+    try {
+      // buat notification channel
+      const AndroidNotificationChannel channel = AndroidNotificationChannel(
+        _chanelId,
+        _channelName,
+        description: _channelDescription,
+        importance: Importance.high,
+        playSound: true,
+        sound: RawResourceAndroidNotificationSound('notification'),
+        enableVibration: true,
+      );
+      // create notifications channel untuk android
+      await _localNotifications
+          .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin
+          >()
+          ?.createNotificationChannel(channel);
 
-    // Initialize settings untuk Android saja
-    const AndroidInitializationSettings androidSettings =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
-    const InitializationSettings settings = InitializationSettings(
-      android: androidSettings,
-      iOS: null, // Non-aktifkan iOS
-    );
-    await _localNotifications.initialize(settings);
+      // Initialize settings untuk Android saja
+      const AndroidInitializationSettings androidSettings =
+          AndroidInitializationSettings('@mipmap/ic_launcher');
+      const InitializationSettings settings = InitializationSettings(
+        android: androidSettings,
+        iOS: null, // Non-aktifkan iOS
+      );
+      await _localNotifications.initialize(settings);
+      DMethod.log('Android notification channel created');
+    } catch (e) {
+      DMethod.logTitle('NOTIFICATION SETUP ERROR', 'Error: $e');
+    }
   }
 
   Future<void> _showAndroidNotification(RemoteMessage message) async {
@@ -135,23 +150,32 @@ class FcmService {
           details,
           payload: data.isNotEmpty ? data.toString() : null,
         );
-        print('Android notification shown: $notificationId');
+        DMethod.logTitle(
+          'NOTIFICATION SHOWN',
+          'ID: $notificationId\nTitle: ${notification.title}\nBody: ${notification.body}',
+        );
       }
     } catch (e) {
-      print('Error showing Android notification: $e');
+      DMethod.logTitle('NOTIFICATION SHOW ERROR', 'Error: $e');
     }
   }
 
   void _handleMessage(RemoteMessage message) {
-    print('Message opened: ${message.messageId}');
+    DMethod.logTitle(
+      'MESSAGE HANDLED',
+      'Message ID: ${message.messageId}\nFull Data: ${message.data}',
+    );
     final data = message.data;
     final notification = message.notification;
     // Handle navigation berdasarkan data message
     if (data.isNotEmpty) {
-      print('Message data: $data');
+      DMethod.logTitle('MESSAGE DATA', 'Data: $data');
       _navigateBasedOnData(data);
     } else if (notification != null) {
-      print('Notification: ${notification.title} - ${notification.body}');
+      DMethod.logTitle(
+        'NOTIFICATION DATA',
+        'Title: ${notification.title}\nBody: ${notification.body}',
+      );
       // Handle general notification tap
     }
   }
@@ -161,7 +185,7 @@ class FcmService {
     // Contoh:
     // - data['screen'] = 'chat', 'order', 'profile', dll.
     // - data['id'] = ID spesifik untuk navigasi
-    print('Navigation data: $data');
+    DMethod.logTitle('NAVIGATION TRIGGERED', 'Data: $data');
   }
 }
 
@@ -169,8 +193,10 @@ class FcmService {
 @pragma('vm:entry-point')
 Future<void> _firebaseBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
-
-  print("Handling background message: ${message.messageId}");
+  DMethod.logTitle(
+    'BACKGROUND MESSAGE HANDLED',
+    'Message ID: ${message.messageId}\nData: ${message.data}',
+  );
   // Setup local notifications untuk background
   final FlutterLocalNotificationsPlugin notifications =
       FlutterLocalNotificationsPlugin();
@@ -218,6 +244,9 @@ Future<void> _firebaseBackgroundHandler(RemoteMessage message) async {
       details,
     );
 
-    print('Background notification shown: $notificationId');
+    DMethod.logTitle(
+      'BACKGROUND NOTIFICATION SHOWN',
+      'ID: $notificationId\nTitle: ${notification.title}',
+    );
   }
 }

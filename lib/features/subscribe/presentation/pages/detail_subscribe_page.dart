@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
-import 'package:inetagan/common/routes.dart';
 import 'package:inetagan/core/config/app_colors.dart';
 import 'package:inetagan/core/config/app_format.dart';
 import 'package:inetagan/core/components/button_widget.dart';
@@ -13,6 +12,7 @@ import 'package:inetagan/features/profile/presentation/cubit/profile/profile_cub
 import 'package:inetagan/features/subscribe/presentation/bloc/subscribe/subscribe_bloc.dart';
 import 'package:inetagan/features/subscribe/presentation/widgets/detail_item_widget.dart';
 import 'package:inetagan/gen/assets.gen.dart';
+import 'package:inetagan/routes/app_router.dart';
 
 class DetailSubscribePage extends StatefulWidget {
   const DetailSubscribePage({
@@ -70,13 +70,13 @@ class _DetailSubscribePageState extends State<DetailSubscribePage> {
       body: BlocConsumer<SubscribeBloc, SubscribeState>(
         listener: (context, subscribeState) {
           if (subscribeState is SubscribeSuccess) {
-            context.goNamed(RouteNames.success);
+            SuccessSubscribeRoute().go(context);
           }
           if (subscribeState is SubscribeFailed) {
             if (subscribeState.message.contains('sudah memiliki')) {
               _showAlreadySubscribedDialog(context);
             } else {
-              context.goNamed(RouteNames.failed);
+              FailedSubscribeRoute().go(context);
             }
           }
         },

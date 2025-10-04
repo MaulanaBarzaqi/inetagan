@@ -15,12 +15,10 @@ class BannerBloc extends Bloc<BannerEvent, BannerState> {
       final result = await _usecase.call();
       result.fold(
         (failure) {
-          print('BannerBloc Error: ${failure.message}');
           emit(BannerFailed(failure.message));
         },
 
         (data) {
-          print('BannerBloc Success: ${data.length} banners');
           emit(BannerSuccess(data));
         },
       );

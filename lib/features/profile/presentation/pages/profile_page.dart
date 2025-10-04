@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
-import 'package:go_router/go_router.dart';
-import 'package:inetagan/common/routes.dart';
 import 'package:inetagan/core/config/app_colors.dart';
 import 'package:inetagan/features/profile/presentation/cubit/log_out/log_out_cubit.dart';
 import 'package:inetagan/features/profile/presentation/cubit/profile/profile_cubit.dart';
 import 'package:inetagan/gen/assets.gen.dart';
+import 'package:inetagan/routes/app_router.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -43,7 +42,7 @@ class _ProfilePageState extends State<ProfilePage> {
         BlocListener<LogOutCubit, LogOutState>(
           listener: (context, state) {
             if (state is LogOutSuccess && _isMounted) {
-              context.goNamed(RouteNames.signin);
+              SignInRoute().go(context);
             }
           },
         ),
@@ -88,7 +87,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           icon: Assets.icons.wifi,
                           label: 'Pemasangan Saya',
                           ontap: () {
-                            context.goNamed(RouteNames.getSubscribe);
+                            GetSubscribeRoute().go(context);
                           },
                         ),
                         buildItemProfile(

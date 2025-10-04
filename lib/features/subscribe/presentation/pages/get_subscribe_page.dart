@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
-import 'package:go_router/go_router.dart';
-import 'package:inetagan/common/routes.dart';
 import 'package:inetagan/core/components/button_widget.dart';
 import 'package:inetagan/core/config/app_colors.dart';
 import 'package:inetagan/core/config/app_format.dart';
@@ -12,6 +10,7 @@ import 'package:inetagan/features/subscribe/presentation/bloc/get_subscription/g
 import 'package:inetagan/features/subscribe/presentation/widgets/build_info_row_widget.dart';
 import 'package:inetagan/features/subscribe/presentation/widgets/status_extension.dart';
 import 'package:inetagan/gen/assets.gen.dart';
+import 'package:inetagan/routes/app_router.dart';
 
 class GetSubscribePage extends StatefulWidget {
   const GetSubscribePage({super.key});
@@ -61,7 +60,7 @@ class _GetSubscribePageState extends State<GetSubscribePage> {
         children: [
           GestureDetector(
             onTap: () {
-              context.goNamed(RouteNames.dashboard);
+              DashboardRoute().go(context);
             },
             child: Container(
               height: 46,
@@ -112,7 +111,7 @@ class _GetSubscribePageState extends State<GetSubscribePage> {
           ),
           Gap(20),
           ButtonWidget(
-            ontap: () => context.goNamed(RouteNames.dashboard),
+            ontap: () => DashboardRoute().go(context),
             text: 'Kembali',
           ),
           Gap(20),

@@ -1,20 +1,30 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:inetagan/features/home/presentation/pages/home_page.dart';
-import 'package:inetagan/features/profile/presentation/pages/profile_page.dart';
-import 'package:inetagan/features/internet-package/presentation/pages/all_packages_page.dart';
 
 class DashboardCubit extends Cubit<int> {
   DashboardCubit() : super(0);
 
-  change(int i) => emit(i);
+  void changeTab(int index) => emit(index);
 
-  final List menuDashboard = [
-    ['Home', Icons.home, HomePage()],
-    ['History', Icons.history, Center(child: Text("history"))],
-    ['Internet', Icons.wifi, AllPackagesPage()],
-    ['Profile', Icons.account_box_rounded, ProfilePage()],
-  ];
+  String getCurrentTabPath(int index) {
+    switch (index) {
+      case 0:
+        return '/home';
+      case 1:
+        return '/histories';
+      case 2:
+        return '/internet-packages';
+      case 3:
+        return '/profile';
+      default:
+        return '/home';
+    }
+  }
 
-  Widget get page => menuDashboard[state][2];
+  int getTabIndexFromPath(String path) {
+    if (path.contains('/home')) return 0;
+    if (path.contains('/histories')) return 1;
+    if (path.contains('/internet-packages')) return 2;
+    if (path.contains('/profile')) return 3;
+    return 0;
+  }
 }

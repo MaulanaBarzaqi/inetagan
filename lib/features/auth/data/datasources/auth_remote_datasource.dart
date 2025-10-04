@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:d_method/d_method.dart';
 import 'package:http/http.dart' as http;
 import 'package:inetagan/core/config/app_constant.dart';
 import 'package:inetagan/core/config/app_request.dart';
@@ -87,9 +88,9 @@ class AuthRemoteDatasourceImpl implements AuthRemoteDatasource {
         body: {'fcm_token': fcmToken},
       );
       AppResponse.data(response);
-      print('FCM token updated successfully: $fcmToken');
+      DMethod.logTitle('FCM TOKEN UPDATED SUCCESS', 'Token: $fcmToken');
     } catch (e) {
-      print('Error updating FCM token: $e');
+      DMethod.logTitle('FCM TOKEN UPDATE ERROR', 'Error: $e\nToken: $fcmToken');
       // Jangan throw error agar login tetap berhasil meskipun FCM gagal
     }
   }
