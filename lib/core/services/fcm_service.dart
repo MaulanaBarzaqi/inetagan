@@ -4,25 +4,20 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:inetagan/core/config/app_colors.dart';
 
+// constanta channel
+const String _chanelId = 'high_importance_channel';
+const String _channelName = 'Inetagan Notifications';
+const String _channelDescription =
+    'This channel is used for important notifications from Inetagan';
+
 class FcmService {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   final FlutterLocalNotificationsPlugin _localNotifications =
       FlutterLocalNotificationsPlugin();
 
-  static const String _chanelId = 'high_importance_channel';
-  static const String _channelName = 'Inetagan Notifications';
-  static const String _channelDescription =
-      'This channel is used for important notifications from Inetagan';
-
   Future<String?> getFcmToken() async {
     try {
       await _firebaseMessaging.setAutoInitEnabled(true);
-
-      // await _firebaseMessaging.requestPermission(
-      //   alert: true,
-      //   badge: true,
-      //   sound: true,
-      // );
       String? token = await _firebaseMessaging.getToken();
       DMethod.logTitle('FCM token:', '$token');
       return token;
@@ -35,8 +30,9 @@ class FcmService {
   Future<void> setupListeners() async {
     try {
       DMethod.log('Setting up FCM listeners...');
+      // setup channel n initialize plugin
       await _setupAndroidNotifications();
-      // reques permission untk android 13+
+      // request permission to android 13+
       await _requestNotificationPermission();
       // Background message handler
       FirebaseMessaging.onBackgroundMessage(_firebaseBackgroundHandler);
@@ -67,7 +63,7 @@ class FcmService {
 
   Future<void> _requestNotificationPermission() async {
     try {
-      // Untuk Android 13+ perlu request permission
+      // Permintaan Izin via Firebase Messaging (untuk izin umum)
       final settings = await _firebaseMessaging.requestPermission(
         alert: true,
         badge: true,
@@ -77,6 +73,20 @@ class FcmService {
         'NOTIFICATION PERMISSION',
         'Status: ${settings.authorizationStatus}',
       );
+      // Permintaan Izin Notifikasi (POST_NOTIFICATIONS) via FLN
+      final AndroidFlutterLocalNotificationsPlugin? androidImplementation =
+          _localNotifications
+              .resolvePlatformSpecificImplementation<
+                AndroidFlutterLocalNotificationsPlugin
+              >();
+      if (androidImplementation != null) {
+        final granted = await androidImplementation
+            .requestNotificationsPermission();
+        DMethod.logTitle(
+          'FLN PERMISSION (Android 13+)',
+          'Status: ${granted == true ? 'Granted' : 'Denied'}',
+        );
+      }
     } catch (e) {
       DMethod.logTitle('PERMISSION REQUEST ERROR', 'Error: $e');
     }
@@ -109,7 +119,7 @@ class FcmService {
         iOS: null, // Non-aktifkan iOS
       );
       await _localNotifications.initialize(settings);
-      DMethod.log('Android notification channel created');
+      DMethod.log('Android notification channel created and FLN initialized');
     } catch (e) {
       DMethod.logTitle('NOTIFICATION SETUP ERROR', 'Error: $e');
     }
@@ -119,8 +129,8 @@ class FcmService {
     try {
       final notification = message.notification;
       final data = message.data;
-
-      if (notification != null) {
+      // HANYA tampilkan jika ada payload notification, atau jika ada data kustom
+      if (notification != null || data.isNotEmpty) {
         const AndroidNotificationDetails androidDetails =
             AndroidNotificationDetails(
               _chanelId,
@@ -145,14 +155,14 @@ class FcmService {
         );
         await _localNotifications.show(
           notificationId,
-          notification.title ?? 'Inetagan',
-          notification.body ?? 'You have a new notification',
+          notification?.title ?? 'Inetagan',
+          notification?.body ?? 'You have a new notification',
           details,
           payload: data.isNotEmpty ? data.toString() : null,
         );
         DMethod.logTitle(
-          'NOTIFICATION SHOWN',
-          'ID: $notificationId\nTitle: ${notification.title}\nBody: ${notification.body}',
+          'NOTIFICATION SHOWN (Foreground)',
+          'ID: $notificationId\nTitle: ${notification?.title}\nBody: ${notification?.body}',
         );
       }
     } catch (e) {
@@ -200,6 +210,22 @@ Future<void> _firebaseBackgroundHandler(RemoteMessage message) async {
   // Setup local notifications untuk background
   final FlutterLocalNotificationsPlugin notifications =
       FlutterLocalNotificationsPlugin();
+  // create ulang channel di background
+  const AndroidNotificationChannel channel = AndroidNotificationChannel(
+    _chanelId,
+    _channelName,
+    description: _channelDescription,
+    importance: Importance.high,
+    playSound: true,
+    sound: RawResourceAndroidNotificationSound('notification'),
+    enableLights: true,
+  );
+  await notifications
+      .resolvePlatformSpecificImplementation<
+        AndroidFlutterLocalNotificationsPlugin
+      >()
+      ?.createNotificationChannel(channel);
+
   // Initialize untuk background
   const AndroidInitializationSettings androidSettings =
       AndroidInitializationSettings('@mipmap/ic_launcher');
@@ -212,13 +238,14 @@ Future<void> _firebaseBackgroundHandler(RemoteMessage message) async {
 
   // Show notification di background
   final notification = message.notification;
-  if (notification != null) {
+  final data = message.data;
+
+  if (notification != null || data.isNotEmpty) {
     const AndroidNotificationDetails androidDetails =
         AndroidNotificationDetails(
-          'high_importance_channel',
-          'Inetagan Notifications',
-          channelDescription:
-              'This channel is used for important notifications from Inetagan',
+          _chanelId,
+          _channelName,
+          channelDescription: _channelDescription,
           importance: Importance.high,
           priority: Priority.high,
           playSound: true,
@@ -239,14 +266,15 @@ Future<void> _firebaseBackgroundHandler(RemoteMessage message) async {
 
     await notifications.show(
       notificationId,
-      notification.title ?? 'Inetagan',
-      notification.body ?? 'You have a new notification',
+      notification?.title ?? 'Inetagan',
+      notification?.body ?? 'You have a new notification',
       details,
+      payload: data.isNotEmpty ? data.toString() : null,
     );
 
     DMethod.logTitle(
       'BACKGROUND NOTIFICATION SHOWN',
-      'ID: $notificationId\nTitle: ${notification.title}',
+      'ID: $notificationId\nTitle: ${notification?.title}',
     );
   }
 }

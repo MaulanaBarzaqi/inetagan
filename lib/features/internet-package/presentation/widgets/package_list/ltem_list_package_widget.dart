@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:inetagan/core/config/app_colors.dart';
+import 'package:inetagan/features/internet-package/presentation/widgets/package_widget.dart';
 import 'package:inetagan/features/internet-package/domain/entities/internet_package_entity.dart';
-import '../../../../routes/app_router.dart';
-import 'package_image_widget.dart';
+import 'package:inetagan/routes/app_router.dart';
 
-class PackageListItemWidget extends StatelessWidget {
+class ItemListPackageWidget extends StatelessWidget {
   final InternetPackageEntity package;
 
-  const PackageListItemWidget({super.key, required this.package});
+  const ItemListPackageWidget({super.key, required this.package});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 20),
       child: GestureDetector(
-        onTap: () => DetailRoute($extra: package).go(context),
+        onTap: () => DetailRoute($extra: package).push(context),
         child: Row(
           children: [
             // Image
@@ -45,7 +45,7 @@ class PackageListItemWidget extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    package.category?.name ?? 'tidak ada category',
+                    package.speed,
                     style: const TextStyle(
                       fontSize: 14,
                       color: AppColors.primary,

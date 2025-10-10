@@ -115,7 +115,7 @@ class AuthLocalDatasourceImpl implements AuthLocalDatasource {
         return null;
       }
       if (token != null && token.isNotEmpty) {
-        return '/dashboard/home';
+        return '/home';
       }
       return '/signin';
     } catch (e) {

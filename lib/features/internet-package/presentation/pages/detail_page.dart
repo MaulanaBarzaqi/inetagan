@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:go_router/go_router.dart';
-import 'package:inetagan/core/config/app_colors.dart';
-import 'package:inetagan/features/internet-package/domain/entities/internet_package_entity.dart';
-import 'package:inetagan/features/internet-package/presentation/widgets/button_subscribe_widget.dart';
-import 'package:inetagan/features/internet-package/presentation/widgets/detail_item_widget.dart';
-import 'package:inetagan/gen/assets.gen.dart';
-import 'package:inetagan/routes/app_router.dart';
+
+import '../../../../core/config/app_colors.dart';
+import '../../../../core/config/app_format.dart';
+import '../../../../gen/assets.gen.dart';
+import '../../../../routes/app_router.dart';
+import '../../domain/entities/internet_package_entity.dart';
 
 class DetailPage extends StatefulWidget {
   const DetailPage({super.key, required this.internetPackage});
@@ -20,65 +19,41 @@ class _DetailPageState extends State<DetailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        leading: BackButton(color: AppColors.primary),
+        title: Text(
+          'Detail Paket Internet',
+          style: TextStyle(
+            fontWeight: FontWeight.w700,
+            fontSize: 16,
+            color: AppColors.primary,
+          ),
+        ),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        centerTitle: true,
+      ),
       body: ListView(
         padding: EdgeInsets.all(0),
         children: [
-          Gap(30 + MediaQuery.of(context).padding.top),
-          buildHeader(),
           Gap(30),
-          card(),
+          DetailPackageCard(internetPackage: widget.internetPackage),
           Gap(10),
         ],
       ),
     );
   }
+}
 
-  buildHeader() {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 24),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          GestureDetector(
-            onTap: () => DashboardRoute().replace(context),
-            child: Container(
-              height: 46,
-              width: 46,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.white,
-              ),
-              alignment: Alignment.center,
-              child: Assets.icons.arrowLeft.svg(height: 24, width: 24),
-            ),
-          ),
-          Text(
-            'Detail Paket Internet',
-            style: TextStyle(
-              fontWeight: FontWeight.w700,
-              fontSize: 16,
-              color: AppColors.primary,
-            ),
-          ),
-          Container(
-            height: 46,
-            width: 46,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.white,
-            ),
-            alignment: Alignment.center,
-            child: Assets.icons.ellipsisVertical.svg(height: 24, width: 24),
-          ),
-        ],
-      ),
-    );
-  }
+class DetailPackageCard extends StatelessWidget {
+  final InternetPackageEntity internetPackage;
+  const DetailPackageCard({super.key, required this.internetPackage});
 
-  card() {
+  @override
+  Widget build(BuildContext context) {
     final int total =
-        widget.internetPackage.monthlyBill +
-        widget.internetPackage.installation;
+        internetPackage.monthlyBill + internetPackage.installation;
+
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 20),
       padding: EdgeInsets.symmetric(horizontal: 27, vertical: 22),
@@ -89,7 +64,7 @@ class _DetailPageState extends State<DetailPage> {
       child: Column(
         children: [
           Text(
-            widget.internetPackage.name,
+            internetPackage.name,
             style: TextStyle(
               fontWeight: FontWeight.w700,
               fontSize: 24,
@@ -97,45 +72,137 @@ class _DetailPageState extends State<DetailPage> {
             ),
           ),
           Gap(34),
-          DetailItemWidget(
+          _DetailItemWidget(
             label: 'Untuk',
-            detail: widget.internetPackage.idealDevice,
+            detail: internetPackage.idealDevice,
           ),
           Gap(11),
-          DetailItemWidget(
-            label: 'speed',
-            detail: widget.internetPackage.speed,
-          ),
+          _DetailItemWidget(label: 'speed', detail: internetPackage.speed),
           Gap(11),
-          DetailItemWidget(
+          _DetailItemWidget(
             label: 'kategori',
-            detail:
-                widget.internetPackage.category?.name ?? 'tidak ada category',
+            detail: internetPackage.category?.name ?? 'tidak ada category',
           ),
           Gap(11),
-          DetailItemWidget(
+          _DetailItemWidget(
             label: 'Biaya Pemasangan',
-            detail: widget.internetPackage.installation,
+            detail: internetPackage.installation,
           ),
           Gap(11),
-          DetailItemWidget(
+          _DetailItemWidget(
             label: 'Biaya Bulanan',
-            detail: widget.internetPackage.monthlyBill,
+            detail: internetPackage.monthlyBill,
           ),
           Gap(50),
-          ButtonSubcribeWidget(
+          _ButtonSubcribeWidget(
             onTap: () {
-              // SubscribeRoute().go(context, extra: package);
-              // context.pushNamed(
-              //   RouteNames.subscribe,
-              //   extra: widget.internetPackage,
-              // );
-              context.push(
-                '/dashboard/subscribe',
-                extra: widget.internetPackage,
-              );
+              SubscribeRoute($extra: internetPackage).push(context);
             },
             total: total,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _DetailItemWidget extends StatelessWidget {
+  final String label;
+  final dynamic detail;
+  const _DetailItemWidget({required this.label, required this.detail});
+
+  @override
+  Widget build(BuildContext context) {
+    final String formattedDetail = detail is int
+        ? AppFormat.longPrice(detail)
+        : detail.toString();
+
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 22),
+      height: 52,
+      decoration: BoxDecoration(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(50),
+        border: Border.all(color: AppColors.primary, width: 1),
+      ),
+      child: Row(
+        children: [
+          Assets.icons.squareCheckBig.svg(width: 24, height: 24),
+          Gap(15),
+          Text(
+            label,
+            style: TextStyle(
+              fontWeight: FontWeight.w400,
+              fontSize: 12,
+              color: AppColors.tertiary,
+            ),
+          ),
+          Gap(5),
+          Text(
+            formattedDetail,
+            style: TextStyle(
+              fontWeight: FontWeight.w700,
+              fontSize: 12,
+              color: AppColors.primary,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ButtonSubcribeWidget extends StatelessWidget {
+  final int total;
+  final VoidCallback onTap;
+
+  const _ButtonSubcribeWidget({required this.onTap, required this.total});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 90,
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      margin: const EdgeInsets.symmetric(horizontal: 10),
+      decoration: BoxDecoration(
+        color: const Color(0xff50C2C9),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: Text(
+              AppFormat.longPrice(total),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.w600,
+                color: Colors.white,
+              ),
+            ),
+          ),
+          GestureDetector(
+            onTap: onTap,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              height: 50,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(50),
+              ),
+              child: const Center(
+                child: Text(
+                  'Berlangganan',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.primary,
+                  ),
+                ),
+              ),
+            ),
           ),
         ],
       ),

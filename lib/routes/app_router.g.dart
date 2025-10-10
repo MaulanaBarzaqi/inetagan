@@ -10,13 +10,13 @@ List<RouteBase> get $appRoutes => [
   $landingRoute,
   $signInRoute,
   $signUpRoute,
-  $dashboardRoute,
   $detailRoute,
   $subscribeRoute,
   $detailSubscribeRoute,
   $successSubscribeRoute,
   $failedSubscribeRoute,
   $getSubscribeRoute,
+  $dashboardRoute,
 ];
 
 RouteBase get $landingRoute =>
@@ -73,127 +73,6 @@ mixin $SignUpRoute on GoRouteData {
 
   @override
   String get location => GoRouteData.$location('/signup');
-
-  @override
-  void go(BuildContext context) => context.go(location);
-
-  @override
-  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
-
-  @override
-  void pushReplacement(BuildContext context) =>
-      context.pushReplacement(location);
-
-  @override
-  void replace(BuildContext context) => context.replace(location);
-}
-
-RouteBase get $dashboardRoute => GoRouteData.$route(
-  path: '/dashboard',
-  factory: $DashboardRoute._fromState,
-  routes: [
-    GoRouteData.$route(path: 'home', factory: $HomeTabRoute._fromState),
-    GoRouteData.$route(
-      path: 'histories',
-      factory: $HistoriesTabRoute._fromState,
-    ),
-    GoRouteData.$route(
-      path: 'internet-packages',
-      factory: $InternetPackagesTabRoute._fromState,
-    ),
-    GoRouteData.$route(path: 'profile', factory: $ProfileTabRoute._fromState),
-  ],
-);
-
-mixin $DashboardRoute on GoRouteData {
-  static DashboardRoute _fromState(GoRouterState state) =>
-      const DashboardRoute();
-
-  @override
-  String get location => GoRouteData.$location('/dashboard');
-
-  @override
-  void go(BuildContext context) => context.go(location);
-
-  @override
-  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
-
-  @override
-  void pushReplacement(BuildContext context) =>
-      context.pushReplacement(location);
-
-  @override
-  void replace(BuildContext context) => context.replace(location);
-}
-
-mixin $HomeTabRoute on GoRouteData {
-  static HomeTabRoute _fromState(GoRouterState state) => const HomeTabRoute();
-
-  @override
-  String get location => GoRouteData.$location('/dashboard/home');
-
-  @override
-  void go(BuildContext context) => context.go(location);
-
-  @override
-  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
-
-  @override
-  void pushReplacement(BuildContext context) =>
-      context.pushReplacement(location);
-
-  @override
-  void replace(BuildContext context) => context.replace(location);
-}
-
-mixin $HistoriesTabRoute on GoRouteData {
-  static HistoriesTabRoute _fromState(GoRouterState state) =>
-      const HistoriesTabRoute();
-
-  @override
-  String get location => GoRouteData.$location('/dashboard/histories');
-
-  @override
-  void go(BuildContext context) => context.go(location);
-
-  @override
-  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
-
-  @override
-  void pushReplacement(BuildContext context) =>
-      context.pushReplacement(location);
-
-  @override
-  void replace(BuildContext context) => context.replace(location);
-}
-
-mixin $InternetPackagesTabRoute on GoRouteData {
-  static InternetPackagesTabRoute _fromState(GoRouterState state) =>
-      const InternetPackagesTabRoute();
-
-  @override
-  String get location => GoRouteData.$location('/dashboard/internet-packages');
-
-  @override
-  void go(BuildContext context) => context.go(location);
-
-  @override
-  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
-
-  @override
-  void pushReplacement(BuildContext context) =>
-      context.pushReplacement(location);
-
-  @override
-  void replace(BuildContext context) => context.replace(location);
-}
-
-mixin $ProfileTabRoute on GoRouteData {
-  static ProfileTabRoute _fromState(GoRouterState state) =>
-      const ProfileTabRoute();
-
-  @override
-  String get location => GoRouteData.$location('/dashboard/profile');
 
   @override
   void go(BuildContext context) => context.go(location);
@@ -372,6 +251,106 @@ mixin $GetSubscribeRoute on GoRouteData {
 
   @override
   String get location => GoRouteData.$location('/subscribe/get');
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+RouteBase get $dashboardRoute => ShellRouteData.$route(
+  factory: $DashboardRouteExtension._fromState,
+  routes: [
+    GoRouteData.$route(path: '/home', factory: $HomeRoute._fromState),
+    GoRouteData.$route(path: '/histories', factory: $HistoriesRoute._fromState),
+    GoRouteData.$route(
+      path: '/internet-package',
+      factory: $InternetPackagesRoute._fromState,
+    ),
+    GoRouteData.$route(path: '/profile', factory: $ProfileRoute._fromState),
+  ],
+);
+
+extension $DashboardRouteExtension on DashboardRoute {
+  static DashboardRoute _fromState(GoRouterState state) =>
+      const DashboardRoute();
+}
+
+mixin $HomeRoute on GoRouteData {
+  static HomeRoute _fromState(GoRouterState state) => const HomeRoute();
+
+  @override
+  String get location => GoRouteData.$location('/home');
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+mixin $HistoriesRoute on GoRouteData {
+  static HistoriesRoute _fromState(GoRouterState state) =>
+      const HistoriesRoute();
+
+  @override
+  String get location => GoRouteData.$location('/histories');
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+mixin $InternetPackagesRoute on GoRouteData {
+  static InternetPackagesRoute _fromState(GoRouterState state) =>
+      const InternetPackagesRoute();
+
+  @override
+  String get location => GoRouteData.$location('/internet-package');
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+mixin $ProfileRoute on GoRouteData {
+  static ProfileRoute _fromState(GoRouterState state) => const ProfileRoute();
+
+  @override
+  String get location => GoRouteData.$location('/profile');
 
   @override
   void go(BuildContext context) => context.go(location);

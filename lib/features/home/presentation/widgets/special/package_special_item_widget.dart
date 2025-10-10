@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:inetagan/core/config/app_colors.dart';
 import 'package:inetagan/core/config/app_format.dart';
 import 'package:inetagan/features/internet-package/domain/entities/internet_package_entity.dart';
-import '../../../../routes/app_router.dart';
-import 'package_image_widget.dart';
+import '../../../../../routes/app_router.dart';
+import '../../../../internet-package/presentation/widgets/package_list/package_image_widget.dart';
 
 class PackageSpecialItemWidget extends StatelessWidget {
   final InternetPackageEntity package;
@@ -25,7 +25,7 @@ class PackageSpecialItemWidget extends StatelessWidget {
     );
 
     return GestureDetector(
-      onTap: () => DetailRoute($extra: package).go(context),
+      onTap: () => DetailRoute($extra: package).push(context),
       child: Container(
         width: 252,
         margin: margin,

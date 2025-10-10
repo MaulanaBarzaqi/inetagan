@@ -1,7 +1,6 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:inetagan/features/home/domain/entities/banner_entity.dart';
-import 'package:inetagan/features/home/presentation/widgets/banner_item_widget.dart';
+import 'package:inetagan/features/home/presentation/widgets/banners/banner_item_widget.dart';
 
 class BannerCarouselWidget extends StatelessWidget {
   final List<BannerEntity> banners;

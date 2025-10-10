@@ -1,71 +1,60 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:inetagan/core/config/app_colors.dart';
-import 'package:inetagan/features/home/presentation/cubit/dashboard_cubit.dart';
 
-class Dashboard extends StatelessWidget {
-  // final Widget child;
-  Dashboard({super.key});
+class Dashboard extends StatefulWidget {
+  const Dashboard({super.key, required this.navigator});
+
+  final Widget navigator;
+
+  @override
+  State<Dashboard> createState() => _DashboardState();
+}
+
+class _DashboardState extends State<Dashboard> {
+  int _currentIndex = 0;
+  final List<String> _routes = [
+    '/home',
+    '/histories',
+    '/internet-package',
+    '/profile',
+  ];
+
+  void _onItemTapped(int index) {
+    if (_currentIndex == index) return;
+
+    setState(() {
+      _currentIndex = index;
+    });
+    context.go(_routes[index]);
+  }
 
   @override
   Widget build(BuildContext context) {
-    final String location = GoRouter.of(
-      context,
-    ).routeInformationProvider.value.uri.toString();
+    return Scaffold(
+      body: widget.navigator,
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _currentIndex,
+        onTap: _onItemTapped,
+        type: BottomNavigationBarType.fixed,
+        selectedItemColor: AppColors.primary,
+        unselectedItemColor: AppColors.tertiary,
 
-    final cubit = context.read<DashboardCubit>();
-    final currenIndex = cubit.getTabIndexFromPath(location);
-
-    return PopScope(
-      canPop: false,
-      child: Scaffold(
-        // body: child,
-        bottomNavigationBar: Material(
-          elevation: 10,
-          child: Container(
-            height: 60,
-            padding: const EdgeInsets.symmetric(horizontal: 14),
-            child: NavigationBar(
-              indicatorColor: AppColors.primary.withValues(alpha: 0.3),
-              selectedIndex: currenIndex,
-              onDestinationSelected: (index) {
-                _navigateToTab(context, index);
-              },
-              destinations: _destinations,
-            ),
-          ),
+        selectedLabelStyle: TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 12,
         ),
+        unselectedLabelStyle: const TextStyle(
+          fontWeight: FontWeight.w500,
+          fontSize: 11,
+        ),
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.history), label: 'History'),
+          BottomNavigationBarItem(icon: Icon(Icons.wifi), label: 'Paket'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+        ],
       ),
     );
   }
-
-  void _navigateToTab(BuildContext context, int index) {
-    final cubit = context.read<DashboardCubit>();
-    final path = '/dashboard${cubit.getCurrentTabPath(index)}';
-    context.go(path);
-  }
-
-  final List<NavigationDestination> _destinations = [
-    const NavigationDestination(
-      icon: Icon(Icons.home, color: AppColors.secondary),
-      label: 'Home',
-      selectedIcon: Icon(Icons.home, color: AppColors.primary),
-    ),
-    const NavigationDestination(
-      icon: Icon(Icons.history, color: AppColors.secondary),
-      label: 'History',
-      selectedIcon: Icon(Icons.history, color: AppColors.primary),
-    ),
-    const NavigationDestination(
-      icon: Icon(Icons.wifi, color: AppColors.secondary),
-      label: 'Internet',
-      selectedIcon: Icon(Icons.wifi, color: AppColors.primary),
-    ),
-    const NavigationDestination(
-      icon: Icon(Icons.account_box_rounded, color: AppColors.secondary),
-      label: 'Profile',
-      selectedIcon: Icon(Icons.account_box_rounded, color: AppColors.primary),
-    ),
-  ];
 }

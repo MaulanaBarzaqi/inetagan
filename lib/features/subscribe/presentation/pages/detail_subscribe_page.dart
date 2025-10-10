@@ -2,17 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
-import 'package:inetagan/core/config/app_colors.dart';
-import 'package:inetagan/core/config/app_format.dart';
-import 'package:inetagan/core/components/button_widget.dart';
-import 'package:inetagan/core/components/loading_widget.dart';
-import 'package:inetagan/features/internet-package/domain/entities/internet_package_entity.dart';
-import 'package:inetagan/features/internet-package/presentation/widgets/package_image_widget.dart';
-import 'package:inetagan/features/profile/presentation/cubit/profile/profile_cubit.dart';
-import 'package:inetagan/features/subscribe/presentation/bloc/subscribe/subscribe_bloc.dart';
-import 'package:inetagan/features/subscribe/presentation/widgets/detail_item_widget.dart';
-import 'package:inetagan/gen/assets.gen.dart';
-import 'package:inetagan/routes/app_router.dart';
+
+import '../../../../core/components/button_widget.dart';
+import '../../../../core/components/loading_widget.dart';
+import '../../../../core/config/app_colors.dart';
+import '../../../../core/config/app_format.dart';
+import '../../../../gen/assets.gen.dart';
+import '../../../../routes/app_router.dart';
+import '../../../internet-package/domain/entities/internet_package_entity.dart';
+import '../../../internet-package/presentation/widgets/package_list/package_image_widget.dart';
+import '../../../profile/presentation/cubit/profile/profile_cubit.dart';
+import '../bloc/subscribe/subscribe_bloc.dart';
+import '../widgets/detail_item_widget.dart';
 
 class DetailSubscribePage extends StatefulWidget {
   const DetailSubscribePage({
@@ -64,9 +65,102 @@ class _DetailSubscribePageState extends State<DetailSubscribePage> {
     );
   }
 
+  void _onSubscribePressed(
+    BuildContext context,
+    bool hasExistingSubscription,
+    int? userId,
+  ) {
+    if (userId == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Error: Data pengguna belum tersedia.')),
+      );
+      return;
+    }
+    if (hasExistingSubscription) {
+      _showAlreadySubscribedDialog(context);
+    } else {
+      context.read<SubscribeBloc>().add(
+        OnSubscribeEvent(
+          name: widget.name,
+          nik: widget.nik,
+          phone: widget.phone,
+          address: widget.address,
+          userId: userId,
+          internetPackageId: widget.internetPackage.id,
+        ),
+      );
+    }
+  }
+
+  Widget _buildSelectedPackage() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      child: Row(
+        children: [
+          PackageImageWidget(
+            package: widget.internetPackage,
+            width: 100,
+            height: 100,
+          ),
+          const Gap(20),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  widget.internetPackage.name,
+                  style: const TextStyle(
+                    color: AppColors.secondary,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const Gap(10),
+                Text(
+                  widget.internetPackage.idealDevice,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: AppColors.tertiary,
+                  ),
+                ),
+                const Gap(10),
+                Text(
+                  widget.internetPackage.speed,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: AppColors.primary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // page utama
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        leading: BackButton(color: AppColors.primary),
+        title: Text(
+          'Detail Berlangganan',
+          style: TextStyle(
+            fontWeight: FontWeight.w700,
+            fontSize: 16,
+            color: AppColors.primary,
+          ),
+        ),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        centerTitle: true,
+      ),
       body: BlocConsumer<SubscribeBloc, SubscribeState>(
         listener: (context, subscribeState) {
           if (subscribeState is SubscribeSuccess) {
@@ -81,25 +175,22 @@ class _DetailSubscribePageState extends State<DetailSubscribePage> {
           }
         },
         builder: (context, subscribeState) {
+          final isSubscribeLoading = subscribeState is SubscribeLoading;
           return Stack(
             children: [
               ListView(
-                padding: EdgeInsets.all(0),
+                padding: EdgeInsets.only(bottom: 20),
                 children: [
-                  Gap(20 + MediaQuery.of(context).padding.top),
-                  buildHeader(),
+                  const Gap(20),
+                  _buildSelectedPackage(),
+                  const Gap(20),
+                  _buildDetailDataAndCost(),
                   Gap(20),
-                  buildPackage(),
-                  Gap(20),
-                  buildDetail(),
+                  _buildActionButton(context, isSubscribeLoading),
                   Gap(20),
                 ],
               ),
-              if (subscribeState is SubscribeLoading)
-                Container(
-                  color: Colors.black.withValues(alpha: 0.3),
-                  child: Center(child: CircularProgressIndicator()),
-                ),
+              if (isSubscribeLoading) const _LoadingOverlay(),
             ],
           );
         },
@@ -107,102 +198,53 @@ class _DetailSubscribePageState extends State<DetailSubscribePage> {
     );
   }
 
-  buildHeader() {
+  Widget _buildActionButton(BuildContext context, bool isSubscribeLoading) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 24),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          GestureDetector(
-            onTap: () => Navigator.pop(context),
-            child: Container(
-              height: 46,
-              width: 46,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.white,
-              ),
-              alignment: Alignment.center,
-              child: Assets.icons.arrowLeft.svg(height: 24, width: 24),
-            ),
-          ),
-          Text(
-            'Detail Berlangganan',
-            style: TextStyle(
-              fontWeight: FontWeight.w700,
-              fontSize: 16,
-              color: AppColors.primary,
-            ),
-          ),
-          Container(
-            height: 46,
-            width: 46,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.white,
-            ),
-            alignment: Alignment.center,
-            child: Assets.icons.ellipsisVertical.svg(height: 24, width: 24),
-          ),
-        ],
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      child: BlocBuilder<ProfileCubit, ProfileState>(
+        builder: (context, profileState) {
+          int? userId;
+          bool hasActiveSubscription = false;
+
+          if (profileState is ProfileLoaded) {
+            userId = profileState.profile.id;
+            hasActiveSubscription = profileState.profile.hasActiveInstallation;
+          }
+
+          if (profileState is ProfileLoading) {
+            return const LoadingWidget();
+          }
+
+          if (profileState is ProfileError) {
+            return _ProfileErrorWidget(
+              message: profileState.message,
+              onRetry: () => context.read<ProfileCubit>().getProfile(),
+            );
+          }
+
+          if (profileState is ProfileEmpty) {
+            return const Text(
+              'User data not found',
+              style: TextStyle(color: Colors.red),
+            );
+          }
+
+          return ButtonWidget(
+            ontap: isSubscribeLoading
+                ? null
+                : () => _onSubscribePressed(
+                    context,
+                    hasActiveSubscription,
+                    userId,
+                  ),
+            text: 'Ajukan',
+          );
+        },
       ),
     );
   }
 
-  buildPackage() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: GestureDetector(
-        child: Row(
-          children: [
-            PackageImageWidget(
-              package: widget.internetPackage,
-              width: 100,
-              height: 100,
-            ),
-            const Gap(10),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    widget.internetPackage.name,
-                    style: const TextStyle(
-                      color: AppColors.secondary,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const Gap(10),
-                  Text(
-                    widget.internetPackage.idealDevice,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      color: AppColors.tertiary,
-                    ),
-                  ),
-                  const Gap(10),
-                  Text(
-                    widget.internetPackage.speed,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      color: AppColors.primary,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  buildDetail() {
+  Widget _buildDetailDataAndCost() {
     final total =
         widget.internetPackage.monthlyBill +
         widget.internetPackage.installation;
@@ -220,7 +262,7 @@ class _DetailSubscribePageState extends State<DetailSubscribePage> {
               children: [
                 DetailItemWidget(
                   icon: Assets.icons.userRound,
-                  label: 'nama',
+                  label: 'Nama',
                   itemDetail: widget.name,
                 ),
                 DetailItemWidget(
@@ -249,120 +291,116 @@ class _DetailSubscribePageState extends State<DetailSubscribePage> {
                   itemDetail: widget.internetPackage.installation,
                 ),
                 Divider(),
-                Container(
-                  padding: EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: AppColors.primary.withValues(alpha: 0.05),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: AppColors.primary.withValues(alpha: 0.2),
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Text(
-                          "Total Biaya",
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.primary,
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: Text(
-                          AppFormat.longPrice(total),
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.primary,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Gap(5),
-                Padding(
-                  padding: const EdgeInsets.only(top: 4.0, right: 16.0),
-                  child: Text(
-                    'info:\n Hanya bisa 1 kali dilalakukan oleh setiap user.',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey[600],
-                      fontStyle: FontStyle.italic,
-                    ),
-                  ),
-                ),
+                const Gap(10),
+                _TotalCostCard(total: total),
+                const Gap(5),
+                const _SubscriptionInfoText(),
               ],
             ),
           ),
           const Gap(30),
-          BlocBuilder<ProfileCubit, ProfileState>(
-            builder: (context, profileState) {
-              if (profileState is ProfileLoading) {
-                return LoadingWidget();
-              }
-              if (profileState is ProfileError) {
-                return Column(
-                  children: [
-                    Text(
-                      'Error: ${profileState.message}',
-                      style: TextStyle(color: Colors.red),
-                    ),
-                    Gap(10),
-                    IconButton(
-                      onPressed: () =>
-                          context.read<ProfileCubit>().getProfile(),
-                      icon: Icon(
-                        Icons.replay_rounded,
-                        color: AppColors.tertiary,
-                      ),
-                    ),
-                  ],
-                );
-              }
-              if (profileState is ProfileEmpty) {
-                return Text(
-                  'User data not found',
-                  style: TextStyle(color: Colors.red),
-                );
-              }
+        ],
+      ),
+    );
+  }
+}
 
-              if (profileState is ProfileLoaded) {
-                final hasExistingSubscription =
-                    profileState.profile.hasActiveInstallation;
+class _TotalCostCard extends StatelessWidget {
+  const _TotalCostCard({required this.total});
+  final int total;
 
-                return ButtonWidget(
-                  ontap: () {
-                    if (hasExistingSubscription) {
-                      _showAlreadySubscribedDialog(context);
-                    } else {
-                      context.read<SubscribeBloc>().add(
-                        OnSubscribeEvent(
-                          name: widget.name,
-                          nik: widget.nik,
-                          phone: widget.phone,
-                          address: widget.address,
-                          userId: profileState.profile.id,
-                          internetPackageId: widget.internetPackage.id,
-                        ),
-                      );
-                    }
-                  },
-                  text: 'Ajukan',
-                );
-              }
-              return IconButton(
-                onPressed: () => context.read<ProfileCubit>().getProfile(),
-                icon: Icon(Icons.replay_rounded, color: AppColors.tertiary),
-              );
-            },
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.primary.withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const Expanded(
+            child: Text(
+              "Total Biaya",
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: AppColors.primary,
+              ),
+            ),
+          ),
+          Expanded(
+            child: Text(
+              AppFormat.longPrice(total),
+              textAlign: TextAlign.right, // Penyesuaian agar lebih rapi
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: AppColors.primary,
+              ),
+            ),
           ),
         ],
       ),
+    );
+  }
+}
+
+class _SubscriptionInfoText extends StatelessWidget {
+  const _SubscriptionInfoText();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 4.0, right: 16.0),
+      child: Text(
+        'Info:\n Hanya bisa 1 kali dilakukan oleh setiap user.',
+        textAlign: TextAlign.right, // Penyesuaian agar lebih rapi
+        style: TextStyle(
+          fontSize: 12,
+          color: Colors.grey[600],
+          fontStyle: FontStyle.italic,
+        ),
+      ),
+    );
+  }
+}
+
+class _LoadingOverlay extends StatelessWidget {
+  const _LoadingOverlay();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.black.withValues(alpha: 0.3),
+      child: const Center(child: CircularProgressIndicator()),
+    );
+  }
+}
+
+class _ProfileErrorWidget extends StatelessWidget {
+  const _ProfileErrorWidget({required this.message, required this.onRetry});
+
+  final String message;
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text(
+          'Error: $message',
+          style: const TextStyle(color: Colors.red),
+          textAlign: TextAlign.center,
+        ),
+        const Gap(10),
+        IconButton(
+          onPressed: onRetry,
+          icon: Icon(Icons.replay_rounded, color: AppColors.tertiary),
+        ),
+      ],
     );
   }
 }

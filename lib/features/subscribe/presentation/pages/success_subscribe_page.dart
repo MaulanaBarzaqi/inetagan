@@ -3,7 +3,6 @@ import 'package:gap/gap.dart';
 import 'package:inetagan/core/config/app_colors.dart';
 import 'package:inetagan/core/components/button_widget.dart';
 import 'package:inetagan/gen/assets.gen.dart';
-import 'package:inetagan/routes/app_router.dart';
 
 class SuccessSubscribePage extends StatelessWidget {
   const SuccessSubscribePage({super.key});
@@ -55,7 +54,7 @@ class SuccessSubscribePage extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: ButtonWidget(
               ontap: () {
-                DashboardRoute().go(context);
+                // DashboardRoute().go(context);
               },
               text: 'Kembali ke Home',
             ),

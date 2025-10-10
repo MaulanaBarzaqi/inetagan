@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get_it/get_it.dart';
-import 'package:go_router/go_router.dart';
-import 'package:inetagan/core/config/app_colors.dart';
-import 'package:inetagan/core/components/button_widget.dart';
-import 'package:inetagan/features/auth/data/datasources/auth_local_datasource.dart';
-import 'package:inetagan/gen/assets.gen.dart';
+
+import '../../../../core/components/button_widget.dart';
+import '../../../../core/config/app_colors.dart';
+import '../../../../gen/assets.gen.dart';
+import '../../../../routes/app_router.dart';
+import '../../data/datasources/auth_local_datasource.dart';
 
 class LandingPage extends StatefulWidget {
   const LandingPage({super.key});
@@ -17,7 +18,8 @@ class LandingPage extends StatefulWidget {
 class _LandingPageState extends State<LandingPage> {
   final AuthLocalDatasource _localDatasource =
       GetIt.instance<AuthLocalDatasource>();
-  bool _isRedirecting = false;
+
+  bool _isLoadingInitialState = true;
 
   @override
   void initState() {
@@ -26,19 +28,21 @@ class _LandingPageState extends State<LandingPage> {
   }
 
   Future<void> _handleInitialRedirect() async {
-    if (_isRedirecting) return;
-
-    _isRedirecting = true;
+    if (mounted) {
+      setState(() => _isLoadingInitialState = true);
+    }
     try {
       final routeName = await _localDatasource.determineRedirectRoute();
-      if (routeName != null && mounted) {
-        context.go(routeName);
+      if (routeName == '/home') {
+        const HomeRoute().go(context);
+      } else if (routeName == '/signin') {
+        const SignInRoute().go(context);
       }
     } catch (error) {
       debugPrint('Redirect error : $error');
     } finally {
       if (mounted) {
-        setState(() => _isRedirecting = false);
+        setState(() => _isLoadingInitialState = false);
       }
     }
   }
@@ -47,24 +51,24 @@ class _LandingPageState extends State<LandingPage> {
     try {
       await _localDatasource.markAppAsLauched();
       if (mounted) {
-        context.go('/signin');
+        const SignInRoute().go(context);
       }
     } catch (error) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text("Failed to navigate: $error")));
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text("Failed to navigate: $error")));
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _isRedirecting ? _buildLoadingState() : _buildContent(),
+      body: _isLoadingInitialState
+          ? const Center(child: CircularProgressIndicator())
+          : _buildContent(),
     );
-  }
-
-  Widget _buildLoadingState() {
-    return const Center(child: CircularProgressIndicator());
   }
 
   Widget _buildContent() {
@@ -76,20 +80,29 @@ class _LandingPageState extends State<LandingPage> {
         const Gap(15),
         Assets.images.imgSplashscreen.image(height: 350),
         const Gap(30),
-        Text(
-          'Saatnya beralih ke Fiber, Akses Internet\nSuper cepat dan canggih',
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            height: 1.7,
-            fontWeight: FontWeight.w400,
-            fontSize: 13,
-            color: AppColors.tertiary,
-          ),
-        ),
+        _IntroText(),
         const Gap(50),
         ButtonWidget(ontap: _navigateToSignIn, text: 'explore now'),
         const Gap(30),
       ],
+    );
+  }
+}
+
+class _IntroText extends StatelessWidget {
+  const _IntroText();
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      'Saatnya beralih ke Fiber, Akses Internet\nSuper cepat dan canggih',
+      textAlign: TextAlign.center,
+      style: TextStyle(
+        height: 1.7,
+        fontWeight: FontWeight.w400,
+        fontSize: 13,
+        color: AppColors.tertiary,
+      ),
     );
   }
 }

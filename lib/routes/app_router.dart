@@ -1,4 +1,4 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:inetagan/features/features.dart';
 import 'package:go_router/go_router.dart';
 import 'package:inetagan/features/internet-package/domain/entities/internet_package_entity.dart';
@@ -29,59 +29,6 @@ class SignUpRoute extends GoRouteData with $SignUpRoute {
 
   @override
   Widget build(BuildContext context, GoRouterState state) => const SignUpPage();
-}
-
-// main app - dashboard with nested routes
-@TypedGoRoute<DashboardRoute>(
-  path: '/dashboard',
-  routes: [
-    // dashboard tabs (bottom navigation)
-    TypedGoRoute<HomeTabRoute>(path: 'home'),
-    TypedGoRoute<HistoriesTabRoute>(path: 'histories'),
-    TypedGoRoute<InternetPackagesTabRoute>(path: 'internet-packages'),
-    TypedGoRoute<ProfileTabRoute>(path: 'profile'),
-  ],
-)
-class DashboardRoute extends GoRouteData with $DashboardRoute {
-  const DashboardRoute();
-
-  @override
-  Widget build(BuildContext context, GoRouterState state) {
-    return Dashboard();
-  }
-}
-
-// dashboard tab routes
-class HomeTabRoute extends GoRouteData with $HomeTabRoute {
-  const HomeTabRoute();
-
-  @override
-  Widget build(BuildContext context, GoRouterState state) => const HomePage();
-}
-
-class HistoriesTabRoute extends GoRouteData with $HistoriesTabRoute {
-  const HistoriesTabRoute();
-
-  @override
-  Widget build(BuildContext context, GoRouterState state) =>
-      const Center(child: Text("Histories"));
-}
-
-class InternetPackagesTabRoute extends GoRouteData
-    with $InternetPackagesTabRoute {
-  const InternetPackagesTabRoute();
-
-  @override
-  Widget build(BuildContext context, GoRouterState state) =>
-      const AllPackagesPage();
-}
-
-class ProfileTabRoute extends GoRouteData with $ProfileTabRoute {
-  const ProfileTabRoute();
-
-  @override
-  Widget build(BuildContext context, GoRouterState state) =>
-      const ProfilePage();
 }
 
 // package flow routes
@@ -164,4 +111,54 @@ class GetSubscribeRoute extends GoRouteData with $GetSubscribeRoute {
       const GetSubscribePage();
 }
 
-final GoRouter router = GoRouter(routes: $appRoutes, initialLocation: '/');
+@TypedShellRoute<DashboardRoute>(
+  routes: [
+    TypedGoRoute<HomeRoute>(path: '/home'),
+    TypedGoRoute<HistoriesRoute>(path: '/histories'),
+    TypedGoRoute<InternetPackagesRoute>(path: '/internet-package'),
+    TypedGoRoute<ProfileRoute>(path: '/profile'),
+  ],
+)
+class DashboardRoute extends ShellRouteData {
+  const DashboardRoute();
+
+  @override
+  Widget builder(BuildContext context, GoRouterState state, Widget navigator) {
+    return Dashboard(navigator: navigator);
+  }
+}
+
+// Dashboard tab routes
+class HomeRoute extends GoRouteData with $HomeRoute {
+  const HomeRoute();
+  @override
+  Widget build(BuildContext context, GoRouterState state) => const HomePage();
+}
+
+class HistoriesRoute extends GoRouteData with $HistoriesRoute {
+  const HistoriesRoute();
+  @override
+  Widget build(BuildContext context, GoRouterState state) =>
+      const HistoryPage();
+}
+
+class InternetPackagesRoute extends GoRouteData with $InternetPackagesRoute {
+  const InternetPackagesRoute();
+  @override
+  Widget build(BuildContext context, GoRouterState state) =>
+      const AllPackagesPage();
+}
+
+class ProfileRoute extends GoRouteData with $ProfileRoute {
+  const ProfileRoute();
+  @override
+  Widget build(BuildContext context, GoRouterState state) =>
+      const ProfilePage();
+}
+
+final GoRouter router = GoRouter(
+  routes: $appRoutes,
+  initialLocation: '/',
+  errorBuilder: (context, state) =>
+      Scaffold(body: Center(child: Text('Error: ${state.error}'))),
+);
