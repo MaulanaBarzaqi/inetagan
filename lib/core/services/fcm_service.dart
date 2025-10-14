@@ -1,14 +1,37 @@
+import 'dart:convert';
+
 import 'package:d_method/d_method.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:inetagan/core/config/app_colors.dart';
+import 'package:inetagan/routes/app_router.dart';
 
 // constanta channel
 const String _chanelId = 'high_importance_channel';
 const String _channelName = 'Inetagan Notifications';
 const String _channelDescription =
     'This channel is used for important notifications from Inetagan';
+
+// **Fungsi Global untuk Menangani Klik Notifikasi Lokal (FLN)**
+// Ini akan dipanggil ketika notifikasi diklik, baik saat app di foreground atau background.
+void onDidReceiveNotificationResponse(NotificationResponse response) {
+  final payLoad = response.payload;
+  DMethod.logTitle('FLN RESPONSE TAPPED', 'payload : $payLoad');
+
+  if (payLoad != null && payLoad.isNotEmpty) {
+    try {
+      final data = jsonDecode(payLoad) as Map<String, dynamic>;
+      final messageType = data['type'];
+      if (messageType == 'installation_status_update') {
+        router.go('/subscribe/get');
+        DMethod.log('Navigasi dari FLN Payload ke Pemasangan Saya');
+      }
+    } catch (e) {
+      DMethod.logTitle('FLN PAYLOAD ERROR', 'Failed to parse payload: $e');
+    }
+  }
+}
 
 class FcmService {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
@@ -118,7 +141,12 @@ class FcmService {
         android: androidSettings,
         iOS: null, // Non-aktifkan iOS
       );
-      await _localNotifications.initialize(settings);
+      await _localNotifications.initialize(
+        settings,
+        onDidReceiveNotificationResponse: onDidReceiveNotificationResponse,
+        onDidReceiveBackgroundNotificationResponse:
+            onDidReceiveNotificationResponse,
+      );
       DMethod.log('Android notification channel created and FLN initialized');
     } catch (e) {
       DMethod.logTitle('NOTIFICATION SETUP ERROR', 'Error: $e');
@@ -153,12 +181,15 @@ class FcmService {
         final notificationId = DateTime.now().millisecondsSinceEpoch.remainder(
           100000,
         );
+
+        final String? payloadString = data.isNotEmpty ? jsonEncode(data) : null;
+
         await _localNotifications.show(
           notificationId,
           notification?.title ?? 'Inetagan',
           notification?.body ?? 'You have a new notification',
           details,
-          payload: data.isNotEmpty ? data.toString() : null,
+          payload: payloadString,
         );
         DMethod.logTitle(
           'NOTIFICATION SHOWN (Foreground)',
@@ -191,11 +222,17 @@ class FcmService {
   }
 
   void _navigateBasedOnData(Map<String, dynamic> data) {
-    // Implement navigation logic berdasarkan data
-    // Contoh:
-    // - data['screen'] = 'chat', 'order', 'profile', dll.
-    // - data['id'] = ID spesifik untuk navigasi
-    DMethod.logTitle('NAVIGATION TRIGGERED', 'Data: $data');
+    final messageType = data['type'];
+    DMethod.logTitle(
+      'NAVIGATION TRIGGERED',
+      'Type: $messageType | Data: $data',
+    );
+    if (messageType == 'installation_status_update') {
+      DMethod.log('Navigasi ke Halaman Pemasangan Saya (Status Update)');
+      router.go('/subscribe/get');
+    } else {
+      DMethod.log('Tipe pesan umum atau tidak dikenal.');
+    }
   }
 }
 
@@ -234,7 +271,12 @@ Future<void> _firebaseBackgroundHandler(RemoteMessage message) async {
     android: androidSettings,
     iOS: null,
   );
-  await notifications.initialize(settings);
+  await notifications.initialize(
+    settings,
+    onDidReceiveNotificationResponse: onDidReceiveNotificationResponse,
+    onDidReceiveBackgroundNotificationResponse:
+        onDidReceiveNotificationResponse,
+  );
 
   // Show notification di background
   final notification = message.notification;
@@ -259,6 +301,7 @@ Future<void> _firebaseBackgroundHandler(RemoteMessage message) async {
       android: androidDetails,
       iOS: null,
     );
+    final String? payLoadString = data.isNotEmpty ? jsonEncode(data) : null;
 
     final notificationId = DateTime.now().millisecondsSinceEpoch.remainder(
       100000,
@@ -269,7 +312,7 @@ Future<void> _firebaseBackgroundHandler(RemoteMessage message) async {
       notification?.title ?? 'Inetagan',
       notification?.body ?? 'You have a new notification',
       details,
-      payload: data.isNotEmpty ? data.toString() : null,
+      payload: payLoadString,
     );
 
     DMethod.logTitle(
