@@ -16,6 +16,7 @@ List<RouteBase> get $appRoutes => [
   $successSubscribeRoute,
   $failedSubscribeRoute,
   $getSubscribeRoute,
+  $notificationRoute,
   $dashboardRoute,
 ];
 
@@ -251,6 +252,32 @@ mixin $GetSubscribeRoute on GoRouteData {
 
   @override
   String get location => GoRouteData.$location('/subscribe/get');
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+RouteBase get $notificationRoute => GoRouteData.$route(
+  path: '/notifications',
+  factory: $NotificationRoute._fromState,
+);
+
+mixin $NotificationRoute on GoRouteData {
+  static NotificationRoute _fromState(GoRouterState state) =>
+      const NotificationRoute();
+
+  @override
+  String get location => GoRouteData.$location('/notifications');
 
   @override
   void go(BuildContext context) => context.go(location);

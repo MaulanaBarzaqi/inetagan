@@ -1,17 +1,23 @@
 import 'dart:convert';
-
 import 'package:d_method/d_method.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:inetagan/core/config/app_colors.dart';
 import 'package:inetagan/routes/app_router.dart';
+import 'package:uuid/uuid.dart';
+
+import '../../features/notifications/data/datasources/notification_local_datasource.dart';
+import '../../features/notifications/data/models/notification_model.dart';
+import '../../features/notifications/presentation/cubit/notifications_cubit.dart';
+import '../../injection.dart';
 
 // constanta channel
 const String _chanelId = 'high_importance_channel';
 const String _channelName = 'Inetagan Notifications';
 const String _channelDescription =
     'This channel is used for important notifications from Inetagan';
+final _uuid = const Uuid();
 
 // **Fungsi Global untuk Menangani Klik Notifikasi Lokal (FLN)**
 // Ini akan dipanggil ketika notifikasi diklik, baik saat app di foreground atau background.
@@ -159,6 +165,26 @@ class FcmService {
       final data = message.data;
       // HANYA tampilkan jika ada payload notification, atau jika ada data kustom
       if (notification != null || data.isNotEmpty) {
+        final newNotification = NotificationModel(
+          id: _uuid.v4(),
+          title: notification?.title,
+          body: notification?.body,
+          dataPayload: data,
+          receivedAt: DateTime.now(),
+          isRead: false,
+        );
+        try {
+          locator<NotificationsCubit>().saveAndReload(newNotification);
+        } catch (e) {
+          locator<NotificationLocalDatasource>().saveNotification(
+            newNotification,
+          );
+          DMethod.logTitle(
+            'NOTIF SAVE FALLBACK',
+            'Cubit not available, saved via Datasource. $e',
+          );
+        }
+
         const AndroidNotificationDetails androidDetails =
             AndroidNotificationDetails(
               _chanelId,
@@ -240,6 +266,7 @@ class FcmService {
 @pragma('vm:entry-point')
 Future<void> _firebaseBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
+  await initLocator();
   DMethod.logTitle(
     'BACKGROUND MESSAGE HANDLED',
     'Message ID: ${message.messageId}\nData: ${message.data}',
@@ -283,6 +310,20 @@ Future<void> _firebaseBackgroundHandler(RemoteMessage message) async {
   final data = message.data;
 
   if (notification != null || data.isNotEmpty) {
+    final localUuid = const Uuid();
+
+    final newNotification = NotificationModel(
+      id: localUuid.v4(),
+      title: notification?.title,
+      body: notification?.body,
+      dataPayload: data,
+      receivedAt: DateTime.now(),
+      isRead: false,
+    );
+
+    locator<NotificationLocalDatasource>().saveNotification(newNotification);
+    DMethod.log('Notification saved via Datasource (Background)');
+
     const AndroidNotificationDetails androidDetails =
         AndroidNotificationDetails(
           _chanelId,

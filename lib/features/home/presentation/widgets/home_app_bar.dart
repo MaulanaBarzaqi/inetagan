@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
+import 'package:inetagan/features/notifications/presentation/cubit/notifications_cubit.dart';
+import 'package:inetagan/routes/app_router.dart';
 
 import '../../../../core/config/app_colors.dart';
 import '../../../../gen/assets.gen.dart';
@@ -24,7 +26,6 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
             userName = 'Hi, ${state.profile.name}';
           }
           return Row(
-            mainAxisSize: MainAxisSize.min,
             children: [
               Container(
                 decoration: BoxDecoration(
@@ -39,12 +40,15 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                 ),
               ),
               Gap(8),
-              Text(
-                userName,
-                style: TextStyle(
-                  fontWeight: FontWeight.normal,
-                  fontSize: 14,
-                  color: AppColors.tertiary,
+              Flexible(
+                child: Text(
+                  userName,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontWeight: FontWeight.normal,
+                    fontSize: 14,
+                    color: AppColors.tertiary,
+                  ),
                 ),
               ),
             ],
@@ -53,8 +57,44 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
       actions: [
         Padding(
-          padding: EdgeInsets.only(right: 30.0),
-          child: Icon(Icons.notifications_none, color: AppColors.primary),
+          padding: EdgeInsets.only(right: 16.0),
+          child: GestureDetector(
+            onTap: () {
+              NotificationRoute().push(context);
+            },
+            child: BlocBuilder<NotificationsCubit, NotificationsState>(
+              builder: (context, state) {
+                bool hasUnread = false;
+                if (state is NotificationsLoaded) {
+                  hasUnread = state.notifications.any((n) => !n.isRead);
+                }
+                return Stack(
+                  children: [
+                    Icon(
+                      Icons.notifications_none,
+                      color: AppColors.primary,
+                      size: 28,
+                    ),
+                    if (hasUnread)
+                      Positioned(
+                        right: 0,
+                        top: 0,
+                        child: Container(
+                          width: 8,
+                          height: 8,
+                          padding: const EdgeInsets.all(3),
+                          decoration: BoxDecoration(
+                            color: Colors.red,
+                            shape: BoxShape.circle,
+                            border: Border.all(color: Colors.white, width: 1.5),
+                          ),
+                        ),
+                      ),
+                  ],
+                );
+              },
+            ),
+          ),
         ),
       ],
     );

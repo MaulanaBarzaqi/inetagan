@@ -21,6 +21,13 @@ Future<void> initLocator() async {
   locator.registerFactory(() => SignUpBloc(locator()));
   locator.registerFactory(() => ProfileCubit(locator()));
   locator.registerFactory(() => LogOutCubit(locator()));
+  locator.registerFactory(
+    () => NotificationsCubit(
+      deleteNottification: locator(),
+      getNotifications: locator(),
+      saveNotification: locator(),
+    ),
+  );
 
   // usecase
   locator.registerLazySingleton(() => SignInUsecase(locator()));
@@ -34,6 +41,9 @@ Future<void> initLocator() async {
   locator.registerLazySingleton(() => GetSubscriptionUsecase(locator()));
   locator.registerLazySingleton(() => GetProfileUsecase(locator()));
   locator.registerLazySingleton(() => LogOutUsecase(locator()));
+  locator.registerLazySingleton(() => GetNotificationsUsecase(locator()));
+  locator.registerLazySingleton(() => SaveNotificationUsecase(locator()));
+  locator.registerLazySingleton(() => DeleteNotificationUsecase(locator()));
 
   // repository
   locator.registerLazySingleton<AuthRepository>(
@@ -76,6 +86,9 @@ Future<void> initLocator() async {
       remoteDatasource: locator(),
       localDatasource: locator(),
     ),
+  );
+  locator.registerLazySingleton<NotificationRepository>(
+    () => NotificationRepositoryImpl(locator()),
   );
 
   // datasource
@@ -134,6 +147,10 @@ Future<void> initLocator() async {
   locator.registerLazySingleton<ProfileLocalDatasource>(
     () => ProfileLocalDatasourceImpl(locator()),
   );
+  locator.registerLazySingleton<NotificationLocalDatasource>(
+    () => NotificationLocalDatasourceImpl(locator()),
+  );
+
   // service fcm
   locator.registerLazySingleton(() => FcmService());
   // platform

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:inetagan/features/features.dart';
 import 'package:go_router/go_router.dart';
-import 'package:inetagan/features/internet-package/domain/entities/internet_package_entity.dart';
+import '../features/internet-package/domain/entities/internet_package_entity.dart';
 
 part 'app_router.g.dart';
 
@@ -109,6 +109,15 @@ class GetSubscribeRoute extends GoRouteData with $GetSubscribeRoute {
   @override
   Widget build(BuildContext context, GoRouterState state) =>
       const GetSubscribePage();
+}
+
+@TypedGoRoute<NotificationRoute>(path: '/notifications')
+class NotificationRoute extends GoRouteData with $NotificationRoute {
+  const NotificationRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) =>
+      const NotificationsPage();
 }
 
 @TypedShellRoute<DashboardRoute>(

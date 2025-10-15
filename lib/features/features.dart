@@ -21,6 +21,16 @@ export 'home/presentation/bloc/banner/banner_bloc.dart';
 export 'home/presentation/pages/home_page.dart';
 export 'home/presentation/pages/dashboard.dart';
 
+// notification
+export 'notifications/presentation/pages/notifications_page.dart';
+export 'notifications/data/datasources/notification_local_datasource.dart';
+export 'notifications/data/repositories/notification_repository_impl.dart';
+export 'notifications/domain/repositories/notification_repository.dart';
+export 'notifications/domain/usecases/delete_notification_usecase.dart';
+export 'notifications/domain/usecases/get_notifications_usecase.dart';
+export 'notifications/domain/usecases/save_notification_usecase.dart';
+export 'notifications/presentation/cubit/notifications_cubit.dart';
+
 // history
 export 'histories/presentation/pages/history_page.dart';
 
