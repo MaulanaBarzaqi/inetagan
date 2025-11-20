@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
+import 'package:inetagan/core/errors/failures.dart';
+import 'package:inetagan/features/auth/presentation/widgets/dialog_helper.dart';
 
 import '../../../../core/components/button_widget.dart';
 import '../../../../core/components/input_widget.dart';
@@ -82,7 +84,16 @@ class _SignUpPageState extends State<SignUpPage> {
           if (state is SignUpSuccess) {
             SignInRoute().go(context);
           } else if (state is SignUpFailed) {
-            showDialog(context: context, builder: (_) => ErrorDialog());
+            final failure = state.failure;
+            if (failure is InvalidInputFailure) {
+              DialogHelper.showInvalidInputDialog(context, failure.message);
+            } else {
+              showDialog(
+                context: context,
+                builder: (_) =>
+                    ErrorDialog(title: 'Sign Up', message: failure.message),
+              );
+            }
           }
         },
         builder: (context, state) {

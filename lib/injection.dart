@@ -26,6 +26,7 @@ Future<void> initLocator() async {
       deleteNottification: locator(),
       getNotifications: locator(),
       saveNotification: locator(),
+      readNotification: locator(),
     ),
   );
 
@@ -44,6 +45,7 @@ Future<void> initLocator() async {
   locator.registerLazySingleton(() => GetNotificationsUsecase(locator()));
   locator.registerLazySingleton(() => SaveNotificationUsecase(locator()));
   locator.registerLazySingleton(() => DeleteNotificationUsecase(locator()));
+  locator.registerLazySingleton(() => MarkAsReadUsecase(locator()));
 
   // repository
   locator.registerLazySingleton<AuthRepository>(

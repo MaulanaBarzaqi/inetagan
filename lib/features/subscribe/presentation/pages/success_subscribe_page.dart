@@ -3,6 +3,7 @@ import 'package:gap/gap.dart';
 import 'package:inetagan/core/config/app_colors.dart';
 import 'package:inetagan/core/components/button_widget.dart';
 import 'package:inetagan/gen/assets.gen.dart';
+import 'package:inetagan/routes/app_router.dart';
 
 class SuccessSubscribePage extends StatelessWidget {
   const SuccessSubscribePage({super.key});
@@ -28,14 +29,6 @@ class SuccessSubscribePage extends StatelessWidget {
                     ),
                   ),
                   Assets.images.imgSuccess.image(height: 225),
-                  Text(
-                    'Paket 10 Mbps',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15,
-                      color: AppColors.primary,
-                    ),
-                  ),
                   Gap(10),
                   Text(
                     'pengajuan anda berhasil di kirimkan untuk diproses, silahkan tunggu info lebih lanjutnya.',
@@ -54,7 +47,7 @@ class SuccessSubscribePage extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: ButtonWidget(
               ontap: () {
-                // DashboardRoute().go(context);
+                HomeRoute().go(context);
               },
               text: 'Kembali ke Home',
             ),

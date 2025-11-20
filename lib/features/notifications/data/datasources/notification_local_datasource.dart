@@ -6,6 +6,7 @@ abstract class NotificationLocalDatasource {
   Future<List<NotificationModel>> getNotifications();
   Future<void> saveNotification(NotificationModel newNotification);
   Future<void> deleteNotification(String id);
+  Future<void> markAsRead(String id);
 }
 
 class NotificationLocalDatasourceImpl implements NotificationLocalDatasource {
@@ -51,5 +52,22 @@ class NotificationLocalDatasourceImpl implements NotificationLocalDatasource {
         .toList();
 
     await pref.setString(_keyNotifications, jsonEncode(jsonList));
+  }
+
+  @override
+  Future<void> markAsRead(String id) async {
+    final currentList = await getNotifications();
+    final index = currentList.indexWhere((notif) => notif.id == id);
+
+    if (index != -1 && !currentList[index].isRead) {
+      final updatedNotif = currentList[index].copyWith(isRead: true);
+      currentList[index] = updatedNotif;
+
+      final List<Map<String, dynamic>> jsonList = currentList
+          .map((n) => n.toJson())
+          .toList();
+
+      await pref.setString(_keyNotifications, jsonEncode(jsonList));
+    }
   }
 }

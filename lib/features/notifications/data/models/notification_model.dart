@@ -29,4 +29,20 @@ class NotificationModel extends NotificationEntity {
       isRead: json['isRead'] as bool? ?? false,
     );
   }
+
+  NotificationModel copyWith({
+    String? id,
+    String? title,
+    String? body,
+    Map<String, dynamic>? dataPayload,
+    DateTime? receivedAt,
+    bool? isRead,
+  }) => NotificationModel(
+    id: id ?? this.id,
+    title: title ?? this.title,
+    body: body ?? this.body,
+    dataPayload: dataPayload ?? this.dataPayload,
+    receivedAt: receivedAt ?? this.receivedAt,
+    isRead: isRead ?? this.isRead,
+  );
 }

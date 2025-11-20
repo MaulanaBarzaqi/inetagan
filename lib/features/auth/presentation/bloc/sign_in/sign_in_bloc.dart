@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:inetagan/core/errors/failures.dart';
 import 'package:inetagan/features/auth/domain/entities/auth_entity.dart';
 import 'package:inetagan/features/auth/domain/usecases/sign_in_usecase.dart';
 
@@ -15,7 +16,7 @@ class SignInBloc extends Bloc<SignInEvent, SignInState> {
       final result = await _usecase.call(event.email, event.password);
 
       result.fold(
-        (failure) => emit(SignInFailed(failure.message)),
+        (failure) => emit(SignInFailed(failure)),
         (data) => emit(SignInSuccess(data)),
       );
     });

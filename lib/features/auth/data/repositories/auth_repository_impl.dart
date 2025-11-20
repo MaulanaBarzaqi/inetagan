@@ -43,10 +43,10 @@ class AuthRepositoryImpl implements AuthRepository {
       return Left(ServerFailure('server error'));
     } on ForbiddenException {
       return Left(ForbiddenFailure('no access'));
-    } on InvalidInputException {
-      return Left(InvalidInputFailure('invalid data'));
-    } on BadRequestException {
-      return Left(BadRequestFailure('incorrect data format'));
+    } on InvalidInputException catch (e) {
+      return Left(InvalidInputFailure(e.message));
+    } on BadRequestException catch (e) {
+      return Left(BadRequestFailure(e.message));
     } catch (e) {
       return Left(ServerFailure('something went wrong: $e'));
     }

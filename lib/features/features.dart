@@ -29,6 +29,7 @@ export 'notifications/domain/repositories/notification_repository.dart';
 export 'notifications/domain/usecases/delete_notification_usecase.dart';
 export 'notifications/domain/usecases/get_notifications_usecase.dart';
 export 'notifications/domain/usecases/save_notification_usecase.dart';
+export 'notifications/domain/usecases/mark_as_read_usecase.dart';
 export 'notifications/presentation/cubit/notifications_cubit.dart';
 
 // history

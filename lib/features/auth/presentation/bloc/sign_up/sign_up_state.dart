@@ -21,10 +21,10 @@ final class SignUpSuccess extends SignUpState {
 }
 
 final class SignUpFailed extends SignUpState {
-  final String message;
+  final Failure failure;
 
-  const SignUpFailed(this.message);
+  const SignUpFailed(this.failure);
 
   @override
-  List<Object> get props => [message];
+  List<Object> get props => [failure];
 }

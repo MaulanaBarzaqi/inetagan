@@ -23,7 +23,7 @@ class InternetPackageRemoteDatasourceImpl
 
   @override
   Future<List<InternetPackageModel>> all() async {
-    Uri url = Uri.parse('${AppConstant.baseUrl}/internet-packages/list');
+    Uri url = Uri.parse('${AppConstant.baseUrl}${AppConstant.internetPlans}');
     final token = await localDatasource.getCachedToken();
     final response = await client.get(url, headers: AppRequest.header(token));
     try {

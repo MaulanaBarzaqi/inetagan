@@ -60,6 +60,7 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
           padding: EdgeInsets.only(right: 16.0),
           child: GestureDetector(
             onTap: () {
+              // context.read<NotificationsCubit>().loadNotifications();
               NotificationRoute().push(context);
             },
             child: BlocBuilder<NotificationsCubit, NotificationsState>(

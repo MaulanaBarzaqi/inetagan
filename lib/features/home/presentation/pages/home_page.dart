@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
+import 'package:inetagan/features/features.dart';
 
-import '../../../internet-package/presentation/bloc/all_internet_package/all_internet_package_bloc.dart';
-import '../../../profile/presentation/cubit/profile/profile_cubit.dart';
-import '../bloc/banner/banner_bloc.dart';
 import '../widgets/banners/home_banner_section.dart';
 import '../widgets/home_all_package_section.dart';
 import '../widgets/home_app_bar.dart';
@@ -25,6 +23,7 @@ class _HomePageState extends State<HomePage> {
     context.read<AllInternetPackageBloc>().add(OnAllInternetPackageEvent());
     context.read<BannerBloc>().add(OnBannerEvent());
     context.read<ProfileCubit>().getProfile();
+    context.read<NotificationsCubit>().loadNotifications();
   }
 
   @override

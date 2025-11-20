@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:inetagan/core/errors/failures.dart';
 import 'package:inetagan/features/auth/domain/entities/auth_entity.dart';
 import 'package:inetagan/features/auth/domain/usecases/sign_up_usecase.dart';
 
@@ -19,7 +20,7 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
       );
 
       result.fold(
-        (failure) => emit(SignUpFailed(failure.message)),
+        (failure) => emit(SignUpFailed(failure)),
         (data) => emit(SignUpSuccess(data)),
       );
     });

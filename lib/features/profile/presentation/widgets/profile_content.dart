@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 
+import '../../../../core/config/app_colors.dart';
 import '../../../../gen/assets.gen.dart';
 import '../../../../routes/app_router.dart';
 import '../cubit/log_out/log_out_cubit.dart';
@@ -33,7 +34,6 @@ class ProfileContent extends StatelessWidget {
             children: [
               const ProfileInfoCard(), // Widget Profile Info
               const Gap(20),
-
               // Menu Items (menggunakan ProfileMenuItem)
               ProfileMenuItem(
                 icon: Assets.icons.icEditProfile,
@@ -66,16 +66,40 @@ class ProfileContent extends StatelessWidget {
     final shouldLogout = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text("Log out"),
-        content: const Text("Are you sure want to logout?"),
+        title: const Text(
+          "Log out",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: AppColors.primary,
+          ),
+        ),
+        content: Text(
+          "Are you sure want to logout?",
+          style: TextStyle(
+            fontWeight: FontWeight.normal,
+            color: AppColors.tertiary.withValues(alpha: 0.5),
+          ),
+        ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: const Text("Cancel"),
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(
+              "Logout",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: AppColors.primary,
+              ),
+            ),
           ),
           TextButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            child: const Text("Logout"),
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(
+              "Cancel",
+              style: TextStyle(
+                fontWeight: FontWeight.normal,
+                color: AppColors.tertiary,
+              ),
+            ),
           ),
         ],
       ),

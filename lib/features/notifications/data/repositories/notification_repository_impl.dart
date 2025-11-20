@@ -32,15 +32,9 @@ class NotificationRepositoryImpl implements NotificationRepository {
 
     await localDatasource.saveNotification(newNotificationModel);
   }
-  // Di sini Anda perlu memastikan Entity diubah menjadi Model
-  // Namun, karena yang ingin disimpan ke SharedPreferences adalah NotificationModel
-  // (yang memiliki method .toJson()), Anda perlu mengubah Entity menjadi Model
-  // sebelum disimpan ke Datasource, atau membuat method .toJson() di Entity
-  // dan Datasource menerima Entity. Untuk konsistensi, kita akan ubah Entity menjadi Model.
-  // Jika NotificationEntity tidak memiliki factory/constructor untuk membuat NotificationModel,
-  // kita asumsikan NotificationModel dapat dibuat dari Entity.
 
-  // CATATAN: Karena NotificationModel extends NotificationEntity,
-  // kita bisa buat constructor di NotificationModel yang menerima NotificationEntity.
-  // Atau kita buat objek NotificationModel baru dari property Entity.
+  @override
+  Future<void> markAsRead(String id) async {
+    await localDatasource.markAsRead(id);
+  }
 }

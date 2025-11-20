@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
+import 'package:inetagan/core/errors/failures.dart';
+import 'package:inetagan/features/auth/presentation/widgets/dialog_helper.dart';
 
 import '../../../../core/components/button_widget.dart';
 import '../../../../core/components/input_widget.dart';
@@ -61,7 +63,16 @@ class _SignInPageState extends State<SignInPage> {
             HomeRoute().go(context);
           }
           if (state is SignInFailed) {
-            showDialog(context: context, builder: (_) => ErrorDialog());
+            final failure = state.failure;
+            if (failure is InvalidInputFailure) {
+              DialogHelper.showInvalidInputDialog(context, failure.message);
+            } else {
+              showDialog(
+                context: context,
+                builder: (_) =>
+                    ErrorDialog(title: 'Sign in', message: failure.message),
+              );
+            }
           }
         },
         builder: (context, state) {

@@ -73,6 +73,14 @@ class $AssetsIconsGen {
   SvgGenImage get lockKeyhole =>
       const SvgGenImage('assets/icons/lock-keyhole.svg');
 
+  /// File path: assets/icons/logo_background.png
+  AssetGenImage get logoBackground =>
+      const AssetGenImage('assets/icons/logo_background.png');
+
+  /// File path: assets/icons/logo_foreground.png
+  AssetGenImage get logoForeground =>
+      const AssetGenImage('assets/icons/logo_foreground.png');
+
   /// File path: assets/icons/mail.svg
   SvgGenImage get mail => const SvgGenImage('assets/icons/mail.svg');
 
@@ -109,7 +117,7 @@ class $AssetsIconsGen {
   SvgGenImage get wifi => const SvgGenImage('assets/icons/wifi.svg');
 
   /// List of all assets
-  List<SvgGenImage> get values => [
+  List<dynamic> get values => [
     arrowLeft,
     bill,
     calendar,
@@ -126,6 +134,8 @@ class $AssetsIconsGen {
     infoReject,
     location,
     lockKeyhole,
+    logoBackground,
+    logoForeground,
     mail,
     phone,
     slidersHorizontal,
