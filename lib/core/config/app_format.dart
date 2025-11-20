@@ -22,22 +22,22 @@ class AppFormat {
   }
 
   static String fullDate(source) {
-    switch (source.runtimeType) {
-      case String:
-        return DateFormat('dd MMM yyyy kk:mm').format(DateTime.parse(source));
-      case DateTime:
-        return DateFormat('dd MMM yyyy kk:mm').format(source);
+    switch (source) {
+      case String s:
+        return DateFormat('dd MMM yyyy kk:mm').format(DateTime.parse(s));
+      case DateTime d:
+        return DateFormat('dd MMM yyyy kk:mm').format(d);
       default:
         return 'not valid';
     }
   }
 
   static String shortDate(source) {
-    switch (source.runtimeType) {
-      case String:
-        return DateFormat('EEEE, d MMM yy').format(DateTime.parse(source));
-      case DateTime:
-        return DateFormat('EEEE, d MMM yy').format(source);
+    switch (source) {
+      case String s:
+        return DateFormat('EEEE, d MMM yy').format(DateTime.parse(s));
+      case DateTime d:
+        return DateFormat('EEEE, d MMM yy').format(d);
       default:
         return 'not valid';
     }

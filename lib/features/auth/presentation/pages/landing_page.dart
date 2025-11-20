@@ -33,6 +33,7 @@ class _LandingPageState extends State<LandingPage> {
     }
     try {
       final routeName = await _localDatasource.determineRedirectRoute();
+      if (!mounted) return;
       if (routeName == '/home') {
         const HomeRoute().go(context);
       } else if (routeName == '/signin') {

@@ -9,9 +9,14 @@ import '../cubit/log_out/log_out_cubit.dart';
 import 'profile_info_card.dart';
 import 'profile_menu_item.dart';
 
-class ProfileContent extends StatelessWidget {
+class ProfileContent extends StatefulWidget {
   const ProfileContent({super.key});
 
+  @override
+  State<ProfileContent> createState() => _ProfileContentState();
+}
+
+class _ProfileContentState extends State<ProfileContent> {
   @override
   Widget build(BuildContext context) {
     return ListView(
@@ -106,6 +111,7 @@ class ProfileContent extends StatelessWidget {
     );
 
     if (shouldLogout == true) {
+      if (!context.mounted) return;
       context.read<LogOutCubit>().logOut();
     }
   }

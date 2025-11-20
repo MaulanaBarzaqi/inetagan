@@ -1,3 +1,4 @@
+import 'package:d_method/d_method.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:inetagan/features/notifications/domain/entities/notification_entity.dart';
@@ -35,7 +36,7 @@ class NotificationsCubit extends Cubit<NotificationsState> {
       await readNotification.call(id);
       await loadNotifications();
     } catch (e) {
-      print('Failed to mark notification $id as read: $e');
+      DMethod.log('Failed to mark notification $id as read: $e');
     }
   }
 

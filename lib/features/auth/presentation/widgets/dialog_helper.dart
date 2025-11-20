@@ -27,7 +27,7 @@ class DialogHelper {
                   }).toList(),
                 ),
               );
-            }).toList(),
+            }),
             Padding(
               padding: const EdgeInsets.all(16),
               child: ElevatedButton(
