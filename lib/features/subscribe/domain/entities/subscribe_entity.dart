@@ -9,8 +9,8 @@ class SubscribeEntity extends Equatable {
   final String phone;
   final String address;
   final String? status;
-  final int userId;
-  final int internetPackageId;
+  final int? userId;
+  final int? internetPackageId;
   final DateTime updatedAt;
   final DateTime createdAt;
   final InternetPackageEntity? internetPackage;
@@ -23,8 +23,8 @@ class SubscribeEntity extends Equatable {
     required this.phone,
     required this.address,
     this.status,
-    required this.userId,
-    required this.internetPackageId,
+    this.userId,
+    this.internetPackageId,
     required this.updatedAt,
     required this.createdAt,
     this.internetPackage,

@@ -85,12 +85,12 @@ class DetailPackageCard extends StatelessWidget {
           ),
           Gap(11),
           _DetailItemWidget(
-            label: 'Biaya Pemasangan',
+            label: 'Pemasangan',
             detail: internetPackage.installation,
           ),
           Gap(11),
           _DetailItemWidget(
-            label: 'Biaya Bulanan',
+            label: 'Bulanan',
             detail: internetPackage.monthlyBill,
           ),
           Gap(50),
@@ -127,7 +127,7 @@ class _DetailItemWidget extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Assets.icons.squareCheckBig.svg(width: 24, height: 24),
+          Assets.icons.squareCheckBig.svg(width: 20, height: 20),
           Gap(15),
           Text(
             label,
@@ -138,12 +138,16 @@ class _DetailItemWidget extends StatelessWidget {
             ),
           ),
           Gap(5),
-          Text(
-            formattedDetail,
-            style: TextStyle(
-              fontWeight: FontWeight.w700,
-              fontSize: 12,
-              color: AppColors.primary,
+          Expanded(
+            flex: 2,
+            child: Text(
+              formattedDetail,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontWeight: FontWeight.w700,
+                fontSize: 12,
+                color: AppColors.primary,
+              ),
             ),
           ),
         ],

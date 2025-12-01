@@ -10,8 +10,8 @@ class SubscribeModel extends SubscribeEntity {
     required super.phone,
     required super.address,
     super.status,
-    required super.userId,
-    required super.internetPackageId,
+    super.userId,
+    super.internetPackageId,
     required super.updatedAt,
     required super.createdAt,
     super.internetPackage,
@@ -58,8 +58,12 @@ class SubscribeModel extends SubscribeEntity {
       phone: data["phone"],
       address: data["address"],
       status: data["status"],
-      userId: data["user_id"],
-      internetPackageId: data["internet_package_id"],
+      userId: data["user_id"] == null
+          ? null
+          : int.tryParse(data["user_id"].toString()),
+      internetPackageId: data["internet_package_id"] == null
+          ? null
+          : int.tryParse(data["internet_package_id"].toString()),
       updatedAt: DateTime.parse(data["updated_at"]),
       createdAt: DateTime.parse(data["created_at"]),
       internetPackage: data["internet_package"] != null

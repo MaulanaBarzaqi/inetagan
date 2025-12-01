@@ -25,8 +25,8 @@ class InternetPackageModel extends InternetPackageEntity {
           : null,
       speed: json["speed"],
       idealDevice: json["ideal_device"],
-      installation: json["installation"],
-      monthlyBill: json["monthly_bill"],
+      installation: int.parse(json["installation"] as String),
+      monthlyBill: int.parse(json["monthly_bill"] as String),
       image: json["image"],
       deletedAt: json["deleted_at"] != null
           ? DateTime.parse(json["deleted_at"])

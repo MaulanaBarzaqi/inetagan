@@ -22,8 +22,12 @@ class UserModel extends UserEntity {
     name: json["name"],
     email: json["email"],
     role: json["role"],
-    regionId: json["region_id"],
-    internetInstallationId: json["internet_installation_id"],
+    regionId: json["region_id"] == null
+        ? null
+        : int.tryParse(json["region_id"].toString()),
+    internetInstallationId: json['internet_installation_id'] == null
+        ? null
+        : int.tryParse(json['internet_installation_id'].toString()),
     fcmToken: json["fcm_token"],
     emailVerifiedAt: json["email_verified_at"],
     createdAt: DateTime.parse(json["created_at"]),
